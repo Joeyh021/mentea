@@ -1,0 +1,35 @@
+[tool.poetry]
+name = "python-example"
+version = "0.1.0"
+description = ""
+authors = ["Joe Harrison <josephharrison1@me.com>"]
+
+[tool.poetry.scripts]
+site = "python_test:start"
+
+[tool.poetry.dependencies]
+python = "^3.10"
+Django = "^4.0.1"
+
+[tool.poetry.dev-dependencies]
+pytest = "^6.2.5"
+pylint = "^2.12.2"
+mypy = "^0.931"
+autopep8 = "^1.6.0"
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
+
+
+[tool.pylint.BASIC]
+good-names="a,b,c,f,i,j,k,w,x,y,z,fd,pk,_"
+max-line-length=200
+
+
+[tool.mypy]
+strict = true
+
+[[tool.mypy.overrides]]
+module = "test.*"
+disallow_untyped_defs = false
