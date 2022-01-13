@@ -30,6 +30,3 @@ max-line-length=200
 [tool.mypy]
 strict = true
 
-[[tool.mypy.overrides]]
-module = "test.*"
-disallow_untyped_defs = false
