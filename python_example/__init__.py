@@ -3,7 +3,7 @@
 
 def square(x: int) -> int:
     """square a number"""
-    return x**2
+    return x ** 2
 
 
 def is_one(x: str | int) -> bool:
