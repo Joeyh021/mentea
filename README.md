@@ -35,7 +35,9 @@ If you can come up with a more fancy name please let us know
 - `pytest` is a testing tool used to handle unit and integration tests
   - Run `pytest` to make sure any changes you made haven't broken anything
 - `pylint` is a linter used to catch common issues in python code.
+  - This will throw some false positives but is useful to catch common errors and point out things that are typically easily missed
 - CI is currently gated on `mypy`, `black`, and `pytest` all passing. If any of these throw errors, you won't be able to merge code into the repo
+  - Just because it isn't also gated on `pylint` doesn't mean you shouldn't check code with it, as it also makes life easier for the person reviewing your code
 
 ## Best Practices
 
@@ -48,3 +50,6 @@ If you can come up with a more fancy name please let us know
 - WRITE TESTS. I MEAN IT.
   - Write tests before or at the same time you are writing the code you intend to test
   - `pytest --cov` will give a code coverage report which tells you how much of your code is covered by the tests. Use this to help write comprehensive tests
+- Document code as you write it using module, class, and function docstrings
+  - `pylint` will pick up any that you miss
+- Comment code thoroughly
