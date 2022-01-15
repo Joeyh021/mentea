@@ -11,6 +11,9 @@ If you can come up with a more fancy name please let us know
 - Poetry
   - Poetry is a dependancy and environment managment tool for python. It simplifies working with virtual environments and allows to specify all the project settings and dependencies.
   - It can be installed following the instructions from <https://python-poetry.org/docs/#installation>
+- PostgreSQL
+  - Postgres will be used as the backend database for django
+  - It can be installed following the instructios from <https://www.postgresql.org/download/>
 
 ### Installation
 
