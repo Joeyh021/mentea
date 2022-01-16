@@ -1,32 +1,50 @@
 [tool.poetry]
-name = "python-example"
+name = "CS261 Software Engineering Project"
 version = "0.1.0"
 description = ""
 authors = ["Joe Harrison <josephharrison1@me.com>"]
 
 [tool.poetry.scripts]
-site = "python_test:start"
+manage = "manage:main"
 
 [tool.poetry.dependencies]
 python = "^3.10"
 Django = "^4.0.1"
+psycopg2-binary = "^2.9.3"
 
 [tool.poetry.dev-dependencies]
 pytest = "^6.2.5"
 pylint = "^2.12.2"
 mypy = "^0.931"
 black = "^21.12b0"
+pytest-cov = "^3.0.0"
+django-stubs = "^1.9.0"
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]
 build-backend = "poetry.core.masonry.api"
 
-
-[tool.pylint.BASIC]
-good-names="a,b,c,f,i,j,k,w,x,y,z,fd,pk,_"
-max-line-length=200
+[tool.pylint."MESSAGES CONTROL"]
+disable = [
+    "logging-format-interpolation",
+    "logging-fstring-interpolation",
+    "logging-not-lazy",
+    "invalid-str-returned",
+    "invalid-name",
+    "line-too-long",
+    "typecheck"
+]
 
 
 [tool.mypy]
 strict = true
+warn_unused_configs = true
+warn_unreachable = true
+plugins = ["mypy_django_plugin.main"]
 
+[tool.django-stubs]
+django_settings_module = "mysite.settings"
+
+[[tool.mypy.overrides]]
+module = "*.migrations.*"
+ignore_errors = true
