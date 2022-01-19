@@ -51,7 +51,7 @@ MIDDLEWARE = [
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
 ]
 
-ROOT_URLCONF = "mentoring.urls"
+ROOT_URLCONF = "mentoring_platform.urls"
 
 TEMPLATES = [
     {
@@ -69,7 +69,7 @@ TEMPLATES = [
     },
 ]
 
-WSGI_APPLICATION = "mentoring.wsgi.application"
+WSGI_APPLICATION = "mentoring_platform.wsgi.application"
 
 
 # Database
