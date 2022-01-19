@@ -20,6 +20,12 @@ If you can come up with a more fancy name please let us know
 - Clone the project to your local machine
 - Set up the virtual environment using `poetry install`
   - This will create a new python venv that you can activate using `poetry shell`
+- Create a local PostgreSQL database using the psql command line utility (`sudo su postgres` then  `psql`)
+  - `CREATE USER softeng WITH password 'password';`
+  - `CREATE DATABASE softeng WITH OWNER = softeng;`
+  - You can use different user names/passwords/database names but you will need to edit the connection settings in `dev.py` if you do so. DO NOT COMMIT THESE CHANGES.
+- Run `poetry run manage migrate` to create the database tables
+- Run `poetry run manage runserver` to start the development server. You can now access the site at `localhost:8000` in your web browser.
 
 ### Usage
 
