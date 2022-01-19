@@ -1,5 +1,5 @@
 [tool.poetry]
-name = "CS261 Software Engineering Project"
+name = "mentoring_platform"
 version = "0.1.0"
 description = ""
 authors = ["Joe Harrison <josephharrison1@me.com>"]
