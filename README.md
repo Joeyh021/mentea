@@ -62,3 +62,7 @@ If you can come up with a more fancy name please let us know
 - Document code as you write it using module, class, and function docstrings
   - `pylint` will pick up any that you miss
 - Comment code thoroughly
+
+## Useful Django tips
+- When writing views, use class-based views as opposed to functions-based views. This is because class-based views have a lot of extra functionality, and allow a single view to do both GET and POST requests. See the Django documentation ([here](https://docs.djangoproject.com/en/4.0/topics/class-based-views/) and [here](https://docs.djangoproject.com/en/4.0/topics/class-based-views/mixins/)) for more details.
+- UUIDs should be used as the `id` field for all models. While Django does auto-provide an ID field, we need to manually specify the field in each model and mark it as UUID. The field will look something like ```id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)``` (with `import uuid` at the top of the file)
