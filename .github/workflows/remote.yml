@@ -33,9 +33,7 @@ jobs:
           password: ${{ secrets.SSH_KEY }}
           script: |
             cd ~/SoftEng-Project
-            git pull
-            poetry shell
-            poetry install
+            ./deploy.sh
           
 
           
