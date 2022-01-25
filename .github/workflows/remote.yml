@@ -24,7 +24,7 @@ jobs:
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
       # SSH into digitalocean droplet
-      - name: executing remote ssh commands using password
+      - name: Remote into Noahs VPS
         uses: appleboy/ssh-action@master
         with:
           host: ${{ secrets.SSH_HOST }}
@@ -35,10 +35,13 @@ jobs:
 
 
       # Runs a set of commands using the runners shell
-      - name: Run a multi-line script
+      - name: Git pull
         run: |
           cd ~/SoftEng-Project,
           git pull,
+          
+      - name: Poetry
+        run: |
           poetry shell
           poetry install
           
