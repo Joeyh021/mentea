@@ -31,20 +31,13 @@ jobs:
           port: 31982
           username: ${{ secrets.SSH_USER }}
           password: ${{ secrets.SSH_KEY }}
-
-
-
-
-      # Runs a set of commands using the runners shell
-      - name: Git pull
-        run: |
-          cd ~/SoftEng-Project,
-          git pull,
+          script: |
+            cd ~/SoftEng-Project
+            git pull
+            poetry shell
+            poetry install
           
-      - name: Poetry
-        run: |
-          poetry shell
-          poetry install
+
           
 
       
