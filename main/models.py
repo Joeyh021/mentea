@@ -7,7 +7,7 @@ class Document:
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     name = models.CharField(max_length=50)
     file = models.FileField(upload_to="documents/")
-    associated_user = models.ForeignKey(
+    associated_user = models.ForeignKey( # Probably better as a polymorphi type
         "User", on_delete=models.CASCADE, blank=True, null=True
     )
     associated_event = models.ForeignKey(

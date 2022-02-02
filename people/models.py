@@ -37,6 +37,10 @@ class MentorMentee:
         User, on_delete=models.CASCADE, related_name="mentee", db_index=True
     )
     approved = models.BooleanField(default=False)
+    class Meta:
+        indexes = [
+            models.Index(fields=['mentee', 'mentor'])
+        ]
 
 
 class Notification:
@@ -57,7 +61,10 @@ class UserTopic:
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     user = models.ForeignKey(User, on_delete=models.CASCADE, db_index=True)
     topic = models.ForeignKey(Topic, on_delete=models.CASCADE, db_index=True)
-
+    class Meta:
+        indexes = [
+            models.Index(fields=['user', 'topic'])
+        ]
 
 class Rating:
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)

@@ -7,6 +7,7 @@ class Event:
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     name = models.CharField(max_length=50)
     startTime = models.DateTimeField()
+    location = models.TextField()
     duration = models.IntegerField()
     mentor = models.ForeignKey(User, on_delete=models.CASCADE)
     type = models.ForeignKey(EventType, on_delete=models.CASCADE)
@@ -26,6 +27,10 @@ class EventAttendee:
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     event = models.ForeignKey(Event, on_delete=models.CASCADE, db_index=True)
     attendee = models.ForeignKey(User, on_delete=models.CASCADE, db_index=True)
+    class Meta:
+        indexes = [
+            models.Index(fields=['event', 'attendee'])
+        ]
 
 
 class EventRequest:
@@ -40,6 +45,7 @@ class EventRequest:
 class FeedbackForm:
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     name = models.CharField(max_length=50)
+    acceptingSubmissions = models.BooleanField(default=true)
 
 
 class Questions:
