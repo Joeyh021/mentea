@@ -27,10 +27,9 @@ class EventAttendee:
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     event = models.ForeignKey(Event, on_delete=models.CASCADE, db_index=True)
     attendee = models.ForeignKey(User, on_delete=models.CASCADE, db_index=True)
+
     class Meta:
-        indexes = [
-            models.Index(fields=['event', 'attendee'])
-        ]
+        indexes = [models.Index(fields=["event", "attendee"])]
 
 
 class EventRequest:
