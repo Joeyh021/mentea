@@ -5,7 +5,7 @@ from django.contrib.contenttypes.fields import GenericForeignKey
 from django.contrib.contenttypes.models import ContentType
 
 
-class Document:
+class Document(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     name = models.CharField(max_length=50)
     file = models.FileField(upload_to="documents/")
@@ -21,7 +21,7 @@ class Document:
     created_at = models.DateTimeField(auto_now_add=True)
 
 
-class AppFeedback:
+class AppFeedback(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     feedback = models.CharField(max_length=200)
     updated_at = models.DateTimeField(auto_now=True)

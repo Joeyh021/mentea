@@ -3,7 +3,7 @@ import uuid
 from django.db import models
 
 
-class User:
+class User(models.Model):
     # Main user model
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     first_name = models.CharField(max_length=50)
@@ -15,19 +15,19 @@ class User:
     created_at = models.DateTimeField(auto_now_add=True)
 
 
-class UserType:
+class UserType(models.Model):
     # Mentor or mentee
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     type = models.CharField(max_length=50)
 
 
-class BusinessArea:
+class BusinessArea(models.Model):
     # Business areas within the company
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     business_area = models.CharField(max_length=50)
 
 
-class MentorMentee:
+class MentorMentee(models.Model):
     # Mentor-mentee relationship
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     mentor = models.ForeignKey(
@@ -42,7 +42,7 @@ class MentorMentee:
         indexes = [models.Index(fields=["mentee", "mentor"])]
 
 
-class Notification:
+class Notification(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     content = models.CharField(max_length=200)
@@ -51,12 +51,12 @@ class Notification:
     created_at = models.DateTimeField(auto_now_add=True)
 
 
-class Topic:
+class Topic(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     topic = models.CharField(max_length=50)
 
 
-class UserTopic:
+class UserTopic(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     user = models.ForeignKey(User, on_delete=models.CASCADE, db_index=True)
     topic = models.ForeignKey(Topic, on_delete=models.CASCADE, db_index=True)
@@ -65,7 +65,7 @@ class UserTopic:
         indexes = [models.Index(fields=["user", "topic"])]
 
 
-class Rating:
+class Rating(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     mentor = models.ForeignKey(
         User, on_delete=models.CASCADE, related_name="mentor_rating", db_index=True
@@ -82,7 +82,7 @@ class Rating:
     )
 
 
-class PlanOfAction:
+class PlanOfAction(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     name = models.CharField(max_length=50)
     associated_mentor = models.ForeignKey(
@@ -101,7 +101,7 @@ class PlanOfAction:
     created_at = models.DateTimeField(auto_now_add=True)
 
 
-class PlanOfActionTarget:
+class PlanOfActionTarget(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     name = models.CharField(max_length=50)
     description = models.CharField(max_length=200)
@@ -116,7 +116,7 @@ class PlanOfActionTarget:
     created_at = models.DateTimeField(auto_now_add=True)
 
 
-class Chat:
+class Chat(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     mentor = models.ForeignKey(
         User, on_delete=models.CASCADE, related_name="chat_mentor", db_index=True
@@ -128,7 +128,7 @@ class Chat:
     created_at = models.DateTimeField(auto_now_add=True)
 
 
-class ChatMessage:
+class ChatMessage(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     chat = models.ForeignKey(Chat, on_delete=models.CASCADE, db_index=True)
     sender = models.ForeignKey(User, on_delete=models.CASCADE, db_index=True)
