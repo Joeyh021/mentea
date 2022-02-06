@@ -2,7 +2,7 @@
 
 name: remote-deploy
 
-# Controls when the workflow will run
+
 on:
   [push]
 
