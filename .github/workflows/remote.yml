@@ -24,7 +24,7 @@ jobs:
           username: ${{ secrets.SSH_USER }}
           password: ${{ secrets.SSH_PSWD }}
           script: |
-            cd ~/SoftEng-Project
+            cd mentea && ./deploy.sh
             ./deploy.sh
           
 
