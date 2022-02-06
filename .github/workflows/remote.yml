@@ -24,6 +24,7 @@ jobs:
           username: ${{ secrets.SSH_USER }}
           password: ${{ secrets.SSH_PSWD }}
           script: |
+            source $HOME/.poetry/env
             cd mentea
             git pull
             poetry install
