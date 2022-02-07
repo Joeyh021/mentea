@@ -1,0 +1,86 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block head %}
+    {{ block.super }}
+{% endblock %}
+
+{% block navbar %}
+    {% load static %}
+    {% spaceless %}
+        <nav class="navbar sticky-top navbar-expand-md navbar-dark bg-dark mb-3">
+            <div class="container-fluid">
+                <a class="navbar-brand" href="/"><img src="{% static "favicon-32.png" %}" height="32" alt="Logo here"></a>
+                <button class="navbar-toggler" type="button" data-toggle="collapse"
+                        data-target="#navbarSupportedContent"
+                        aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+
+                <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                    <ul class="navbar-nav me-auto mb-2 mb-lg-0 flex-wrap">
+                        {% if request.user.is_authenticated %}
+                            <li class="nav-item">
+                                <a class="nav-link" href="{% url 'people:index' %}"><i class="fas fa-fw fa-calendar-week"></i>&nbsp;People</a>
+                            </li>
+                        {% endif %}
+                    </ul>
+                    <ul class="navbar-nav">
+                        {% if request.user.is_authenticated %}
+                            <li class="nav-item">
+                                <a class="nav-link btn btn-outline-light me-2" href=""><i
+                                        class="fas fa-fw fa-sign-out-alt"></i>&nbsp;Logout</a>
+                            </li>
+                        {% else %}
+                            <li class="nav-item">
+                                <a class="nav-link btn btn-outline-light me-2" href=""><i
+                                        class="fas fa-fw fa-sign-in-alt"></i>&nbsp;Login</a>
+                            </li>
+                        {% endif %}
+                    </ul>
+                </div>
+            </div>
+
+        </nav>
+    {% endspaceless %}
+{% endblock %}
+
+{% block messages %}
+    {% if messages or not request.COOKIES.noticed_cookies %}
+        <div class="alerts">
+            {% for message in messages %}
+                <div class="alert alert-dismissible show fade{% if message.tags %} {{ message.tags }}{% endif %}"
+                     role="alert">
+                    {{ message }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            {% endfor %}
+        </div>
+    {% endif %}
+{% endblock %}
+
+{% block leftcontents %}
+{% endblock %}
+
+{% block footer %}
+    <div class="nav ml-auto mr-auto d-flex flex-row justify-content-around">
+
+    </div>
+{% endblock %}
+
+{% block bottomscripts %}
+    {{ block.super }}
+    {# Typeahead #}
+    <script src="{% static 'bootstrap3-typeahead.min.js' %}"></script>
+    <script>
+        function setCookieForeverish(cname, cvalue) {
+            var d = new Date();
+            var expires = "expires=Tue, 19 Jan 2038 03:14:07 UTC";
+            document.cookie = cname + "=" + cvalue + ";" + expires + ";path=/";
+        }
+
+        $('#cookies_warning').on('close.bs.alert', function () {
+            setCookieForeverish("noticed_cookies", "true")
+        })
+    </script>
+{% endblock %}

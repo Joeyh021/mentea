@@ -1,0 +1,90 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% comment %}
+THIS IS USED BY ERRORS
+{% endcomment %}
+
+{% block head %}
+    {{ block.super }}
+    {# Add some SEO metadata to help discoverability #}
+    <meta name="robots" content="noindex">
+{% endblock %}
+
+{% block background %}class="bg-dark"{% endblock %}
+
+{% comment %}{% block navbar %}
+    <nav class="navbar navbar-dark bg-secondary mb-3">
+        <p class="d-flex flex-row justify-content-center w-100 mb-0">
+
+            <a class="" href="/"><img src="{% static "favicon-120.png" %}" height="120"
+                                                  alt="Logo here"></a>
+
+        </p>
+    </nav>
+{% endblock %}{% endcomment %}
+
+{% block navbar %}
+    {% load static %}
+    {% spaceless %}
+        <nav class="navbar sticky-top navbar-expand-md navbar-dark bg-dark mb-3">
+            <div class="container-fluid">
+                <a class="navbar-brand" href="/"><img src="{% static "favicon-32.png" %}" height="32" alt="Exec It Up"></a>
+                <button class="navbar-toggler" type="button" data-toggle="collapse"
+                        data-target="#navbarSupportedContent"
+                        aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+
+                <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                    <ul class="navbar-nav me-auto mb-2 mb-lg-0 flex-wrap">
+                    </ul>
+                    <ul class="navbar-nav">
+                        {% if request.user.is_authenticated %}
+                            <li class="nav-item">
+                                <a class="nav-link btn btn-outline-light me-2" href="{% url 'account_logout' %}"><i
+                                        class="fas fa-fw fa-sign-out-alt"></i>&nbsp;Logout</a>
+                            </li>
+                        {% else %}
+                            <li class="nav-item">
+                                <a class="nav-link btn btn-outline-light me-2" href="{% url 'account_login' %}"><i
+                                        class="fas fa-fw fa-sign-in-alt"></i>&nbsp;Login</a>
+                            </li>
+                        {% endif %}
+                    </ul>
+                </div>
+            </div>
+
+        </nav>
+    {% endspaceless %}
+{% endblock %}
+
+{% block mainbody %}
+    <div class="card">
+        <div class="card-body">
+            <h2 class="card-title">{% block pagetitle %}{% endblock %}</h2>
+            <h5>{% block help_line %}{% endblock %}</h5>
+            {% block help_content %}
+            <p class="card-text">
+                {% block help_text %}
+                    If you got here by following a link on this site, please contact the web admin with where the link was
+                    to get it fixed, otherwise please try visiting another page.
+                {% endblock %}
+            </p>
+            {% endblock %}
+        <button class="btn btn-block btn-outline-primary" onclick="goBack()">Go Back</button>
+        </div>
+    </div>
+{% endblock %}
+
+{% block footer %}
+{% endblock %}
+
+{% block bottomscripts %}
+    {{ block.super }}
+    <script>
+        function goBack() {
+          window.history.back();
+        }
+    </script>
+{% endblock %}
