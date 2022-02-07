@@ -1,5 +1,7 @@
 from django.shortcuts import render
 from django.views.generic import TemplateView
+from django.http import HttpRequest, HttpResponse
+from typing import Any
 
 
 class EventsIndexPage(TemplateView):
@@ -10,7 +12,7 @@ class EventsIndexPage(TemplateView):
 
     template_name = "workshops/index.html"
 
-    def get(self, request, *args, **kwargs):
+    def get(self, request: HttpRequest, *args: Any, **kwarsgs: Any) -> HttpResponse:
         return render(request, self.template_name, {})
 
 
@@ -21,7 +23,7 @@ class EventRequestPage(TemplateView):
 
     template_name = "workshops/request.html"
 
-    def get(self, request, *args, **kwargs):
+    def get(self, request: HttpRequest, *args: Any, **kwarsgs: Any) -> HttpResponse:
         return render(request, self.template_name, {})
 
 
@@ -32,7 +34,7 @@ class EventCreatePage(TemplateView):
 
     template_name = "workshops/create.html"
 
-    def get(self, request, *args, **kwargs):
+    def get(self, request: HttpRequest, *args: Any, **kwarsgs: Any) -> HttpResponse:
         return render(request, self.template_name, {})
 
 
@@ -44,5 +46,5 @@ class EventPage(TemplateView):
     # not sure what best practice is for this template name
     template_name = "workshops/event.html"
 
-    def get(self, request, *args, **kwargs):
+    def get(self, request: HttpRequest, *args: Any, **kwarsgs: Any) -> HttpResponse:
         return render(request, self.template_name, {})

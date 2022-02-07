@@ -43,7 +43,7 @@ warn_unreachable = true
 plugins = ["mypy_django_plugin.main"]
 
 [tool.django-stubs]
-django_settings_module = "mentoring.settings.dev"
+django_settings_module = "mentoring_platform.settings.dev"
 
 [[tool.mypy.overrides]]
 module = "*.migrations.*"
