@@ -33,8 +33,9 @@ jobs:
       - name: Check formatting
         run: poetry run black . --check
 
-      # check code passes pylint and mypy
-      # TODO
+      # check code passes mypy
+      - name: Run linting & type checking
+        run: poetry run mypy .
 
       # check tests pass
       - name: Test project

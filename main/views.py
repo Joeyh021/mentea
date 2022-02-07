@@ -3,6 +3,7 @@ from django.views.generic import TemplateView
 from django.http import HttpRequest, HttpResponse
 from typing import Any
 
+
 class IndexPage(TemplateView):
     """the main site homepage: mentea.com or whatever"""
 
