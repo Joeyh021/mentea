@@ -1,3 +1,4 @@
+# type: ignore
 """
 Django settings for mentoring project.
 
