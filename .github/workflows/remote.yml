@@ -2,9 +2,10 @@
 
 name: remote-deploy
 
-
 on:
-  [push]
+  push:
+    branches:
+      - main
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
@@ -29,8 +30,3 @@ jobs:
             git pull
             poetry install
             sudo systemctl restart gunicorn
-          
-
-          
-
-      
