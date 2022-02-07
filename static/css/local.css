@@ -1,0 +1,117 @@
+html {
+    height: 100vh
+}
+
+body {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column
+}
+
+.img-text {
+    height: 1.5ex;
+    vertical-align: baseline
+}
+
+#pagetop {
+    flex: 1
+}
+
+.photo {
+    width: 144px;
+    height: 144px
+}
+
+.inline-gravatar, .title {
+    display: inline-block
+}
+
+.inline-gravatar {
+    height: 1em
+}
+
+.requiredField {
+    font-weight: 700
+}
+
+.asteriskField {
+    display: none
+}
+
+a.anchor {
+    display: block;
+    position: relative;
+    top: -80px;
+    visibility: hidden
+}
+
+.my-responsive {
+    width: 50%;
+    max-width: 500px;
+    height: auto;
+    float: right
+}
+
+.markdown-text p:last-child {
+    margin-bottom: 0
+}
+
+.markdown-text img {
+    max-width: 100%;
+    width: 600px
+}
+
+.hover-parent .hover-only {
+    visibility: hidden
+}
+
+.hover-only:hover, .hover-parent:hover .hover-only {
+    visibility: visible
+}
+
+.right-above {
+    position: absolute;
+    right: 1rem;
+    top: 1rem
+}
+
+.vote-option > label:hover {
+    background: #edeff1
+}
+
+input:checked + .vote-option > label {
+    background: #007bff;
+    color: #fff
+}
+
+input:checked + .vote-option > label:hover {
+    background: #0067d6;
+    color: #fff
+}
+
+pre {
+    white-space: pre-line;
+    background-color: #fff;
+    background-clip: border-box;
+    padding: .75rem 1.25rem;
+    border: 1px solid rgba(0, 0, 0, .125);
+    border-radius: .25rem
+}
+
+.text-break-all {
+    word-break: break-all !important;
+    overflow-wrap: break-word !important
+}
+
+.alert-block ul {
+    padding-left: 0;
+    list-style: none;
+    margin-bottom: 0
+}
+
+blockquote {
+    padding-left: 1rem;
+    border-left: #ced4da;
+    border-width: 2px;
+    border-left-style: solid
+}
