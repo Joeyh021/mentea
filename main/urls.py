@@ -6,7 +6,7 @@ app_name = "main"
 
 urlpatterns = [
     path("", IndexPage.as_view(), name="index"),
-    path("faq/", FAQPage.as_view()),
-    path("privacy/", PrivacyPage.as_view()),
-    path("feedback/", FeedbackPage.as_view()),
+    path("faq/", FAQPage.as_view(), name="faq"),
+    path("privacy/", PrivacyPage.as_view(), name="privacy"),
+    path("feedback/", FeedbackPage.as_view(), name="feedback"),
 ]
