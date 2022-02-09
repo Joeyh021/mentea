@@ -3,7 +3,7 @@ name: CI
 on: [push]
 
 jobs:
-  setup:
+  lint and test:
     runs-on: ubuntu-latest
     steps:
       # check out repo and set up python
@@ -35,11 +35,6 @@ jobs:
       - name: Install project
         run: poetry install --no-interaction
 
-  # run mypy & black
-  lint:
-    needs: setup
-    runs-on: ubuntu-latest
-    steps:
       # check code has been formatted correctly
       - name: Check formatting
         run: poetry run black . --check
@@ -48,10 +43,6 @@ jobs:
       - name: Run linting & type checking
         run: poetry run mypy .
 
-  test:
-    needs: setup
-    runs-on: ubuntu-latest
-    steps:
       # check tests pass
       - name: Test project
         run: poetry run pytest -v
