@@ -1,3 +1,7 @@
-from django.test import TestCase
+from django.test.client import Client
+from pytest_django import asserts
 
-# Create your tests here.
+
+def test_main_index_page(client: Client) -> None:
+    response = client.get("/")
+    asserts.assertTemplateUsed(response, "main/index.html")

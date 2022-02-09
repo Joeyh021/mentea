@@ -17,8 +17,9 @@ pytest = "^6.2.5"
 pylint = "^2.12.2"
 mypy = "^0.931"
 black = "^21.12b0"
-pytest-cov = "^3.0.0"
 django-stubs = "^1.9.0"
+pytest-django = "^4.5.2"
+
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]
@@ -44,6 +45,11 @@ plugins = ["mypy_django_plugin.main"]
 
 [tool.django-stubs]
 django_settings_module = "mentoring_platform.settings.dev"
+
+[tool.pytest.ini_options]
+DJANGO_SETTINGS_MODULE = "mentoring_platform.settings.dev"
+python_files = ["tests.py","test_*.py"]
+addopts = "-p no:warnings"
 
 [[tool.mypy.overrides]]
 module = "*.migrations.*"
