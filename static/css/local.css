@@ -115,3 +115,13 @@ blockquote {
     border-width: 2px;
     border-left-style: solid
 }
+
+
+/* NEW CONTENT FOR MENTEA */
+.bg-mentea-green {
+    background-color: #439481 !important;
+}
+
+.bg-mentea-sidenav {
+    background-color: #f5f9f0 !important;
+}
