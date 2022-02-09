@@ -29,7 +29,7 @@
             <div class="offcanvas-body" >
               <ul class="navbar-nav justify-content-end flex-grow-1 pe-3 fs-5" style="height: 100%">
                 <li class="nav-item">
-                  <a class="nav-link active" aria-current="page" href="#">Dashboard</a>
+                  <a class="nav-link {% if request.resolver_match.url_name == 'index' %}active{% endif %}" aria-current="page" href="/">Dashboard</a>
                 </li>
                 <li class="nav-item">
                   <a class="nav-link" href="/mentee">Mentee Portal</a>
@@ -41,24 +41,23 @@
                   <a class="nav-link" href="/logout">Logout</a>
                 </li>
 
+                {% with request.resolver_match.url_name as url_name %}
                 <li class="nav-item mt-auto">
-                  <a class="nav-link" href="#">FAQ</a>
+                  <a class="nav-link {% if url_name == 'faq' %}active{% endif %}" href="/faq">FAQ</a>
                 </li>
                 <li class="nav-item">
-                  <a class="nav-link" href="#">Give Feedback</a>
+                  <a class="nav-link {% if url_name == 'feedback' %}active{% endif %}" href="/feedback">Give Feedback</a>
                 </li>
                 <li class="nav-item">
-                  <a class="nav-link" href="#">Privacy Policy</a>
+                  <a class="nav-link {% if url_name == 'privacy' %}active{% endif %}" href="/privacy">Privacy Policy</a>
                 </li>
                 <li class="nav-item">
-                  <a class="nav-link" href="#">Terms of Service</a>
-                </li>
-                <li class="nav-item">
-                  <a class="nav-link" href="#">Cookie Policy</a>
+                  <a class="nav-link {% if url_name == 'tos' %}active{% endif %}" href="/terms-of-service">Terms of Service</a>
                 </li>
                 <li class="mt-2 text-end">
                   <small class="fs-6 text-end ">&copy; Mentea 2022</small>
                 </li>
+                {% endwith %}
               </ul>
               
        

@@ -42,19 +42,16 @@
                 </li>
 
                 <li class="nav-item mt-auto">
-                  <a class="nav-link" href="#">FAQ</a>
+                  <a class="nav-link {% if url_name == 'faq' %}active{% endif %}" href="/faq">FAQ</a>
                 </li>
                 <li class="nav-item">
-                  <a class="nav-link" href="#">Give Feedback</a>
+                  <a class="nav-link {% if url_name == 'feedback' %}active{% endif %}" href="/feedback">Give Feedback</a>
                 </li>
                 <li class="nav-item">
-                  <a class="nav-link" href="#">Privacy Policy</a>
+                  <a class="nav-link {% if url_name == 'privacy' %}active{% endif %}" href="/privacy">Privacy Policy</a>
                 </li>
                 <li class="nav-item">
-                  <a class="nav-link" href="#">Terms of Service</a>
-                </li>
-                <li class="nav-item">
-                  <a class="nav-link" href="#">Cookie Policy</a>
+                  <a class="nav-link {% if url_name == 'tos' %}active{% endif %}" href="/terms-of-service">Terms of Service</a>
                 </li>
                 <li class="mt-2 text-end">
                   <small class="fs-6 text-end ">&copy; Mentea 2022</small>
