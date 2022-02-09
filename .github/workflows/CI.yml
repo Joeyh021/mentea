@@ -25,11 +25,11 @@ jobs:
       
       # use cache if possible
       - name: Load cached venv
-          id: cached-poetry-venv
-          uses: actions/cache@v2
-          with:
-            path: .venv
-            key: venv-${{ runner.os }}-${{ hashFiles('**/poetry.lock') }}
+        id: cached-poetry-venv
+        uses: actions/cache@v2
+        with:
+          path: .venv
+          key: venv-${{ runner.os }}-${{ hashFiles('**/poetry.lock') }}
       
       # install the project
       - name: Install project
