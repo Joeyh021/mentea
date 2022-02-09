@@ -88,7 +88,7 @@ class MenteeChatPage(TemplateView):
 class MenteeMeetingsPage(TemplateView):
     """Upcoming meetings and records of past meetings between a mentee and their mentor"""
 
-    template_name: str = "people/mentee_chat.html"
+    template_name: str = "people/mentee_meetings.html"
 
     def get(self, request: HttpRequest, *args: Any, **kwarsgs: Any) -> HttpResponse:
         return render(request, self.template_name, {})

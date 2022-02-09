@@ -118,10 +118,26 @@ blockquote {
 
 
 /* NEW CONTENT FOR MENTEA */
-.bg-mentea-green {
-    background-color: #439481 !important;
+.bg-mentea {
+    background-color: #7d4394 !important;
 }
 
 .bg-mentea-sidenav {
+    background-color: #fcf5fb !important;
+}
+
+.bg-mentee-green {
+    background-color: #439481 !important;
+}
+
+.bg-mentee-sidenav {
     background-color: #f5f9f0 !important;
+}
+
+.bg-mentor-blue {
+    background-color: #32357b !important;
+}
+
+.bg-mentor-sidenav {
+    background-color: #eaf2f7 !important;
 }

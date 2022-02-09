@@ -8,7 +8,7 @@
 {% block navbar %}
     {% load static %}
     {% spaceless %}
-    <nav class="navbar navbar-light bg-light bg-mentea ">
+    <nav class="navbar navbar-light bg-light bg-mentor-blue ">
         <div class="container-fluid">
             <button class="navbar-toggler" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasNavbar" aria-controls="offcanvasNavbar" style="border:0 ; color: white">
                 <i class="fa-solid fa-bars fa-lg" style="width:"></i>
@@ -19,7 +19,7 @@
           </a>
           
           
-          <div class="offcanvas offcanvas-start bg-mentea-sidenav" tabindex="-1" id="offcanvasNavbar" aria-labelledby="offcanvasNavbarLabel">
+          <div class="offcanvas offcanvas-start bg-mentor-sidenav" tabindex="-1" id="offcanvasNavbar" aria-labelledby="offcanvasNavbarLabel">
             <div class="offcanvas-header">
               <h5 class="offcanvas-title" id="offcanvasNavbarLabel">Navigation</h5>
               <button type="button" class="navbar-toggler"  style="border:0 ; " data-bs-dismiss="offcanvas" aria-label="Close">
@@ -29,16 +29,16 @@
             <div class="offcanvas-body" >
               <ul class="navbar-nav justify-content-end flex-grow-1 pe-3 fs-5" style="height: 100%">
                 <li class="nav-item">
-                  <a class="nav-link active" aria-current="page" href="#">Dashboard</a>
+                  <a class="nav-link" aria-current="page" href="/">Dashboard</a>
                 </li>
                 <li class="nav-item">
                   <a class="nav-link" href="/mentee">Mentee Portal</a>
                 </li>
                 <li class="nav-item">
-                  <a class="nav-link" href="/mentor">Mentor Portal</a>
+                  <a class="nav-link active" href="#">Mentor Portal</a>
                 </li>
                 <li class="nav-item">
-                  <a class="nav-link" href="/logout">Logout</a>
+                  <a class="nav-link" href="#">Logout</a>
                 </li>
 
                 <li class="nav-item mt-auto">
@@ -69,6 +69,8 @@
     {% endspaceless %}
 {% endblock %}
 
+
+
 {% block messages %}
     {% if messages or not request.COOKIES.noticed_cookies %}
         <div class="alerts">
@@ -83,8 +85,9 @@
     {% endif %}
 {% endblock %}
 
-{% block leftcontents %}
-{% endblock %}
+{% block body %}
+
+        {% endblock %}
 
 {% block footer %}
     <div class="nav ml-auto mr-auto d-flex flex-row justify-content-around">
@@ -94,17 +97,5 @@
 
 {% block bottomscripts %}
     {{ block.super }}
-    {# Typeahead #}
-    <script src="{% static 'bootstrap3-typeahead.min.js' %}"></script>
-    <script>
-        function setCookieForeverish(cname, cvalue) {
-            var d = new Date();
-            var expires = "expires=Tue, 19 Jan 2038 03:14:07 UTC";
-            document.cookie = cname + "=" + cvalue + ";" + expires + ";path=/";
-        }
 
-        $('#cookies_warning').on('close.bs.alert', function () {
-            setCookieForeverish("noticed_cookies", "true")
-        })
-    </script>
 {% endblock %}

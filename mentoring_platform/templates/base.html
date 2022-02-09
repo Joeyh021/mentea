@@ -39,17 +39,8 @@
     </div>
 
     <div class="container">
-        {% block mainbody %}
-            <div class="row mb-3">
-                <div class="container">
-                    <br />
-                    {% block messages %}
-                    {% endblock %}
-                    {% block body %}
-                        {# This is the part that gets overridden by templates that extend this one. #}
-                    {% endblock %}
-                </div>
-            </div>
+        {% block body %}
+
         {% endblock %}
     </div>
 </div>
