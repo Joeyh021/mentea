@@ -22,7 +22,7 @@ jobs:
           virtualenvs-in-project: false
           virtualenvs-path: ~/.venv
           installer-parallel: true
-      
+
       # use cache if possible
       - name: Load cached venv
         id: cached-poetry-venv
@@ -30,28 +30,28 @@ jobs:
         with:
           path: .venv
           key: venv-${{ runner.os }}-${{ hashFiles('**/poetry.lock') }}
-      
+
       # install the project
       - name: Install project
         run: poetry install --no-interaction
-  
+
   # run mypy & black
   lint:
     needs: setup
     runs-on: ubuntu-latest
-      steps:
-        # check code has been formatted correctly
-        - name: Check formatting
-          run: poetry run black . --check
+    steps:
+      # check code has been formatted correctly
+      - name: Check formatting
+        run: poetry run black . --check
 
-        # check code passes mypy
-        - name: Run linting & type checking
-          run: poetry run mypy .
+      # check code passes mypy
+      - name: Run linting & type checking
+        run: poetry run mypy .
 
   test:
     needs: setup
     runs-on: ubuntu-latest
-      steps:
+    steps:
       # check tests pass
       - name: Test project
         run: poetry run pytest -v
