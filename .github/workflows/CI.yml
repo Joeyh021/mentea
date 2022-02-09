@@ -3,7 +3,7 @@ name: CI
 on: [push]
 
 jobs:
-  build:
+  setup:
     runs-on: ubuntu-latest
     steps:
       # check out repo and set up python
@@ -11,7 +11,7 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v2
         with:
-          python-version: "3.10"
+          python-version: "3.8"
 
       # install poetry
       - name: Install and configure Poetry
@@ -20,23 +20,38 @@ jobs:
           version: "1.1.12"
           virtualenvs-create: true
           virtualenvs-in-project: false
-          virtualenvs-path: ~/venv
+          virtualenvs-path: ~/.venv
           installer-parallel: true
-
-      # some stuff can be done with caching to speed up if needed
-
-      # install project
+      
+      # use cache if possible
+      - name: Load cached venv
+          id: cached-poetry-venv
+          uses: actions/cache@v2
+          with:
+            path: .venv
+            key: venv-${{ runner.os }}-${{ hashFiles('**/poetry.lock') }}
+      
+      # install the project
       - name: Install project
         run: poetry install --no-interaction
+  
+  # run mypy & black
+  lint:
+    needs: setup
+    runs-on: ubuntu-latest
+      steps:
+        # check code has been formatted correctly
+        - name: Check formatting
+          run: poetry run black . --check
 
-      # check code has been formatted correctly
-      - name: Check formatting
-        run: poetry run black . --check
+        # check code passes mypy
+        - name: Run linting & type checking
+          run: poetry run mypy .
 
-      # check code passes mypy
-      - name: Run linting & type checking
-        run: poetry run mypy .
-
+  test:
+    needs: setup
+    runs-on: ubuntu-latest
+      steps:
       # check tests pass
       - name: Test project
-        run: poetry run pytest
+        run: poetry run pytest -v
