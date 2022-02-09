@@ -30,6 +30,7 @@ class PrivacyPage(TemplateView):
     def get(self, request: HttpRequest, *args: Any, **kwarsgs: Any) -> HttpResponse:
         return render(request, self.template_name, {})
 
+
 class TermosOfServicePage(TemplateView):
     """contains tos. Don't be naughty!"""
 
@@ -37,6 +38,7 @@ class TermosOfServicePage(TemplateView):
 
     def get(self, request: HttpRequest, *args: Any, **kwarsgs: Any) -> HttpResponse:
         return render(request, self.template_name, {})
+
 
 class FeedbackPage(TemplateView):
     """A page with a feedback box allowing users to send feedback about the application.""" ""
