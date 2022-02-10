@@ -3,6 +3,39 @@
 {% block title %}Profile{% endblock %}
 
 {% block body %}
-<p>Profile Page</p>
-dfh
+<div class="row">
+    <div class="col-4 text-center d-flex flex-column  align-items-center ">
+        <i class="fa-solid fa-circle-user color-mentea" style="width: 16rem; height: 16rem"></i>
+        <button class="btn btn-primary btn-mentea mt-4 px-4">Edit Profile</button>
+    </div>
+    <div class="col-8">
+        <h1 class="mt-2 mb-0" style="font-size: 6rem;">
+            John Smith
+        </h1>
+        <p class="fs-5 mb-1">
+            <strong>Department:</strong> Drug Testing
+        </p>
+        <p>
+            Hi, my name is John Smith and I work in the Drug testing, development and consumption department. I can't say I've had a low day since starting here!
+        </p>
+        
+        <span class="badge rounded-pill bg-mentee-green p-2 px-3 " style="font-size: 0.9rem;">Mentee</span>
+        <span class="badge rounded-pill bg-mentor-blue ms-2 p-2 px-3 " style="font-size: 0.9rem;">Mentor</span>
+    </div>
+    
+</div>
+<div class="row mt-4">
+    <div class="col-4">
+        <div class="card">
+            <div class="card-header">
+                Interested in:
+            </div>
+            <ul class="list-group list-group-flush">
+                <li class="list-group-item">An item</li>
+                <li class="list-group-item">A second item</li>
+                <li class="list-group-item">A third item</li>
+              </ul>
+        </div>
+    </div>
+</div>
 {% endblock %}
