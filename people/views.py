@@ -1,7 +1,9 @@
 from django.http import HttpRequest, HttpResponse
-from django.shortcuts import render
-from django.views.generic import TemplateView
+from django.shortcuts import redirect, render
+from django.views.generic import FormView, TemplateView
 from typing import Any
+
+from .forms import ProfileForm
 
 
 class UserLoginPage(TemplateView):
@@ -29,6 +31,38 @@ class UserProfilePage(TemplateView):
 
     def get(self, request: HttpRequest, *args: Any, **kwarsgs: Any) -> HttpResponse:
         return render(request, self.template_name, {})
+
+
+class UserProfileEditPage(TemplateView):
+    """Allows a user to edit their profile"""
+
+    template_name: str = "people/profile_edit.html"
+    form_class: Any = ProfileForm
+
+    def get(self, request: HttpRequest, *args: Any, **kwarsgs: Any) -> HttpResponse:
+        form = self.form_class()
+
+        # We should autofill information here from the current user where possibleb
+
+        # Currently we only allow users to pick from business areas or topics that exist. We need to add the option to add missing ones.
+
+        return render(request, self.template_name, {"form": form})
+
+    def post(self, request: HttpRequest, *args: Any, **kwarsgs: Any) -> HttpResponse:
+        form = self.form_class(request.POST)
+        if form.is_valid():
+            # Get the current user object
+            current_user = request.user
+            # Add bio and business area to it and save
+            # Get selected topics
+            # Create UserTopic models storing these
+            # Show a message saying "Profile updated" and redirect to profile page
+            messages.success(request, "Profile updated")
+            return redirect("profile")
+        else:
+            # Show error messages and go back to form page
+            messages.error(request, "Error updating profile")
+            return render(request, self.template_name, {"form": form})
 
 
 class UserCalendarPage(TemplateView):

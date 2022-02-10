@@ -1,0 +1,37 @@
+{% extends "main.html" %}
+
+{% block title %}Edit Profile{% endblock %}
+
+{% block body %}
+    <p>Edit Your Profile (or Set It Up)</p>
+
+    <form action="post">
+        {% csrf_token %}
+
+        <div class="mb-3">
+            <label class="form-label" for="id_bio">Bio</label>
+            <input id="id_bio" class="form-control" type="text" name="bio" placeholder="Bio"></input>
+            {% if form.bio.errors %}
+                {% for e in form.bio.errors %}
+                    <p class="help is-danger">{{ e }}</p>
+                {% endfor %}
+            {% endif %}
+        </div>
+
+        {% comment %}Formatting here is weird, we should make it more Bootstrappy - whether this is a job for us or UI peeps we can decide later :D{% endcomment %}
+
+        <div class="mb-3">
+            <label class="form-label" for="{{ form.business_area.id_for_label }}">Business Area</label>
+            {{ form.business_area }}
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label" for="{{ form.topics.id_for_label }}">Topics I am interested in</label>
+            {{ form.topics }}
+        </div>
+
+        <div>
+            <input type="submit" class="btn btn-primary" value="Submit">
+        </div>
+    </form>
+{% endblock %}
