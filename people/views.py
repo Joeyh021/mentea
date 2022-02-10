@@ -57,11 +57,9 @@ class UserProfileEditPage(TemplateView):
             # Get selected topics
             # Create UserTopic models storing these
             # Show a message saying "Profile updated" and redirect to profile page
-            messages.success(request, "Profile updated")
             return redirect("profile")
         else:
             # Show error messages and go back to form page
-            messages.error(request, "Error updating profile")
             return render(request, self.template_name, {"form": form})
 
 
