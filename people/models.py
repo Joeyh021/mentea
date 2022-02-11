@@ -9,8 +9,9 @@ class User(models.Model):
     first_name = models.CharField(max_length=50)
     last_name = models.CharField(max_length=50)
     email = models.EmailField(max_length=254)
-    business_area = models.CharField(max_length=50)
-    user_type = models.CharField(max_length=50)
+    business_area = models.ForeignKey('BusinessArea', on_delete=models.CASCADE)
+    bio = models.TextField(blank=True)
+    user_type = models.ForeignKey('UserType', on_delete=models.CASCADE)
     updated_at = models.DateTimeField(auto_now=True)
     created_at = models.DateTimeField(auto_now_add=True)
 
