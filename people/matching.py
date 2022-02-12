@@ -1,24 +1,53 @@
-import models
 from typing import List, Tuple
 import uuid
+
+from people.models import *
+from events.models import Event
 
 
 def get_matches(mentee_id: uuid.UUID) -> List[uuid.UUID]:
     """given the uuid of a mentee, find the best possible mentors, returning a list of their uuids in order of suitability"""
-    mentee: models.User = models.User.objects.get(id=mentee_id)
-    suitable_mentors = list(
-        models.User.objects.filter(
-            user_type="mentor",
-        ).exclude(business_area=mentee.business_area)
+    mentor_type = UserType.objects.get(type="mentor")
+
+    mentee = User.objects.get(id=mentee_id)
+
+    mentee_topics = [ut.topic for ut in UserTopic.objects.filter(user=mentee)]
+    all_mentors: List[User] = list(
+        User.objects.filter(user_type=mentor_type).exclude(
+            business_area=mentee.business_area
+        )
     )
-    # number of mentees the mentor has
-    # score from 1 to 0 of how much their interests overlap
-    # 0 for none 1 for all
-    mentor_scores: List[Tuple[uuid.UUID, int]] = []
-    for mentor in suitable_mentors:
-        pass
-        # calculate the normalised number of shared topics (number they share / number of mentee topics)
-        # multiply by some constant, maybe dependant upon the number of mentors in the system
-        # factor in ratings here - maybe times by average rating between 0 and 1?
-        # add to the mentors current number of mentors + number of workshops scheduled * some constant (0.2 ish?)
-    return []
+
+    mentor_scores: List[Tuple[uuid.UUID, float]] = []
+    for mentor in all_mentors:
+        # get topic overlap
+        mentor_topics = [ut.topic for ut in UserTopic.objects.filter(user=mentor)]
+        topic_overlap = [t for t in mentee_topics if t in mentor_topics]  # intersection
+        # normalised 0 to 1
+        topic_overlap_score = len(topic_overlap) / len(mentee_topics)
+
+        # get mentor ratings
+        mentor_ratings = [r.rating for r in Rating.objects.filter(mentor=mentor)]
+
+        # just use average of all for now - can maybe add more nuance later (TODO)
+        # assume ratings are 0 <= r <= 5 to normalise 0 to 1
+        average_rating = sum(mentor_ratings) / len(mentor_ratings) / 5
+
+        score = average_rating * topic_overlap_score
+
+        # calculate workload
+        n_mentees = len(MentorMentee.objects.filter(mentor=mentor))
+        n_workshops = len(Event.objects.filter(mentor=mentor))
+
+        # factor determines how weighted workshops are in calculating a mentors workload
+        workshop_workload_factor = 0.1
+        workload = n_mentees + n_workshops * workshop_workload_factor
+
+        # score factore determines how much the score should be weighted
+        score_factor = 5
+        score += workload + score * score_factor
+
+        mentor_scores.append((mentor.id, score))
+
+    mentor_scores.sort(key=lambda t: t[1], reverse=True)
+    return [t[0] for t in mentor_scores]
