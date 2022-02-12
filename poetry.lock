@@ -433,7 +433,7 @@ python-versions = "!=3.0.*,!=3.1.*,!=3.2.*,!=3.3.*,!=3.4.*,>=2.7"
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.8"
-content-hash = "72ce088977324f0f3f7b91910ab90203a6c394ac1e90be4a5edb342ed57dfe65"
+content-hash = "ecea0c11050309dee0ecf3bb374d55fce13a3213a4d9d1cc12f629533f4fd908"
 
 [metadata.files]
 asgiref = [
