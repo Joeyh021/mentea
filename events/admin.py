@@ -12,26 +12,26 @@ from events.models import (
 
 
 @admin.register(FeedbackForm)
-class AdminFeedbackForm(admin.ModelAdmin[FeedbackForm]):
+class AdminFeedbackForm(admin.ModelAdmin):
     list_display = ("name",)
     pass
 
 
 @admin.register(FeedbackSubmission)
-class AdminFeedbackSubmission(admin.ModelAdmin[FeedbackSubmission]):
+class AdminFeedbackSubmission(admin.ModelAdmin):
     pass
 
 
 @admin.register(Questions)
-class AdminQuestion(admin.ModelAdmin[Questions]):
+class AdminQuestion(admin.ModelAdmin):
     pass
 
 
 @admin.register(QuestionType)
-class AdminQuestionType(admin.ModelAdmin[QuestionType]):
+class AdminQuestionType(admin.ModelAdmin):
     list_display = ("name",)
 
 
 @admin.register(Answer)
-class AdminAnswer(admin.ModelAdmin[Answer ]):
+class AdminAnswer(admin.ModelAdmin):
     pass
