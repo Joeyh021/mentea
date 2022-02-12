@@ -1,3 +1,4 @@
+# type: ignore
 from django.core.management import call_command
 import pytest
 from test.make_test_data import create_data
@@ -6,7 +7,7 @@ from test.make_test_data import create_data
 
 
 @pytest.fixture(scope="session")
-def django_db_setup(django_db_setup, django_db_blocker):  # type: ignore
+def django_db_setup(django_db_setup, django_db_blocker):
     """overriden db setup fixture that loads the test data from a json file"""
     with django_db_blocker.unblock():
         create_data()
