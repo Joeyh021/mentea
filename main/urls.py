@@ -10,5 +10,4 @@ urlpatterns = [
     path("privacy/", PrivacyPage.as_view(), name="privacy"),
     path("feedback/", FeedbackPage.as_view(), name="feedback"),
     path("terms-of-service/", TermosOfServicePage.as_view(), name="tos"),
-    
 ]
