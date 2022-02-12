@@ -1,7 +1,6 @@
 # type: ignore
-from django.core.management import call_command
 import pytest
-from tests.make_test_data import create_data
+from tests.test_data import create_data
 
 # populate the test database with some basic data from test_data.json
 

@@ -1,10 +1,5 @@
-from subprocess import call
 from uuid import uuid4
 from people import models
-from django.core.management import call_command
-
-# has to be imported and run from `manage.py shell`
-# from test.make_test_data import create_data; create_data()
 
 
 def create_data() -> None:
