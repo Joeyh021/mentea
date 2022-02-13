@@ -3,6 +3,90 @@
 {% block title %}Mentor Index Page{% endblock %}
 
 {% block body %}
-<p>Mentor Index Page</p>
-dfh
+<div class="center">
+    <h1 class="mt-2 mb-0" color="#6e6464" style="font-size: 6rem;" color:>
+        Mentor Portal
+    </h1>
+</div>
+<br>
+
+<div style="text-align:right; border:5px;">
+    <select name="Subject area" class="select-mentor" id="subject;">
+        <option value="select">Subject Area</option>
+        <option value="Public Speaking">Public Speaking</option>
+        <option value="Entrepreneurship">Entrepreneurship</option>
+        <option value="Leadership">Leadership</option>
+        <option value="Organisation">Organisation</option>
+    </select>
+
+    <input type="text" class="text-mentor" placeholder="Mentee Name" />
+
+    <span class="btn btn-primary btn-rounded bg-mentor-blue px-4 " style="font-size: 0.9rem;">Filter Mentees</span>
+
+</div>
+<br>
+
+<div class="bg-block-mentor" >
+    (insert mentee profiles here)
+    <br><br>
+    <a href="/user/profile/" class="nav-item">
+        <i class="fa-solid fa-circle-user fa-2x" style="padding-right:10px; width: 6rem; height: 6rem; color: white;"></i>
+    </a>
+    <a href="/user/profile/" class="nav-item">
+        <i class="fa-solid fa-circle-user fa-2x" style="padding-right:10px; width: 6rem; height: 6rem; color: white;"></i>
+    </a>    
+    <a href="/user/profile/" class="nav-item">
+        <i class="fa-solid fa-circle-user fa-2x" style="padding-right:10px; width: 6rem; height: 6rem; color: white;"></i>
+    </a>  
+    <br>
+    <br>
+</div>
+
+<div style="text-align:right; border:5px;">
+    <span class="btn btn-primary btn-rounded bg-mentor-blue mt-4 px-4 " style="font-size: 0.9rem;">View Feedback</span>
+</div>
+
+<h2 class="mb-5">
+    Create Group Session:
+</h2>
+
+<div class="float-containter">
+    <div class="float-child">
+        <label for="groupSubject" font="25px">Subject area:</label>
+        <select name="Subject area" class="select-mentor" style="width:80%;" id="groupSubject;">
+            <option value="groupSub"></option>
+            <option value="Public Speaking">Public Speaking</option>
+            <option value="Entrepreneurship">Entrepreneurship</option>
+            <option value="Leadership">Leadership</option>
+            <option value="Organisation">Organisation</option>
+        </select>
+        <label for="eventType" font="25px">Event Type:</label>
+        <select name="Event Type" class="select-mentor" style="width:80%;" id="eventType;">
+            <option value="eventType"></option>
+            <option value="Public Speaking">Workshop</option>
+            <option value="Entrepreneurship">Group session</option>
+        </select>
+        <label for="maxAttendee" font="25px">Maximum Attendees:</label>
+        <select name="Maximum attendees" class="select-mentor" style="width:80%;" id="maxAttendee;">
+            <option value="groupSub"></option>
+            <option value="Public Speaking">10</option>
+            <option value="Entrepreneurship">20</option>
+            <option value="Leadership">30</option>
+        </select>
+    </div>
+    <div class="float-child">
+        <label for="start" font="25px">Start Time:</label>
+        <input type="time" class="text-mentor" style="width:80%;" id="start" />
+        <label for="finish" font="25px">Finish Time:</label>
+        <input type="time" class="text-mentor" style="width:80%;" id="finish" />
+        <label for="description" font="25px">Event Description:</label>
+        <input type="text" class="text-mentor" style="width:80%;" id="description" />
+        <br>
+        <span class="btn btn-primary btn-rounded bg-mentor-blue mt-4 px-4 " style="font-size: 0.9rem;">Create event</span>
+    </div>
+</div>
+
+
+<br>
+
 {% endblock %}
