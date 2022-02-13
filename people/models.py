@@ -60,9 +60,10 @@ class UserTopic(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     user = models.ForeignKey(User, on_delete=models.CASCADE, db_index=True)
     topic = models.ForeignKey(Topic, on_delete=models.CASCADE, db_index=True)
+    usertype = models.ForeignKey(UserType, null=True, on_delete=models.SET_NULL)
 
     class Meta:
-        indexes = [models.Index(fields=["user", "topic"])]
+        indexes = [models.Index(fields=["user", "topic", "usertype"])]
 
 
 class Rating(models.Model):
