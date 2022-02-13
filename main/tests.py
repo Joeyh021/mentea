@@ -20,11 +20,6 @@ def test_feedback_page(client: Client) -> None:
     asserts.assertTemplateUsed(response, "main/feedback.html")
 
 
-def test_feedback_form(client: Client) -> None:
-    # TODO
-    assert True
-
-
 def test_privacy_page(client: Client) -> None:
     response = client.get("/privacy/")
     asserts.assertTemplateUsed(response, "main/privacy.html")
