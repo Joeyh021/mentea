@@ -23,4 +23,5 @@ urlpatterns = [
     path("mentee/", include("people.urls.mentee")),
     path("user/", include("people.urls.user")),
     path("workshops/", include("events.urls")),
+    path("__reload__/", include("django_browser_reload.urls")),
 ]
