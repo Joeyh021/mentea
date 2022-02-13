@@ -11,7 +11,7 @@ class User(models.Model):
     email = models.EmailField(max_length=254)
     business_area = models.ForeignKey("BusinessArea", on_delete=models.CASCADE)
     bio = models.TextField(blank=True)
-    user_type = models.CharField(max_length=50)
+    user_type = models.ForeignKey("UserType", on_delete=models.CASCADE)
     updated_at = models.DateTimeField(auto_now=True)
     created_at = models.DateTimeField(auto_now_add=True)
 

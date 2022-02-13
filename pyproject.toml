@@ -48,7 +48,7 @@ django_settings_module = "mentoring_platform.settings.dev"
 
 [tool.pytest.ini_options]
 DJANGO_SETTINGS_MODULE = "mentoring_platform.settings.dev"
-python_files = ["tests.py","test_*.py"]
+python_files = ["tests.py", "test_*.py", "*_tests.py", "*_test.py"]
 addopts = "-p no:warnings"
 
 [[tool.mypy.overrides]]

@@ -5,12 +5,31 @@ from pytest_django import asserts
 def test_main_index_page(client: Client) -> None:
     response = client.get("/")
     asserts.assertTemplateUsed(response, "main/index.html")
-    # add some assertions about the template contexts here once those are done
+    # TODO: add some assertions about the template contexts here once those are done
     # https://docs.djangoproject.com/en/4.0/topics/testing/tools/#assertions
     # https://docs.djangoproject.com/en/4.0/topics/testing/tools/#testing-responses
 
 
-def test_faq_page(client: Client) -> None:
-    response = client.get("faq/")
-    asserts.assertTemplateNotUsed(response, "main/faq.html")
-    # TODO: change this from NotUsed when the template gets written
+# def test_faq_page(client: Client) -> None:
+#     response = client.get("faq/")
+#     asserts.assertTemplateUsed(response, "main/faq.html")
+
+
+# def test_feedback_page(client: Client) -> None:
+#     response = client.get("feedback/")
+#     asserts.assertTemplateUsed(response, "main/feedback.html")
+
+
+# def test_feedback_form(client: Client) -> None:
+#     # TODO
+#     assert True
+
+
+# def test_privacy_page(client: Client) -> None:
+#     response = client.get("privacy/")
+#     asserts.assertTemplateUsed(response, "main/privacy.html")
+
+
+# def test_tos_page(client: Client) -> None:
+#     response = client.get("tos/")
+#     asserts.assertTemplateUsed(response, "main/tos.html")
