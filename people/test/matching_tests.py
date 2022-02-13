@@ -11,15 +11,18 @@ def test_matching_data() -> None:
     # make sure tim is okay
     tim = User.objects.get(first_name="Tim", last_name="Mentee")
     # make sure that the algo runs without fail before we try to check ordering and stuff
-    get_matches(tim.id)
+    get_matches(tim)
 
 
 @pytest.mark.dependency(depends=["test_matching_data"])
 def test_matches_1() -> None:
     """Test the matches are returned in the order expected"""
-    # get a test mente
-    # run the matching algo
-    # make sure that all mentors in the dataset are in the order we expect
+    tim = User.objects.get(first_name="Tim", last_name="Mentee")
+    matches = get_matches(tim)
+
+    # steve should be the top match because the topics overlap
+    assert matches[0] == User.objects.get(first_name="Steve")
+    assert len(matches) == 2
 
 
 # maybe like a couple of these

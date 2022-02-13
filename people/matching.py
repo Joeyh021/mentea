@@ -5,11 +5,9 @@ from people.models import *
 from events.models import Event
 
 
-def get_matches(mentee_id: uuid.UUID) -> List[uuid.UUID]:
+def get_matches(mentee: User) -> List[User]:
     """given the uuid of a mentee, find the best possible mentors, returning a list of their uuids in order of suitability"""
     mentor_type = UserType.objects.get(type="mentor")
-
-    mentee = User.objects.get(id=mentee_id)
 
     mentee_topics = [ut.topic for ut in UserTopic.objects.filter(user=mentee)]
     all_mentors: List[User] = list(
@@ -18,7 +16,7 @@ def get_matches(mentee_id: uuid.UUID) -> List[uuid.UUID]:
         )
     )
 
-    mentor_scores: List[Tuple[uuid.UUID, float]] = []
+    mentor_scores: List[Tuple[User, float]] = []
     for mentor in all_mentors:
         # get topic overlap
         mentor_topics = [ut.topic for ut in UserTopic.objects.filter(user=mentor)]
@@ -31,7 +29,10 @@ def get_matches(mentee_id: uuid.UUID) -> List[uuid.UUID]:
 
         # just use average of all for now - can maybe add more nuance later (TODO)
         # assume ratings are 0 <= r <= 5 to normalise 0 to 1
-        average_rating = sum(mentor_ratings) / len(mentor_ratings) / 5
+        if len(mentor_ratings) == 0:
+            average_rating = 0.0
+        else:
+            average_rating = sum(mentor_ratings) / len(mentor_ratings) / 5
 
         score = average_rating * topic_overlap_score
 
@@ -47,7 +48,7 @@ def get_matches(mentee_id: uuid.UUID) -> List[uuid.UUID]:
         score_factor = 5
         score += workload + score * score_factor
 
-        mentor_scores.append((mentor.id, score))
+        mentor_scores.append((mentor, score))
 
     mentor_scores.sort(key=lambda t: t[1], reverse=True)
     return [t[0] for t in mentor_scores]
