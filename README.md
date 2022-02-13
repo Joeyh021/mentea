@@ -20,12 +20,12 @@ If you can come up with a more fancy name please let us know
 - Clone the project to your local machine
 - Set up the virtual environment using `poetry install`
   - This will create a new python venv that you can activate using `poetry shell`
-- Create a local PostgreSQL database using the psql command line utility (`sudo su postgres` then  `psql`)
+- Create a local PostgreSQL database using the psql command line utility (`sudo su postgres` then `psql`)
   - `CREATE USER softeng WITH password 'password';`
   - `CREATE DATABASE softeng WITH OWNER = softeng;`
   - You can use different user names/passwords/database names but you will need to edit the connection settings in `dev.py` if you do so. DO NOT COMMIT THESE CHANGES.
 - Run `poetry run manage migrate` to create the database tables
-- Run `poetry run manage runserver` to start the development server. You can now access the site at `localhost:8000` in your web browser.
+- Run `poetry run python manage.py runserver` to start the development server. You can now access the site at `localhost:8000` in your web browser.
 
 ### Usage
 
@@ -64,5 +64,6 @@ If you can come up with a more fancy name please let us know
 - Comment code thoroughly
 
 ## Useful Django tips
+
 - When writing views, use class-based views as opposed to functions-based views. This is because class-based views have a lot of extra functionality, and allow a single view to do both GET and POST requests. See the Django documentation ([here](https://docs.djangoproject.com/en/4.0/topics/class-based-views/) and [here](https://docs.djangoproject.com/en/4.0/topics/class-based-views/mixins/)) for more details.
-- UUIDs should be used as the `id` field for all models. While Django does auto-provide an ID field, we need to manually specify the field in each model and mark it as UUID. The field will look something like ```id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)``` (with `import uuid` at the top of the file)
+- UUIDs should be used as the `id` field for all models. While Django does auto-provide an ID field, we need to manually specify the field in each model and mark it as UUID. The field will look something like `id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)` (with `import uuid` at the top of the file)

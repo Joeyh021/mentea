@@ -3,7 +3,22 @@ name: CI
 on: [push]
 
 jobs:
-  build:
+  lint-and-test:
+    services:
+      postgres:
+        image: postgres:12
+        env:
+          POSTGRES_USER: softeng
+          POSTGRES_PASSWORD: password
+          POSTGRESS_DB: softeng
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
     runs-on: ubuntu-latest
     steps:
       # check out repo and set up python
@@ -11,7 +26,7 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v2
         with:
-          python-version: "3.10"
+          python-version: "3.8"
 
       # install poetry
       - name: Install and configure Poetry
@@ -20,14 +35,23 @@ jobs:
           version: "1.1.12"
           virtualenvs-create: true
           virtualenvs-in-project: false
-          virtualenvs-path: ~/venv
           installer-parallel: true
 
-      # some stuff can be done with caching to speed up if needed
+      # use cache if possible
+      - name: Load cached venv
+        id: cached-poetry-venv
+        uses: actions/cache@v2
+        with:
+          path: .venv
+          key: venv-${{ runner.os }}-${{ hashFiles('**/poetry.lock') }}
 
-      # install project
+      # install the project
       - name: Install project
         run: poetry install --no-interaction
+        if: steps.cached-poetry-dependencies.outputs.cache-hit != 'true'
+
+      - name: Run Postgres migrations
+        run: poetry run manage migrate
 
       # check code has been formatted correctly
       - name: Check formatting
@@ -39,4 +63,4 @@ jobs:
 
       # check tests pass
       - name: Test project
-        run: poetry run pytest
+        run: poetry run pytest -v
