@@ -16,7 +16,7 @@ interface IQuestion {
 interface IQuestionTypeData {
   min?: number
   max?: number
-  options:
+  options: IQuestionOption[]
 
 }
 

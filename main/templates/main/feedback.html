@@ -1,42 +1,53 @@
-{% extends "main.html" %}
-
-{% block title %}Feedback{% endblock %}
-
-{% block body %}
-<h1 class="mb-0">
-    Feedback
-</h1>
+{% extends "main.html" %} {% block title %}Feedback{% endblock %} {% block body %}
+<h1 class="mb-0">Feedback</h1>
 <p style="max-width: 80%">
-    Please fill out the form below to provide feedback about Mentea. This could be something you like, something you would want to be added, a complain or bug, or anything you deem useful!
+  Please fill out the form below to provide feedback about Mentea. This could be
+  something you like, something you would want to be added, a complain or bug,
+  or anything you deem useful!
 </p>
-<form style="max-width:80%">
-    <div class="row g-2">
-        <div class="col-md">
-          <div class="form-floating">
-            <input type="email" class="form-control" id="floatingInputGrid" placeholder="green@mentea.com" >
-            <label for="floatingInputGrid">Email address</label>
-          </div>
-        </div>
-        <div class="col-md">
-          <div class="form-floating">
-            <select class="form-select" id="floatingSelectGrid" aria-label="Floating label select example">
-              <option selected>Open this select menu</option>
-              <option value="1">Mentor</option>
-              <option value="2">Mentee</option>
-              <option value="3">Both</option>
-            </select>
-            <label for="floatingSelectGrid">I'm a</label>
-          </div>
-        </div>
+<form style="max-width: 80%">
+  <div class="row g-2">
+    <div class="col-md">
+      <div class="form-floating">
+        <input
+          type="email"
+          class="form-control"
+          id="floatingInputGrid"
+          placeholder="green@mentea.com"
+        />
+        <label for="floatingInputGrid">Email address</label>
       </div>
-      <div class="row mt-3 mb-3">
-          <div class="col">
-            <div class="form-floating">
-                <textarea class="form-control" style="height: 100px" placeholder="Leave a comment here" id="floatingTextarea"></textarea>
-                <label for="floatingTextarea">Feedback</label>
-              </div>
-          </div>
+    </div>
+    <div class="col-md">
+      <div class="form-floating">
+        <select
+          class="form-select"
+          id="floatingSelectGrid"
+          aria-label="Floating label select example"
+        >
+          <option selected>Open this select menu</option>
+          <option value="1">Mentor</option>
+          <option value="2">Mentee</option>
+          <option value="3">Both</option>
+        </select>
+        <label for="floatingSelectGrid">I'm a</label>
       </div>
-      <button type="submit" class="btn btn-primary">Submit</button>
+    </div>
+  </div>
+  <div class="row mt-3 mb-3">
+    <div class="col">
+      <div class="form-floating">
+        <textarea
+          class="form-control"
+          style="height: 100px"
+          placeholder="Leave a comment here"
+          id="floatingTextarea"
+        ></textarea>
+        <label for="floatingTextarea">Feedback</label>
+      </div>
+    </div>
+  </div>
+  <button type="submit" class="btn btn-primary">Submit</button>
+  <div id="test" form-id="my-cool-form-id"></div>
 </form>
 {% endblock %}
