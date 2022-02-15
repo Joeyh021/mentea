@@ -45,8 +45,21 @@
     </div>
 </div>
 
-<footer class="bg-light">
-    {% block footer %}{% endblock %}
+<footer class="footer mt-auto bg-dark py-1">
+    <div class="container">
+        <span class="text-light row">
+            <div class="col">
+                <span><i class="fa-solid fa-mug-hot text-white fw-bolder fst-italic mx-2" style="font-size:18px;"></i></span>
+                <span> Copyright &copy; 2022 Mentea, Inc</span>
+                
+            </div>  
+            <div class="col-md-6 text-md-end">
+                <a href="/terms-of-service/" class="link-light">Terms of Service</a> 
+                <span class="text-muted mx-2">|</span> 
+                <a href="/privacy/" class="link-light">Privacy Policy</a>
+            </div>
+        </span>
+    </div>
 </footer>
 
 {% comment %} For scripts at the bottom of the page. {% endcomment %}
