@@ -8,44 +8,58 @@ import django.utils.timezone
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('people', '0003_merge_20220213_1607'),
+        ("people", "0003_merge_20220213_1607"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='user',
-            name='last_login',
-            field=models.DateTimeField(blank=True, null=True, verbose_name='last login'),
+            model_name="user",
+            name="last_login",
+            field=models.DateTimeField(
+                blank=True, null=True, verbose_name="last login"
+            ),
         ),
         migrations.AddField(
-            model_name='user',
-            name='password',
-            field=models.CharField(default=django.utils.timezone.now, max_length=128, verbose_name='password'),
+            model_name="user",
+            name="password",
+            field=models.CharField(
+                default=django.utils.timezone.now,
+                max_length=128,
+                verbose_name="password",
+            ),
             preserve_default=False,
         ),
         migrations.AlterField(
-            model_name='user',
-            name='business_area',
-            field=models.ForeignKey(null=True, on_delete=django.db.models.deletion.CASCADE, to='people.businessarea'),
+            model_name="user",
+            name="business_area",
+            field=models.ForeignKey(
+                null=True,
+                on_delete=django.db.models.deletion.CASCADE,
+                to="people.businessarea",
+            ),
         ),
         migrations.AlterField(
-            model_name='user',
-            name='email',
+            model_name="user",
+            name="email",
             field=models.EmailField(max_length=254, unique=True),
         ),
         migrations.AlterField(
-            model_name='user',
-            name='first_name',
+            model_name="user",
+            name="first_name",
             field=models.CharField(blank=True, max_length=50),
         ),
         migrations.AlterField(
-            model_name='user',
-            name='last_name',
+            model_name="user",
+            name="last_name",
             field=models.CharField(blank=True, max_length=50),
         ),
         migrations.AlterField(
-            model_name='user',
-            name='user_type',
-            field=models.ForeignKey(null=True, on_delete=django.db.models.deletion.CASCADE, to='people.usertype'),
+            model_name="user",
+            name="user_type",
+            field=models.ForeignKey(
+                null=True,
+                on_delete=django.db.models.deletion.CASCADE,
+                to="people.usertype",
+            ),
         ),
     ]

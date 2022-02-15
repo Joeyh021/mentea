@@ -2,7 +2,8 @@ import uuid
 
 from django.db import models
 
-from django.contrib.auth.models import ( BaseUserManager, AbstractBaseUser )
+from django.contrib.auth.models import BaseUserManager, AbstractBaseUser
+
 # Changing this to override the default model!
 
 
@@ -12,7 +13,7 @@ class UserManager(BaseUserManager):
         Creates and saves a User with the given email and password.
         """
         if not email:
-            raise ValueError('Users must have an email address')
+            raise ValueError("Users must have an email address")
 
         user = self.model(
             email=self.normalize_email(email),
@@ -21,7 +22,7 @@ class UserManager(BaseUserManager):
         user.set_password(password)
         user.save(using=self._db)
         return user
-    
+
     def create_staffuser(self, email, password):
         """
         Creates and saves a staff user with the given email and password.
@@ -46,27 +47,31 @@ class UserManager(BaseUserManager):
         user.admin = True
         user.save(using=self._db)
         return user
+
+
 class User(AbstractBaseUser):
     # Main user model
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     first_name = models.CharField(max_length=50, blank=True)
     last_name = models.CharField(max_length=50, blank=True)
     email = models.EmailField(max_length=254, unique=True)
-    business_area = models.ForeignKey("BusinessArea", on_delete=models.CASCADE, null=True)
+    business_area = models.ForeignKey(
+        "BusinessArea", on_delete=models.CASCADE, null=True
+    )
     bio = models.TextField(blank=True)
     user_type = models.ForeignKey("UserType", on_delete=models.CASCADE, null=True)
     updated_at = models.DateTimeField(auto_now=True)
     created_at = models.DateTimeField(auto_now_add=True)
-    
-    staff = models.BooleanField(default=False) # a admin user; non super-user
-    admin = models.BooleanField(default=False) # a superuser
-    
-    USERNAME_FIELD = 'email'
-    REQUIRED_FIELDS= []
-    
+
+    staff = models.BooleanField(default=False)  # a admin user; non super-user
+    admin = models.BooleanField(default=False)  # a superuser
+
+    USERNAME_FIELD = "email"
+    REQUIRED_FIELDS = []
+
     def __str__(self):
         return self.email
-    
+
     def get_full_name(self):
         # The user is identified by their email address
         return self.email
@@ -87,8 +92,7 @@ class User(AbstractBaseUser):
         "Does the user have permissions to view the app `app_label`?"
         return True
         # Simplest possible
-    
-        
+
     @property
     def is_staff(self):
         "Is the user a member of staff?"
@@ -98,8 +102,9 @@ class User(AbstractBaseUser):
     def is_admin(self):
         "Is the user a admin member?"
         return self.admin
-    
+
     objects = UserManager()
+
 
 class UserType(models.Model):
     # Mentor or mentee
