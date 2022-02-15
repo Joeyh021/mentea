@@ -16,7 +16,7 @@ class UserLoginPage(TemplateView):
 class UserSignupPage(TemplateView):
     """Lets a user sign up with email, password, and business area"""
 
-    template_name = "people/signup.html"
+    template_name = "registration/register.html"
 
     def get(self, request: HttpRequest, *args: Any, **kwarsgs: Any) -> HttpResponse:
         return render(request, self.template_name, {})
