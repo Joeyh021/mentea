@@ -42,7 +42,6 @@ disable = [
 
 
 [tool.mypy]
-strict = true
 warn_unused_configs = true
 warn_unreachable = true
 plugins = ["mypy_django_plugin.main"]
