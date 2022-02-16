@@ -52,15 +52,29 @@ class UserProfileEditPage(TemplateView):
     def post(self, request: HttpRequest, *args: Any, **kwarsgs: Any) -> HttpResponse:
         form = self.form_class(request.POST)
         if form.is_valid():
+
             # Get the current user object
             current_user = request.user
+
             # Add bio and business area to it and save
+            current_user.bio = form.cleaned_data['bio']
+            current_user.business_area = form.cleaned_data['business_area']
+            current_user.save()
+
             # Get selected topics
+            selected_topics = form.cleaned_data['topics']
+
             # Create UserTopic models storing these
+            for topic in selected_topics:
+                user_topic = UserTopic(user=current_user, topic=topic)
+                user_topic.save()
+
             # Show a message saying "Profile updated" and redirect to profile page
             messages.success(request, "Profile updated")
             return redirect("profile")
+
         else:
+
             # Show error messages and go back to form page
             messages.error(request, "Error updating profile")
             return render(request, self.template_name, {"form": form})
