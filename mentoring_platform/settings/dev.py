@@ -10,6 +10,9 @@ DEBUG = True
 # USER CUSTOM USER
 AUTH_USER_MODEL = "people.User"
 
+LOGIN_REDIRECT_URL = "/user/profile"
+LOGIN_URL = "/user/login"
+
 # Database
 # https://docs.djangoproject.com/en/3.2/ref/settings/#databases
 

@@ -63,6 +63,7 @@ class User(AbstractBaseUser):
     updated_at = models.DateTimeField(auto_now=True)
     created_at = models.DateTimeField(auto_now_add=True)
 
+    is_active = models.BooleanField("active", default=True)
     staff = models.BooleanField(default=False)  # a admin user; non super-user
     admin = models.BooleanField(default=False)  # a superuser
 
@@ -86,11 +87,11 @@ class User(AbstractBaseUser):
     def has_perm(self, perm, obj=None):
         "Does the user have a specific permission?"
         # Simplest possible answer: Yes, always
-        return True
+        return self.admin
 
     def has_module_perms(self, app_label):
         "Does the user have permissions to view the app `app_label`?"
-        return True
+        return self.admin
         # Simplest possible
 
     @property
