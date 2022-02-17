@@ -2,116 +2,124 @@
 {% load static %}
 
 {% block head %}
-{{ block.super }}
+    {{ block.super }}
 {% endblock %}
 
 {% block navbar %}
-{% load static %}
-{% spaceless %}
-<nav class="navbar navbar-light bg-light bg-mentea ">
-  <div class="container-fluid">
-    <button class="navbar-toggler" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasNavbar"
-      aria-controls="offcanvasNavbar" style="border:0 ; color: white">
-      <i class="fa-solid fa-bars fa-lg" style="width:"></i>
-    </button>
-    <a class="navbar-brand text-white fw-bolder fst-italic" href="/">Mentea <i class="fa-solid fa-mug-hot"
-        style="margin-left: .3rem;"></i></a>
-    <a href="#" class="nav-item">
-      <i class="fa-solid fa-circle-user fa-2x" style="color: white;"></i>
-    </a>
+    {% load static %}
+    {% spaceless %}
+        <nav class="navbar navbar-light bg-light bg-mentea ">
+            <div class="container-fluid">
+                <button class="navbar-toggler" type="button" data-bs-toggle="offcanvas"
+                        data-bs-target="#offcanvasNavbar"
+                        aria-controls="offcanvasNavbar" style="border:0 ; color: white">
+                    <i class="fa-solid fa-bars fa-lg" style="width:"></i>
+                </button>
+                <a class="navbar-brand text-white fw-bolder fst-italic" href="{% url "main:index" %}">Mentea <i class="fa-solid fa-mug-hot"
+                                                                                           style="margin-left: .3rem;"></i></a>
+                <a href="{% url "profile" %}" class="nav-item">
+                    <i class="fa-solid fa-circle-user fa-2x" style="color: white;"></i>
+                </a>
 
 
-    <div class="offcanvas offcanvas-start bg-mentea-sidenav" tabindex="-1" id="offcanvasNavbar"
-      aria-labelledby="offcanvasNavbarLabel">
-      <div class="offcanvas-header">
-        <h5 class="offcanvas-title" id="offcanvasNavbarLabel">Navigation</h5>
-        <button type="button" class="navbar-toggler" style="border:0 ; " data-bs-dismiss="offcanvas" aria-label="Close">
-          <i class="fa-solid fa-bars fa-lg" style="width:"></i>
-        </button>
-      </div>
-      <div class="offcanvas-body">
-        <ul class="navbar-nav justify-content-end flex-grow-1 pe-3 fs-5" style="height: 100%">
-          <li class="nav-item">
-            <a class="nav-link {% if request.resolver_match.url_name == 'index' %}active{% endif %}" aria-current="page"
-              href="/">Dashboard</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="/mentee">Mentee Portal</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="/mentor">Mentor Portal</a>
-          </li>
-          <li class="nav-item">
-            {% if user.is_authenticated %}
-            <a class="nav-link" href="/user/logout">Logout</a>
-            {% else %}
-            <a class="nav-link" href="/user/login">Login</a>
-            {% endif %}
-          </li>
+                <div class="offcanvas offcanvas-start bg-mentea-sidenav" tabindex="-1" id="offcanvasNavbar"
+                     aria-labelledby="offcanvasNavbarLabel">
+                    <div class="offcanvas-header">
+                        <h5 class="offcanvas-title" id="offcanvasNavbarLabel">Navigation</h5>
+                        <button type="button" class="navbar-toggler" style="border:0 ; " data-bs-dismiss="offcanvas"
+                                aria-label="Close">
+                            <i class="fa-solid fa-bars fa-lg" style="width:"></i>
+                        </button>
+                    </div>
+                    <div class="offcanvas-body">
+                        <ul class="navbar-nav justify-content-end flex-grow-1 pe-3 fs-5" style="height: 100%">
+                            <li class="nav-item">
+                                <a class="nav-link {% if request.resolver_match.url_name == 'index' %}active{% endif %}"
+                                   aria-current="page"
+                                   href="{% url "main:index" %}">Dashboard</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="{% url "dashboard" %}">Mentee Portal</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="{% url "mentor_dashboard" %}">Mentor Portal</a>
+                            </li>
+                            <li class="nav-item">
+                                {% if user.is_authenticated %}
+                                    <a class="nav-link" href="{% url "logout" %}">Logout</a>
+                                {% else %}
+                                    <a class="nav-link" href="{% url "login" %}">Login</a>
+                                {% endif %}
+                            </li>
 
-          {% with request.resolver_match.url_name as url_name %}
-          <li class="nav-item mt-auto">
-            <a class="nav-link {% if url_name == 'faq' %}active{% endif %}" href="/faq">FAQ</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link {% if url_name == 'feedback' %}active{% endif %}" href="/feedback">Give Feedback</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link {% if url_name == 'privacy' %}active{% endif %}" href="/privacy">Privacy Policy</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link {% if url_name == 'tos' %}active{% endif %}" href="/terms-of-service">Terms of
-              Service</a>
-          </li>
-          <li class="mt-2 text-end">
-            <small class="fs-6 text-end ">&copy; Mentea 2022</small>
-          </li>
-          {% endwith %}
-        </ul>
+                            {% with request.resolver_match.url_name as url_name %}
+                                <li class="nav-item mt-auto">
+                                    <a class="nav-link {% if url_name == 'faq' %}active{% endif %}"
+                                       href="{% url "main:faq" %}">FAQ</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link {% if url_name == 'feedback' %}active{% endif %}"
+                                       href="{% url "main:feedback" %}">Give Feedback</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link {% if url_name == 'privacy' %}active{% endif %}"
+                                       href="{% url "main:privacy" %}">Privacy Policy</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link {% if url_name == 'tos' %}active{% endif %}"
+                                       href="{% url "main:tos" %}">Terms of
+                                        Service</a>
+                                </li>
+                                <li class="mt-2 text-end">
+                                    <small class="fs-6 text-end ">&copy; Mentea 2022</small>
+                                </li>
+                            {% endwith %}
+                        </ul>
 
 
-      </div>
-    </div>
-  </div>
-</nav>
-{% endspaceless %}
+                    </div>
+                </div>
+            </div>
+        </nav>
+    {% endspaceless %}
 {% endblock %}
 
 {% block messages %}
-{% if messages or not request.COOKIES.noticed_cookies %}
-<div class="alerts">
-  {% for message in messages %}
-  <div class="alert alert-dismissible show fade{% if message.tags %} {{ message.tags }}{% endif %}" role="alert">
-    {{ message }}
-    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-  </div>
-  {% endfor %}
-</div>
-{% endif %}
+    {% if messages or not request.COOKIES.noticed_cookies %}
+        <div class="alerts">
+            {% for message in messages %}
+                <div class="alert alert-dismissible show fade{% if message.tags %} {{ message.tags }}{% endif %}"
+                     role="alert">
+                    {{ message }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            {% endfor %}
+        </div>
+    {% endif %}
 {% endblock %}
 
 {% block leftcontents %}
 {% endblock %}
 
 {% block footer %}
-<div class="nav ml-auto mr-auto d-flex flex-row justify-content-around">
+    <div class="nav ml-auto mr-auto d-flex flex-row justify-content-around">
 
-</div>
+    </div>
 {% endblock %}
 
 {% block bottomscripts %}
-{{ block.super }}
-{# Typeahead #}
-<script src="{% static 'bootstrap3-typeahead.min.js' %}"></script>
-<script>
-  function setCookieForeverish(cname, cvalue) {
-    var d = new Date();
-    var expires = "expires=Tue, 19 Jan 2038 03:14:07 UTC";
-    document.cookie = cname + "=" + cvalue + ";" + expires + ";path=/";
-  }
+    {{ block.super }}
+    {# Typeahead #}
+    <script src="{% static 'bootstrap3-typeahead.min.js' %}"></script>
+    <script>
+        function setCookieForeverish(cname, cvalue) {
+            var d = new Date();
+            var expires = "expires=Tue, 19 Jan 2038 03:14:07 UTC";
+            document.cookie = cname + "=" + cvalue + ";" + expires + ";path=/";
+        }
 
-  $('#cookies_warning').on('close.bs.alert', function () {
-    setCookieForeverish("noticed_cookies", "true")
-  })
-</script>
+        $('#cookies_warning').on('close.bs.alert', function () {
+            setCookieForeverish("noticed_cookies", "true")
+        })
+    </script>
 {% endblock %}
