@@ -1,22 +1,29 @@
 import React, { useState } from "react";
 import { FC } from "react";
 import ReactDOM from "react-dom";
+import FormBuilder from "./form-builder";
 
 
 
-interface IFeedbackForm {
+interface IFeedbackFormProps {
   id: string
 }
 
-interface IQuestion {
+interface IFeedbackForm {
+  id: string
+  name: string
+}
+
+export interface IQuestion {
   id: string
   name: string
   desc?: string
   type: string // E.g. 'text' 'number' 'range' 'radio' etc
   type_data?: IQuestionTypeData
+  required: boolean
 }
 
-interface IQuestionTypeData {
+export interface IQuestionTypeData {
   min?: number
   max?: number
   placeholder?: string
@@ -24,20 +31,39 @@ interface IQuestionTypeData {
 
 }
 
-interface IQuestionOption {
+export interface IQuestionOption {
   key: string
   value: string
 }
 
 
-const fakeQuestions: IQuestion[] = [
+export const fakeQuestions: IQuestion[] = [
   {
     id: '7d331b08-9a2c-4f53-8356-77c85d349ca5',
     name: 'What is your name?',
     type: 'text',
     type_data: {
       placeholder: "John Doe"
-    }
+    },
+    required: true
+  },
+  {
+    id: '7d331b08-9a2c-5f53-8356-77c85d349ca5',
+    name: 'Pick a number',
+    type: 'number',
+    type_data: {
+      placeholder: "0"
+    },
+    required: false
+  },
+  {
+    id: '7d331b08-9a2c-4f53-8356-77c85d349ca5',
+    name: 'What is your email?',
+    type: 'email',
+    type_data: {
+      placeholder: "bee@movie.com"
+    },
+    required: true
   },
   {
     id: 'a36e1ec0-a3f5-4103-8f46-51d75f42f495',
@@ -58,7 +84,8 @@ const fakeQuestions: IQuestion[] = [
           value: "blue-value-1"
         }
       ]
-    }
+    },
+    required: true
   },
   {
     id: '9be58d60-9b36-46b6-94b1-2eddab9fac1c',
@@ -95,7 +122,8 @@ const fakeQuestions: IQuestion[] = [
           value: "Lukas"
         }
       ]
-    }
+    },
+    required: true
   },
   {
     id: '52d1d0e1-d1b3-4f3d-b36a-568442c96cec',
@@ -121,18 +149,28 @@ const fakeQuestions: IQuestion[] = [
         },
 
       ]
-    }
-  }
+    },
+    required: true
+  },
+  {
+    id: '1a331b08-9a2c-4f53-8356-77c85d349ca5',
+    name: 'Write a short story',
+    type: 'textarea',
+    required: true
+  },
 ]
 
 
-const FeedbackFormViewer: FC<IFeedbackForm> = ({ id }) => {
+const FeedbackFormViewer: FC<IFeedbackFormProps> = ({ id }) => {
 
   const [questions, setQuestions] = useState<IQuestion[]>(fakeQuestions)
 
+  const [formData, setFormData] = useState<IFeedbackForm>({id: 'Loading...', name: 'Loading Form Name...'})
+
   return (
-    <div>
-      <div>Form ID { id }</div>
+    <form>
+      <h1 className="mb-0">{ formData.name }</h1>
+      <small>ID: { formData.id }</small>
       {
         questions.map(q => {
           return (
@@ -140,11 +178,14 @@ const FeedbackFormViewer: FC<IFeedbackForm> = ({ id }) => {
           )
         })
       }
-    </div>
+
+      <button type="submit" className="btn btn-primary">Submit</button>
+    </form>
   )
 }
 
-const Question: FC<IQuestion> = ({ ...props }) => {
+
+export const Question: FC<IQuestion> = ({ ...props }) => {
 
   if (props.type === "checkbox") {
     return (
@@ -158,13 +199,21 @@ const Question: FC<IQuestion> = ({ ...props }) => {
     return (
       <SelectQuestion {...props} />
     )
+  } else if (props.type === "textarea" ){
+    return (
+      <TextareaQuestion {...props} />
+    )
   } else {
 
     return (
       <div className="mb-3">
-        <label htmlFor={`form-question-${props.id}`} className="form-label">{ props.name }</label>
+        <div className="d-flex justify-content-between align-items-end">
+          <label htmlFor={`form-question-${props.id}`} className="form-label">{ props.name }</label>
 
-        <input type={props.type} placeholder={props.type_data?.placeholder} className="form-control" id={`form-question-${props.id}`} aria-describedby="emailHelp" />
+          { props.required && <p className="text-end mt-0 mb-0 text-danger" style={{'fontSize': '.8rem'}}>Required *</p>}
+        </div>
+        
+        <input type={props.type} placeholder={props.type_data?.placeholder} className="form-control" id={`form-question-${props.id}`} onKeyPress={e => e.key === 'Enter' && e.preventDefault()} aria-describedby="emailHelp" required={props.required} />
         <div id={`form-question-${props.id}-help`} className="form-text">{ props.desc }</div>
       </div>
     )
@@ -173,16 +222,18 @@ const Question: FC<IQuestion> = ({ ...props }) => {
   return null
 }
 
-const CheckboxQuestion: FC<IQuestion> = ({ ...props }) => {
+export const CheckboxQuestion: FC<IQuestion> = ({ ...props }) => {
   return (
     <div className="mb-3">
-        <label htmlFor={`form-question-${props.id}`} className="form-label">{ props.name }</label>
+          <div className="d-flex justify-content-between align-items-end">
+          <label htmlFor={`form-question-${props.id}`} className="form-label">{ props.name }</label>
 
-
+          { props.required && <p className="text-end mt-0 mb-0 text-danger" style={{'fontSize': '.8rem'}}>Required *</p>}
+        </div>
         <div>
           { props.type_data?.options?.map(option => {
             return (
-              <div className="form-check form-check-inline">
+              <div key={option.value} className="form-check form-check-inline">
                 <input className="form-check-input" type="checkbox" id={`form-question-${props.id}-option-${option.key}`} value={option.value} />
                 <label className="form-check-label" htmlFor={`form-question-${props.id}-option-${option.key}`}>{option.key}</label>
               </div>
@@ -196,16 +247,18 @@ const CheckboxQuestion: FC<IQuestion> = ({ ...props }) => {
   )
 }
 
-const RadioQuestion: FC<IQuestion> = ({ ...props }) => {
+export const RadioQuestion: FC<IQuestion> = ({ ...props }) => {
   return (
     <div className="mb-3">
-    <label htmlFor={`form-question-${props.id}`} className="form-label">{ props.name }</label>
+  <div className="d-flex justify-content-between align-items-end">
+          <label htmlFor={`form-question-${props.id}`} className="form-label">{ props.name }</label>
 
-
+          { props.required && <p className="text-end mt-0 mb-0 text-danger" style={{'fontSize': '.8rem'}}>Required *</p>}
+        </div>
     <div>
       { props.type_data?.options?.map(option => {
         return (
-          <div className="form-check form-check-inline">
+          <div key={option.value} className="form-check form-check-inline">
             <input className="form-check-input" type="radio" name={`form-question-${props.id}-radio`} id={`form-question-${props.id}-option-${option.key}`} value={option.value} />
             <label className="form-check-label" htmlFor={`form-question-${props.id}-option-${option.key}`}>{option.key}</label>
           </div>
@@ -219,13 +272,15 @@ const RadioQuestion: FC<IQuestion> = ({ ...props }) => {
   )
 }
 
-const SelectQuestion: FC<IQuestion> = ({ ...props }) => {
+export const SelectQuestion: FC<IQuestion> = ({ ...props }) => {
   return (
     <div className="mb-3">
-    <label htmlFor={`form-question-${props.id}`} className="form-label">{ props.name }</label>
+  <div className="d-flex justify-content-between align-items-end">
+          <label htmlFor={`form-question-${props.id}`} className="form-label">{ props.name }</label>
 
-
-    <select className="form-select" id={`form-question-${props.id}`} aria-label="Default select example">
+          { props.required && <p className="text-end mt-0 mb-0 text-danger" style={{'fontSize': '.8rem'}}>Required *</p>}
+        </div>
+    <select className="form-select" id={`form-question-${props.id}`} aria-label="Default select example" required={props.required}>
       <option selected>Open this select menu</option>
       {
         props.type_data?.options?.map(option => {
@@ -242,6 +297,21 @@ const SelectQuestion: FC<IQuestion> = ({ ...props }) => {
   )
 }
 
+export const TextareaQuestion: FC<IQuestion> = ({ ...props }) => {
+  return (
+    <div className="mb-3">
+  <div className="d-flex justify-content-between align-items-end">
+          <label htmlFor={`form-question-${props.id}`} className="form-label">{ props.name }</label>
+
+          { props.required && <p className="text-end mt-0 mb-0 text-danger" style={{'fontSize': '.8rem'}}>Required *</p>}
+        </div>
+    <textarea id={`form-question-${props.id}`} rows={3} className="form-control"></textarea>
+
+
+    <div id={`form-question-${props.id}-help`} className="form-text">{ props.desc }</div>
+  </div>
+  )
+}
 
 
 
@@ -263,8 +333,15 @@ const Hi: FC = () => {
 
 const forms: HTMLCollectionOf<Element> = document.getElementsByTagName('custom-form')
 
+const formBuilders: HTMLCollectionOf<Element> = document.getElementsByTagName('custom-form-builder')
+
 
 for (let i = 0; i < forms.length; i++) {
   let form = forms.item(i)
   ReactDOM.render(<FeedbackFormViewer id={form?.getAttribute('form-id') || 'no-id'} />, form);
+}
+
+for (let i = 0; i < formBuilders.length; i++) {
+  let form = formBuilders.item(i)
+  ReactDOM.render(<FormBuilder />, form);
 }

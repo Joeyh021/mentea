@@ -28,10 +28,12 @@
   "homepage": "https://github.com/Joeyh021/SoftEng-Project#readme",
   "dependencies": {
     "@types/react-dom": "^17.0.11",
+    "@types/uuid": "^8.3.4",
     "babel-cli": "^6.26.0",
     "babel-preset-react-app": "^3.1.2",
     "react": "^17.0.2",
-    "react-dom": "^17.0.2"
+    "react-dom": "^17.0.2",
+    "uuid": "^8.3.2"
   },
   "devDependencies": {
     "@babel/cli": "^7.17.0",
