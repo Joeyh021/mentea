@@ -115,3 +115,49 @@ blockquote {
     border-width: 2px;
     border-left-style: solid
 }
+
+
+:root {
+    --mentea-generic-bg: #7d4394;
+    --mentea-generic-sidenav-bg: #fcf5fb
+}
+/* NEW CONTENT FOR MENTEA */
+.bg-mentea {
+    background-color: var(--mentea-generic-bg) !important;
+}
+
+.bg-mentea-sidenav {
+    background-color: var(--mentea-generic-sidenav-bg) !important;
+}
+
+.bg-mentee-green {
+    background-color: #439481 !important;
+}
+
+.bg-mentee-sidenav {
+    background-color: #f5f9f0 !important;
+}
+
+.bg-mentor-blue {
+    background-color: #32357b !important;
+}
+
+.bg-mentor-sidenav {
+    background-color: #eaf2f7 !important;
+}
+
+.btn-rounded {
+    border-radius: 4rem !important;
+}
+
+.btn-mentea {
+    background-color: var(--mentea-generic-bg) !important;
+    border-color: var(--mentea-generic-bg) !important;
+}
+.btn-mentea:hover {
+    background-color: #67307c !important;
+}
+
+.color-mentea {
+    color: var(--mentea-generic-bg) !important;
+}
