@@ -118,6 +118,9 @@ class BusinessArea(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     business_area = models.CharField(max_length=50)
 
+    def __str__(self):
+        return self.business_area
+
 
 class MentorMentee(models.Model):
     # Mentor-mentee relationship
@@ -146,6 +149,9 @@ class Notification(models.Model):
 class Topic(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     topic = models.CharField(max_length=50)
+
+    def __str__(self):
+        return self.topic
 
 
 class UserTopic(models.Model):
