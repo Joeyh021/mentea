@@ -57,12 +57,12 @@ class UserProfileEditPage(TemplateView):
             current_user = request.user
 
             # Add bio and business area to it and save
-            current_user.bio = form.cleaned_data['bio']
-            current_user.business_area = form.cleaned_data['business_area']
+            current_user.bio = form.cleaned_data["bio"]
+            current_user.business_area = form.cleaned_data["business_area"]
             current_user.save()
 
             # Get selected topics
-            selected_topics = form.cleaned_data['topics']
+            selected_topics = form.cleaned_data["topics"]
 
             # Create UserTopic models storing these
             for topic in selected_topics:

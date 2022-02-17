@@ -26,6 +26,7 @@ class BusinessArea(models.Model):
     # Business areas within the company
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     business_area = models.CharField(max_length=50)
+
     def __str__(self):
         return self.business_area
 
