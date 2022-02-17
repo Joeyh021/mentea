@@ -6,13 +6,15 @@ from django.http import HttpResponseRedirect
 from django.contrib.auth.forms import UserCreationForm
 from people.forms import RegistrationForm
 
+
 class UserLoginPage(TemplateView):
     """The user log in page, with your standard email/password form"""
 
     template_name: str = "people/login.html"
-  
+
     def get(self, request: HttpRequest, *args: Any, **kwarsgs: Any) -> HttpResponse:
         return render(request, self.template_name, {})
+
 
 class UserSignupPage(FormView):
     """Lets a user sign up with email, password, and business area"""
@@ -20,17 +22,17 @@ class UserSignupPage(FormView):
     template_name: str = "people/register.html"
 
     form_class = RegistrationForm
-    success_url = '/profile/'
+    success_url = "/profile/"
 
     def register(request):
         form = RegistrationForm(request.POST or None)
         if form.is_valid():
             user_obj = form.save()
-            return redirect('/profile')
-        return render(request, "people/register.html", {"form":form})
+            return redirect("/profile")
+        return render(request, "people/register.html", {"form": form})
 
-    #def get(self, request: HttpRequest, *args: Any, **kwarsgs: Any) -> HttpResponse:
-       # return render(request, self.template_name, {})
+    # def get(self, request: HttpRequest, *args: Any, **kwarsgs: Any) -> HttpResponse:
+    # return render(request, self.template_name, {})
 
 
 class UserProfilePage(TemplateView):
