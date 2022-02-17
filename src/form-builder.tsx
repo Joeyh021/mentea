@@ -50,6 +50,10 @@ interface IFormEditorData {
     desc?: string
 }
 
+interface IJSONFormBuilder extends IFormEditorData {
+    questions: IQuestion[]
+}
+
 const FormBuilder: FC = () => {
 
 
@@ -99,6 +103,35 @@ const FormBuilder: FC = () => {
         setQuestions(newState)
     }
 
+    const convertJSONToForm = (json: string) => {
+        try {
+            let fromJSON: IJSONFormBuilder = JSON.parse(json);
+
+            setFormData(fromJSON)
+            setQuestions(fromJSON.questions || [])
+        } catch (e) {
+            alert('Unable to parse form')
+        }
+    }
+
+    const convertFormToJSON = () => {
+        let toJson: IJSONFormBuilder = {
+            ...formData,
+            questions: questions
+        }
+
+        return JSON.stringify(toJson)
+    }
+
+    const saveForm = () => {
+        console.log(convertFormToJSON())
+    }
+
+    const devLoadForm = () => {
+
+        let json: string = prompt("JSON Rep") || ""
+        convertJSONToForm(json)
+    }
     
 
     return (
@@ -264,6 +297,8 @@ const FormBuilder: FC = () => {
                 })
             }
             <button className="btn btn-primary" type="button" onClick={addQuestion}>Add</button>
+            <button className="btn btn-primary" type="button" onClick={saveForm}>Save Form</button>
+            <button className="btn btn-info" type="button" onClick={devLoadForm}>Load custom form</button>
         </div>
     )
 }
