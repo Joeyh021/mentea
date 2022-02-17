@@ -45,14 +45,16 @@ class UserProfileEditPage(LoginRequiredMixin, TemplateView):
     form_class: Any = ProfileForm
 
     def get(self, request: HttpRequest, *args: Any, **kwarsgs: Any) -> HttpResponse:
-        form = self.form_class()
+        form = self.form_class(
+            initial={
+                "bio": request.user.bio,
+                "business_area": request.user.business_area,
+                "topics": UserTopic.objects.filter(user=request.user).values_list(
+                    "topic", flat=True
+                ),
+            }
+        )
         current_user = request.user
-
-        # We should autofill information here from the current user where possible
-
-        form.fields["bio"].initial = current_user.bio
-        form.fields["business_area"].initial = current_user.business_area
-        form.fields["topics"].initial = UserTopic.objects.filter(user=current_user)
 
         # Currently we only allow users to pick from business areas or topics that exist. We need to add the option to add missing ones.
 
@@ -75,7 +77,9 @@ class UserProfileEditPage(LoginRequiredMixin, TemplateView):
 
             # Create UserTopic models storing these
             for topic in selected_topics:
-                user_topic = UserTopic(user=request.user, topic=topic)
+                user_topic = UserTopic(
+                    user=request.user, topic=topic, user_type=request.user.user_type
+                )
                 user_topic.save()
 
             # Show a message saying "Profile updated" and redirect to profile page
