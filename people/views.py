@@ -1,4 +1,5 @@
 from django.contrib import messages
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import HttpRequest, HttpResponse
 from django.shortcuts import redirect, render
 from django.views.generic import FormView, TemplateView
@@ -6,6 +7,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from typing import Any
 
 from .forms import ProfileForm
+from .models import UserTopic
 
 
 class UserLoginPage(TemplateView):
@@ -36,7 +38,7 @@ class UserProfilePage(LoginRequiredMixin, TemplateView):
         return render(request, self.template_name, {})
 
 
-class UserProfileEditPage(TemplateView):
+class UserProfileEditPage(LoginRequiredMixin, TemplateView):
     """Allows a user to edit their profile"""
 
     template_name: str = "people/profile_edit.html"
@@ -68,7 +70,7 @@ class UserProfileEditPage(TemplateView):
 
             # Create UserTopic models storing these
             for topic in selected_topics:
-                user_topic = UserTopic(user=current_user, topic=topic)
+                user_topic = UserTopic(user=request.user, topic=topic)
                 user_topic.save()
 
             # Show a message saying "Profile updated" and redirect to profile page
