@@ -1,25 +1,36 @@
 from django.http import HttpRequest, HttpResponse
-from django.shortcuts import render
-from django.views.generic import TemplateView
+from django.shortcuts import render, redirect
+from django.views.generic import TemplateView, FormView
 from typing import Any
-
+from django.http import HttpResponseRedirect
+from django.contrib.auth.forms import UserCreationForm
+from people.forms import RegistrationForm
 
 class UserLoginPage(TemplateView):
     """The user log in page, with your standard email/password form"""
 
     template_name: str = "people/login.html"
-
+  
     def get(self, request: HttpRequest, *args: Any, **kwarsgs: Any) -> HttpResponse:
         return render(request, self.template_name, {})
 
-
-class UserSignupPage(TemplateView):
+class UserSignupPage(FormView):
     """Lets a user sign up with email, password, and business area"""
 
-    template_name = "people/signup.html"
+    template_name: str = "people/register.html"
 
-    def get(self, request: HttpRequest, *args: Any, **kwarsgs: Any) -> HttpResponse:
-        return render(request, self.template_name, {})
+    form_class = RegistrationForm
+    success_url = '/profile/'
+
+    def register(request):
+        form = RegistrationForm(request.POST or None)
+        if form.is_valid():
+            user_obj = form.save()
+            return redirect('/profile')
+        return render(request, "people/register.html", {"form":form})
+
+    #def get(self, request: HttpRequest, *args: Any, **kwarsgs: Any) -> HttpResponse:
+       # return render(request, self.template_name, {})
 
 
 class UserProfilePage(TemplateView):

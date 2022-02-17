@@ -1,0 +1,33 @@
+{% extends 'main.html' %}
+
+{% block body %}
+
+<!--Register--> 
+<div class="container py-5">
+	<h1>Register</h1>
+	<form method="POST" action="{% url 'register' %}">{% csrf_token %}
+	<!--	{{form.as_p}}  -->
+
+	{% for field in form %}
+      <p>
+        {{ field.label_tag }}<br>
+        {{ field }}
+        {% if field.help_text %}
+          <small style="color: grey">{{ field.help_text }}</small>
+        {% endif %}
+        {% for error in field.errors %}
+          <p style="color: red">{{ error }}</p>
+        {% endfor %}
+      </p>
+    {% endfor %}
+
+		<button class="btn btn-primary" type="submit">Register</button>
+	</form>
+	<p class="text-center">If you already have an account, <a href="login">login</a> instead.</p>
+</div>
+
+{% endblock %}
+
+
+
+
