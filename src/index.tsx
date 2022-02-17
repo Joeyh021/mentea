@@ -26,6 +26,7 @@ export interface IQuestion {
 export interface IQuestionTypeData {
   min?: number
   max?: number
+  step?: number
   placeholder?: string
   options?: IQuestionOption[]
 
@@ -203,6 +204,10 @@ export const Question: FC<IQuestion> = ({ ...props }) => {
     return (
       <TextareaQuestion {...props} />
     )
+  } else if (props.type === "range" ){
+    return (
+      <RangeQuestion {...props} />
+    )
   } else {
 
     return (
@@ -313,7 +318,49 @@ export const TextareaQuestion: FC<IQuestion> = ({ ...props }) => {
   )
 }
 
+export const RangeQuestion: FC<IQuestion> = ({ ...props }) => {
 
+
+  const calcSteps = () => {
+
+    if ((props.type_data?.step || 0) <= 0) return
+
+    let steps: number = ((props.type_data?.max || 100 - (props.type_data?.min || 0))) / (props.type_data?.step || 10);
+    return Math.round(steps);
+  }
+
+  return (
+    <div className="mb-3">
+      <div className="d-flex justify-content-between align-items-end">
+        <label htmlFor={`form-question-${props.id}`} className="form-label">{ props.name }</label>
+
+        { props.required && <p className="text-end mt-0 mb-0 text-danger" style={{'fontSize': '.8rem'}}>Required *</p>}
+      </div>
+
+      
+      <input type={props.type} placeholder={props.type_data?.placeholder} min={props.type_data?.min} max={props.type_data?.max} step={props.type_data?.step} className="form-range" id={`form-question-${props.id}`}  aria-describedby="emailHelp" required={props.required} />
+      
+      <div className="d-flex justify-content-between position-relative " style={{marginLeft: "7px", marginRight: "7px"}}>
+        {
+          [...Array(calcSteps())].map((e, ind) => {
+            return (
+              <div key={ind} className="position-relative">
+                <div style={{height: "10px", width: "1px", backgroundColor: 'black'}} />
+                <div className="position-absolute top-100 " style={{width: "10px", height: "10px", left: "-3.5px"}}>
+                  { (ind + 1) * (props.type_data?.step || 1) }
+                </div>
+              </div>
+            )
+          })
+        }
+
+        
+      </div>
+      
+      <div id={`form-question-${props.id}-help`} className="form-text">{ props.desc }</div>
+    </div>
+  )
+}
 
 
 

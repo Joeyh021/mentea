@@ -41,6 +41,10 @@ const questionTypes: IQuestionType[] = [
     {
         htmlName: "select",
         visualName: "Select"
+    },
+    {
+        htmlName: "range",
+        visualName: "Slider / Range"
     }
 ]
 
@@ -201,7 +205,7 @@ const FormBuilder: FC = () => {
                                     <div className="accordion" id={`form-editor-${formData.id}-question-${q.id}-accord`}>
                                         <div className="accordion-item">
                                             <h2 className="accordion-header" id={`form-editor-${formData.id}-question-${q.id}-settings`}>
-                                                <button className="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target={`#form-editor-${formData.id}-question-${q.id}-settings-content`} aria-expanded="true" aria-controls="collapseOne">
+                                                <button className="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target={`#form-editor-${formData.id}-question-${q.id}-settings-content`} aria-expanded="false" aria-controls="collapseOne">
                                                     Question Settings
                                                 </button>
                                             </h2>
@@ -282,6 +286,56 @@ const FormBuilder: FC = () => {
                                                 </div>
                                             </div>
                                         </div>}
+
+
+                                    {q.type === "range" && 
+                                        <div className="accordion-item">
+                                            <h2 className="accordion-header" id={`form-editor-${formData.id}-question-${q.id}-rangeOpt`}>
+                                                <button className="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target={`#form-editor-${formData.id}-question-${q.id}-rangeOpt-content`} aria-expanded="true" aria-controls="collapseOne">
+                                                    Slider / Range Settings
+                                                </button>
+                                            </h2>
+                                            <div id={`form-editor-${formData.id}-question-${q.id}-rangeOpt-content`} className="accordion-collapse collapse" aria-labelledby={`form-editor-${formData.id}-question-${q.id}-rangeOpt`} data-bs-parent={`#form-editor-${formData.id}-question-${q.id}-accord`}>
+                                                <div className="accordion-body">
+                                                    <div className="row g-3 align-items-center">
+                                                        <div className="col">
+                                
+                                                            <div className="row mb-2">
+                                                                <div className="col-sm-1">
+                                                                    <label htmlFor={`form-editor-${formData.id}-question-${q.id}-rangemin`} className="col-form-label">Min: </label>
+                                                                </div>
+                                                                <div className="col-auto">
+                                                                    <input type="number" id={`form-editor-${formData.id}-question-${q.id}-rangemin`} className="form-control" onChange={(e) => updateQuestion({...q, type_data: {...q.type_data, min: Number.parseInt(e.target.value) || 1}})}  />
+                                                                </div>
+                                                                
+                                                            </div>
+                                                            <div className="row mb-2">
+                                                                <div className="col-sm-1">
+                                                                    <label htmlFor={`form-editor-${formData.id}-question-${q.id}-rangemin`} className="col-form-label">Max: </label>
+                                                                </div>
+                                                                <div className="col-auto">
+                                                                    <input type="number" id={`form-editor-${formData.id}-question-${q.id}-rangemin`} className="form-control" onChange={(e) => updateQuestion({...q, type_data: {...q.type_data, max: Number.parseInt(e.target.value) || 1}})}  />
+                                                                </div>
+                                                                
+                                                            </div>
+                                                            <div className="row mb-2">
+                                                                <div className="col-sm-1">
+                                                                    <label htmlFor={`form-editor-${formData.id}-question-${q.id}-rangemin`} className="col-form-label">Step: </label>
+                                                                </div>
+                                                                <div className="col-auto">
+                                                                    <input type="number" id={`form-editor-${formData.id}-question-${q.id}-rangemin`} className="form-control" onChange={(e) => updateQuestion({...q, type_data: {...q.type_data, step: Number.parseInt(e.target.value) || 1}})}   />
+                                                                </div>
+                                                                
+                                                            </div>
+                                          
+                                                            
+                                                        </div>
+
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    }
                                     </div>
 
                                     
