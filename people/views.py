@@ -1,6 +1,7 @@
 from django.http import HttpRequest, HttpResponse
 from django.shortcuts import render
 from django.views.generic import TemplateView
+from django.contrib.auth.mixins import LoginRequiredMixin
 from typing import Any
 
 
@@ -16,18 +17,19 @@ class UserLoginPage(TemplateView):
 class UserSignupPage(TemplateView):
     """Lets a user sign up with email, password, and business area"""
 
-    template_name = "people/signup.html"
+    template_name = "registration/register.html"
 
     def get(self, request: HttpRequest, *args: Any, **kwarsgs: Any) -> HttpResponse:
         return render(request, self.template_name, {})
 
 
-class UserProfilePage(TemplateView):
+class UserProfilePage(LoginRequiredMixin, TemplateView):
     """Shows a user's profile page and allows them to edit it"""
 
     template_name: str = "people/profile.html"
 
     def get(self, request: HttpRequest, *args: Any, **kwarsgs: Any) -> HttpResponse:
+
         return render(request, self.template_name, {})
 
 

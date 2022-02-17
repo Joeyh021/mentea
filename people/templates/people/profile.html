@@ -10,10 +10,10 @@
     </div>
     <div class="col-8">
         <h1 class="mt-2 mb-0" style="font-size: 6rem;">
-            John Smith
+            {{ user.get_full_name }}
         </h1>
         <p class="fs-5 mb-1">
-            <strong>Department:</strong> Drug Testing
+            <strong>Department:</strong> {{ user.business_area }}
         </p>
         <p>
             Hi, my name is John Smith and I work in the Drug testing, development and consumption department. I can't say I've had a low day since starting here!
