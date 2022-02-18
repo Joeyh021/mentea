@@ -38,6 +38,16 @@
             {% endif %}
         </div>
 
+        <div class="mb-3">
+            <label class="form-label" for="id_usertype">I am a</label>
+            {{ form.usertype }}
+            {% if form.usertype.errors %}
+                {% for e in form.usertype.errors %}
+                    <p class="help is-danger">{{ e }}</p>
+                {% endfor %}
+            {% endif %}
+        </div>
+
         <div>
             <input type="submit" class="btn btn-primary" value="Submit">
         </div>

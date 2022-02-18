@@ -7,6 +7,12 @@ from django.contrib.auth.models import BaseUserManager, AbstractBaseUser
 # Changing this to override the default model!
 
 
+class UserType(models.TextChoices):
+    Mentor = 'Mentor'
+    Mentee = 'Mentee'
+    MentorMentee = 'MentorMentee', 'Mentor & Mentee'
+
+
 class UserManager(BaseUserManager):
     def create_user(self, email, password=None):
         """
@@ -59,7 +65,7 @@ class User(AbstractBaseUser):
         "BusinessArea", on_delete=models.CASCADE, null=True
     )
     bio = models.TextField(blank=True)
-    user_type = models.ForeignKey("UserType", on_delete=models.CASCADE, null=True)
+    user_type = models.CharField(choices=UserType.choices, max_length=50, blank=True, null=True)
     updated_at = models.DateTimeField(auto_now=True)
     created_at = models.DateTimeField(auto_now_add=True)
 
@@ -107,12 +113,6 @@ class User(AbstractBaseUser):
     objects = UserManager()
 
 
-class UserType(models.Model):
-    # Mentor or mentee
-    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
-    type = models.CharField(max_length=50)
-
-
 class BusinessArea(models.Model):
     # Business areas within the company
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
@@ -158,7 +158,7 @@ class UserTopic(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     user = models.ForeignKey(User, on_delete=models.CASCADE, db_index=True)
     topic = models.ForeignKey(Topic, on_delete=models.CASCADE, db_index=True)
-    usertype = models.ForeignKey(UserType, null=True, on_delete=models.SET_NULL)
+    usertype = models.CharField(choices=UserType.choices, max_length=50, null=True)
 
     class Meta:
         indexes = [models.Index(fields=["user", "topic", "usertype"])]

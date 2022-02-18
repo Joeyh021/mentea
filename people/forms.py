@@ -1,6 +1,6 @@
 from django import forms
 
-from .models import BusinessArea, Topic
+from .models import BusinessArea, Topic, UserType
 
 
 class ProfileForm(forms.Form):
@@ -13,5 +13,9 @@ class ProfileForm(forms.Form):
     )
     topics = forms.ModelMultipleChoiceField(
         queryset=Topic.objects.all(),
-        widget=forms.Select(attrs={"class": "form-select", "multiple": "multiple"}),
+        widget=forms.SelectMultiple(attrs={"class": "form-select"}),
+    )
+    usertype = forms.ChoiceField(
+        choices=UserType.choices,
+        widget=forms.Select(attrs={"class": "form-select"}),
     )

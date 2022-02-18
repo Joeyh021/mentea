@@ -43,6 +43,7 @@ class UserProfileEditPage(LoginRequiredMixin, TemplateView):
                 "topics": UserTopic.objects.filter(user=request.user).values_list(
                     "topic", flat=True
                 ),
+                "usertype": request.user.user_type,
             }
         )
         current_user = request.user
@@ -61,15 +62,17 @@ class UserProfileEditPage(LoginRequiredMixin, TemplateView):
             # Add bio and business area to it and save
             current_user.bio = form.cleaned_data["bio"]
             current_user.business_area = form.cleaned_data["business_area"]
+            current_user.user_type = form.cleaned_data["usertype"]
             current_user.save()
 
             # Get selected topics
-            selected_topics = form.cleaned_data["topics"]
+            selected_topics = form.cleaned_data.get("topics", None)
 
             # Create UserTopic models storing these
+            UserTopic.objects.filter(user=current_user).delete()
             for topic in selected_topics:
                 user_topic = UserTopic(
-                    user=request.user, topic=topic, user_type=request.user.user_type
+                    user=request.user, topic=topic, usertype=form.cleaned_data["usertype"]
                 )
                 user_topic.save()
 
@@ -78,6 +81,7 @@ class UserProfileEditPage(LoginRequiredMixin, TemplateView):
             return redirect("profile")
 
         else:
+            print(form.cleaned_data)
 
             # Show error messages and go back to form page
             messages.error(request, "Error updating profile")
