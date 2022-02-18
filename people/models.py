@@ -8,9 +8,9 @@ from django.contrib.auth.models import BaseUserManager, AbstractBaseUser
 
 
 class UserType(models.TextChoices):
-    Mentor = 'Mentor'
-    Mentee = 'Mentee'
-    MentorMentee = 'MentorMentee', 'Mentor & Mentee'
+    Mentor = "Mentor"
+    Mentee = "Mentee"
+    MentorMentee = "MentorMentee", "Mentor & Mentee"
 
 
 class UserManager(BaseUserManager):
@@ -65,7 +65,9 @@ class User(AbstractBaseUser):
         "BusinessArea", on_delete=models.CASCADE, null=True
     )
     bio = models.TextField(blank=True)
-    user_type = models.CharField(choices=UserType.choices, max_length=50, blank=True, null=True)
+    user_type = models.CharField(
+        choices=UserType.choices, max_length=50, blank=True, null=True
+    )
     updated_at = models.DateTimeField(auto_now=True)
     created_at = models.DateTimeField(auto_now_add=True)
 

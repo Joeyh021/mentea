@@ -72,7 +72,9 @@ class UserProfileEditPage(LoginRequiredMixin, TemplateView):
             UserTopic.objects.filter(user=current_user).delete()
             for topic in selected_topics:
                 user_topic = UserTopic(
-                    user=request.user, topic=topic, usertype=form.cleaned_data["usertype"]
+                    user=request.user,
+                    topic=topic,
+                    usertype=form.cleaned_data["usertype"],
                 )
                 user_topic.save()
 

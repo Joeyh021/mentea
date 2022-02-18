@@ -6,29 +6,49 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('people', '0006_user_is_active'),
+        ("people", "0006_user_is_active"),
     ]
 
     operations = [
         migrations.RemoveIndex(
-            model_name='usertopic',
-            name='people_user_user_id_7f44ed_idx',
+            model_name="usertopic",
+            name="people_user_user_id_7f44ed_idx",
         ),
         migrations.AlterField(
-            model_name='user',
-            name='user_type',
-            field=models.CharField(blank=True, choices=[('Mentor', 'Mentor'), ('Mentee', 'Mentee'), ('MentorMentee', 'Mentormentee')], max_length=50, null=True),
+            model_name="user",
+            name="user_type",
+            field=models.CharField(
+                blank=True,
+                choices=[
+                    ("Mentor", "Mentor"),
+                    ("Mentee", "Mentee"),
+                    ("MentorMentee", "Mentormentee"),
+                ],
+                max_length=50,
+                null=True,
+            ),
         ),
         migrations.AlterField(
-            model_name='usertopic',
-            name='usertype',
-            field=models.CharField(choices=[('Mentor', 'Mentor'), ('Mentee', 'Mentee'), ('MentorMentee', 'Mentormentee')], max_length=50, null=True),
+            model_name="usertopic",
+            name="usertype",
+            field=models.CharField(
+                choices=[
+                    ("Mentor", "Mentor"),
+                    ("Mentee", "Mentee"),
+                    ("MentorMentee", "Mentormentee"),
+                ],
+                max_length=50,
+                null=True,
+            ),
         ),
         migrations.AddIndex(
-            model_name='usertopic',
-            index=models.Index(fields=['user', 'topic', 'usertype'], name='people_user_user_id_092cdd_idx'),
+            model_name="usertopic",
+            index=models.Index(
+                fields=["user", "topic", "usertype"],
+                name="people_user_user_id_092cdd_idx",
+            ),
         ),
         migrations.DeleteModel(
-            name='UserType',
+            name="UserType",
         ),
     ]
