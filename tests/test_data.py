@@ -73,7 +73,94 @@ def create_data() -> None:
     UserTopic.objects.create(user=craig, topic=spreadsheets)
     UserTopic.objects.create(user=craig, topic=management)
 
-    # create some mentees
+    # james was secretly a db employee all along
+    james = User.objects.create(
+        first_name="James",
+        last_name="Archbold",
+        email="james.archbold@warwick.ac.uk",
+        business_area=money_laundering,
+        user_type=mentor_type,
+    )
+    UserTopic.objects.create(user=james, topic=making_money)
+    UserTopic.objects.create(user=james, topic=capitalism)
+    UserTopic.objects.create(user=james, topic=investment)
+
+    # james is a very busy man as he already has three mentees
+    # just dummy to fill the database
+    james_mentee_1 = User.objects.create(
+        first_name="",
+        last_name="",
+        email="",
+        business_area=financing_nonces,
+        user_type=mentee_type,
+    )
+    MentorMentee.objects.create(
+        mentor=james,
+        mentee=james_mentee_1,
+        approved=True,
+    )
+    james_mentee_2 = User.objects.create(
+        first_name="",
+        last_name="",
+        email="",
+        business_area=financing_nonces,
+        user_type=mentee_type,
+    )
+    MentorMentee.objects.create(
+        mentor=james,
+        mentee=james_mentee_2,
+        approved=True,
+    )
+    james_mentee_3 = User.objects.create(
+        first_name="",
+        last_name="",
+        email="",
+        business_area=financing_nonces,
+        user_type=mentee_type,
+    )
+    MentorMentee.objects.create(
+        mentor=james,
+        mentee=james_mentee_3,
+        approved=True,
+    )
+
+    # I also work for db. surprise!
+    # I am a mentor AND a mentee. interesting.
+    joey = User.objects.create(
+        first_name="Joey",
+        last_name="Harrison",
+        email="joey@db.com",
+        business_area=tax_evasion,
+        user_type=mentor_mentee_type,
+    )
+    UserTopic.objects.create(
+        user=joey, topic=python, usertype=mentor_type
+    )  # already an expert in python
+    UserTopic.objects.create(
+        user=joey, topic=trainspotting, usertype=mentee_type
+    )  # want to learn about birdwatching, which i am doing from steve
+
+    # I have a mentee, but am under the mentorship of steve
+    joeys_mentee = User.objects.create(
+        first_name="",
+        last_name="",
+        email="",
+        business_area=financing_nonces,
+        user_type=mentee_type,
+    )
+    MentorMentee.objects.create(
+        mentor=joey,
+        mentee=joeys_mentee,
+        approved=True,
+    )
+    MentorMentee.objects.create(
+        mentor=steve,
+        mentee=joey,
+        approved=True,
+    )
+
+    # create some new mentees
+    # these will be our test cases
     tim = User.objects.create(
         first_name="Tim",
         last_name="Mentee",
@@ -97,3 +184,18 @@ def create_data() -> None:
     UserTopic.objects.create(user=sandra, topic=cocaine)
     UserTopic.objects.create(user=sandra, topic=crypto)
     UserTopic.objects.create(user=sandra, topic=tiktok)
+
+    alex = User.objects.create(
+        first_name="Alex",
+        last_name="Ander",
+        email="alex@gmail.net",
+        business_area=tax_evasion,
+        user_type=mentee_type,
+    )
+    # alex knows he has a lot to learn!
+    UserTopic.objects.create(user=alex, topic=making_money)
+    UserTopic.objects.create(user=alex, topic=mortgages)
+    UserTopic.objects.create(user=alex, topic=capitalism)
+    UserTopic.objects.create(user=alex, topic=investment)
+    UserTopic.objects.create(user=alex, topic=birdwatching)
+    UserTopic.objects.create(user=alex, topic=spreadsheets)
