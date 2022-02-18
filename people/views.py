@@ -10,15 +10,6 @@ from .forms import ProfileForm
 from .models import UserTopic
 
 
-class UserLoginPage(TemplateView):
-    """The user log in page, with your standard email/password form"""
-
-    template_name: str = "people/login.html"
-
-    def get(self, request: HttpRequest, *args: Any, **kwarsgs: Any) -> HttpResponse:
-        return render(request, self.template_name, {})
-
-
 class UserSignupPage(TemplateView):
     """Lets a user sign up with email, password, and business area"""
 
