@@ -39,6 +39,19 @@ class FeedbackFormReturn(TemplateView):
             
             data = json.loads(form.data['jsonData'])
             
+            if ("name" not in data['formData'] or data['formData']['name'] == ""):
+                return HttpResponse('Missing name')
+            
+            
+            if ('desc' not in data['formData']):
+                return HttpResponse('Missing desc')
+            
+            if ('questions' not in data or data['questions'] == []):
+                return HttpResponse('Missing questions')
+            
+            
+           
+            
             ff = FeedbackForm(name= data['formData']['name'], desc = data['formData']['desc'])
             ff.save()
             
