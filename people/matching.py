@@ -16,8 +16,12 @@ def get_matches(mentee: User):
     mentee_topics = [ut.topic for ut in UserTopic.objects.filter(user=mentee)]
     all_mentors: List[User] = list(
         User.objects.filter(user_type=mentor_type)
-        .union(User.objects.filter(user_type=mentor_mentee_type))
         .exclude(business_area=mentee.business_area)
+        .union(
+            User.objects.filter(user_type=mentor_mentee_type).exclude(
+                business_area=mentee.business_area
+            )
+        )
     )
 
     total_n_mentees = len(
@@ -56,9 +60,16 @@ def get_matches(mentee: User):
 
         # calculate workload
         mentees_score = (
-            len(MentorMentee.objects.filter(mentor=mentor)) / total_n_mentees
+            (len(MentorMentee.objects.filter(mentor=mentor)) / total_n_mentees)
+            if total_n_mentees != 0
+            else 0
         )
-        events_score = len(Event.objects.filter(mentor=mentor)) / total_n_events
+
+        events_score = (
+            (len(Event.objects.filter(mentor=mentor)) / total_n_events)
+            if total_n_events != 0
+            else 0
+        )
 
         # final score is some linear combination of these 4 parameters
         # workload scores are * (1-score), topic overlap score is the main factor
