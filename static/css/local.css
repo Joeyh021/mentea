@@ -126,8 +126,8 @@ label{
 }
 
 :root {
-    --mentea-generic-bg: #7d4394;
-    --mentea-generic-sidenav-bg: #fcf5fb
+    --mentea-generic-bg: #439481;
+    --mentea-generic-sidenav-bg: #f5f9f0
 }
 
 /* NEW CONTENT FOR MENTEA */
@@ -164,7 +164,7 @@ label{
     border-color: var(--mentea-generic-bg) !important;
 }
 .btn-mentea:hover {
-    background-color: #67307c !important;
+    background-color: #439481 !important;
 }
 
 .color-mentea {
@@ -202,6 +202,38 @@ label{
     padding: 16px 20px;
     border-radius: 20px;
     color: white;
-    background-color: #32357b;
-    
+    background-color: #32357b; 
+}
+
+.bg-block-main-green {
+ /* Set rules to fill background */
+  min-height: 100%; 
+  min-width: 1024px;
+	
+  /* Set up proportionate scaling */
+  width: 100%;
+  height: auto;
+	
+  /* Set up positioning */
+  position: fixed;
+    top: 0;
+  left: 0;
+  
+    color: white;
+    background-color: #ADD493; 
+}
+.bg-block-main-brown {
+    width: 100%;
+    padding: 16px 20px;
+    border-radius: 20px;
+    color: white;
+    background-color: #FFCC99; 
+}
+
+.bg-block-main-light {
+    width: 100%;
+    padding: 16px 20px;
+    border-radius: 20px;
+    color: white;
+    background-color: #D2F1A5; 
 }
