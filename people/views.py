@@ -13,8 +13,8 @@ from .models import UserTopic
 class IsUserMenteeMixin(UserPassesTestMixin):
     def test_func(self):
         return (
-                self.request.user.user_type == "Mentee"
-                or self.request.user.user_type == "MentorMentee"
+            self.request.user.user_type == "Mentee"
+            or self.request.user.user_type == "MentorMentee"
         )
 
     def dispatch(self, request, *args, **kwargs):
@@ -26,8 +26,8 @@ class IsUserMenteeMixin(UserPassesTestMixin):
 class IsUserMentorMixin(UserPassesTestMixin):
     def test_func(self):
         return (
-                self.request.user.user_type == "Mentor"
-                or self.request.user.user_type == "MentorMentee"
+            self.request.user.user_type == "Mentor"
+            or self.request.user.user_type == "MentorMentee"
         )
 
     def dispatch(self, request, *args, **kwargs):
