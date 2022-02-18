@@ -26,7 +26,7 @@ def create_data() -> None:
         email="john@gmail.com",
         business_area=money_laundering,
         bio="",
-        user_type="Mentor",
+        user_type=models.UserType.Mentor,
     )
     # create some mentees
     models.User.objects.create(
@@ -36,5 +36,5 @@ def create_data() -> None:
         email="tim@db.com",
         business_area=money_laundering,
         bio="",
-        user_type="Mentee",
+        user_type=models.UserType.Mentee,
     )
