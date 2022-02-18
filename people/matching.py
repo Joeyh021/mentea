@@ -4,12 +4,13 @@ from people.models import *
 from events.models import Event
 
 
-def get_matches(mentee: User, debug: bool = False):
+def get_matches(mentee: User):
     """
     given the uuid of a mentee, find the best possible mentors, returning a list of their uuids in order of suitability
     if debug, then a dict of the calculated values is returned for testing/debugging purposes
     """
     mentor_type = UserType.objects.get(type="mentor")
+    mentor_mentee_type = UserType.objects.get(type="mentor mentee")
 
     mentee_topics = [ut.topic for ut in UserTopic.objects.filter(user=mentee)]
     all_mentors: List[User] = list(
@@ -17,11 +18,25 @@ def get_matches(mentee: User, debug: bool = False):
             business_area=mentee.business_area
         )
     )
+    # add in users that are mentors and mentees
+    all_mentors += list(
+        User.objects.filter(user_type=mentor_mentee_type).exclude(
+            business_area=mentee.business_area
+        )
+    )
 
     mentor_scores = []
     for mentor in all_mentors:
         # get topic overlap
-        mentor_topics = [ut.topic for ut in UserTopic.objects.filter(user=mentor)]
+        # account for where mentor_mentee users have topics marked as their mentoring topics
+        if mentor.user_type == mentor_type:
+            mentor_topics = [ut.topic for ut in UserTopic.objects.filter(user=mentor)]
+        else:
+            mentor_topics = [
+                ut.topic
+                for ut in UserTopic.objects.filter(user=mentor, usertype=mentor_type)
+            ]
+
         topic_overlap = [t for t in mentee_topics if t in mentor_topics]  # intersection
         # normalised 0 to 1
         topic_overlap_score = len(topic_overlap) / len(mentee_topics)
@@ -44,30 +59,8 @@ def get_matches(mentee: User, debug: bool = False):
         workshop_workload_factor = 0.1
         workload = n_mentees + n_workshops * workshop_workload_factor
 
-        score = 1.0  # some computation
+        score = 1.0  # some computation that is a factor of the things calculated
+        mentor_scores.append((mentor, score))
 
-        if debug:
-            mentor_scores.append(
-                (
-                    mentor,
-                    {
-                        "topic overlap": topic_overlap,
-                        "topic overlap score": topic_overlap_score,
-                        "ratings": mentor_ratings,
-                        "avg rating": average_rating,
-                        "mentees": n_mentees,
-                        "workshops": n_workshops,
-                        "workload": workload,
-                        "final score": score,
-                    },
-                )
-            )
-        else:
-            mentor_scores.append((mentor, score))
-
-    if debug:
-        mentor_scores.sort(key=lambda t: t[1]["final score"], reverse=True)
-        return [t[0] for t in mentor_scores]
-    else:
         mentor_scores.sort(key=lambda t: t[1], reverse=True)
         return [t[0] for t in mentor_scores]
