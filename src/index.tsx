@@ -323,9 +323,9 @@ export const RangeQuestion: FC<IQuestion> = ({ ...props }) => {
 
   const calcSteps = () => {
 
-    if ((props.type_data?.step || 0) <= 0) return
+    if ((props.type_data?.step || 0) < 0) return
 
-    let steps: number = ((props.type_data?.max || 100 - (props.type_data?.min || 0))) / (props.type_data?.step || 10);
+    let steps: number = (((props.type_data?.max || 100) + 1 - (props.type_data?.min || 0))) / (props.type_data?.step || 10);
     return Math.round(steps);
   }
 
@@ -338,22 +338,21 @@ export const RangeQuestion: FC<IQuestion> = ({ ...props }) => {
       </div>
 
       
-      <input type={props.type} placeholder={props.type_data?.placeholder} min={props.type_data?.min} max={props.type_data?.max} step={props.type_data?.step} className="form-range" id={`form-question-${props.id}`}  aria-describedby="emailHelp" required={props.required} />
+      <input type={props.type} placeholder={props.type_data?.placeholder} min={props.type_data?.min} max={props.type_data?.max} step={props.type_data?.step} className="form-range" style={{padding: '0'}} id={`form-question-${props.id}`}  aria-describedby="emailHelp" required={props.required} />
       
       <div className="d-flex justify-content-between position-relative " style={{marginLeft: "7px", marginRight: "7px"}}>
-        {
-          [...Array(calcSteps())].map((e, ind) => {
-            return (
-              <div key={ind} className="position-relative">
-                <div style={{height: "10px", width: "1px", backgroundColor: 'black'}} />
-                <div className="position-absolute top-100 " style={{width: "10px", height: "10px", left: "-3.5px"}}>
-                  { (ind + 1) * (props.type_data?.step || 1) }
-                </div>
-              </div>
-            )
-          })
-        }
-
+        <div className="position-relative">
+          <div style={{height: "10px", width: "1px", backgroundColor: 'black'}} />
+          <div className="position-absolute top-100 " style={{width: "10px", height: "10px", left: "-3.5px"}}>
+            { props.type_data?.min }
+          </div>
+        </div>
+        <div className="position-relative">
+          <div style={{height: "10px", width: "1px", backgroundColor: 'black'}} />
+          <div className="position-absolute top-100 " style={{width: "10px", height: "10px", left: "-3.5px"}}>
+            { props.type_data?.max }
+          </div>
+        </div>
         
       </div>
       

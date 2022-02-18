@@ -54,7 +54,8 @@ interface IFormEditorData {
     desc?: string
 }
 
-interface IJSONFormBuilder extends IFormEditorData {
+interface IJSONFormBuilder {
+    formData: IFormEditorData
     questions: IQuestion[]
 }
 
@@ -111,7 +112,7 @@ const FormBuilder: FC = () => {
         try {
             let fromJSON: IJSONFormBuilder = JSON.parse(json);
 
-            setFormData(fromJSON)
+            setFormData(fromJSON.formData)
             setQuestions(fromJSON.questions || [])
         } catch (e) {
             alert('Unable to parse form')
@@ -120,7 +121,7 @@ const FormBuilder: FC = () => {
 
     const convertFormToJSON = () => {
         let toJson: IJSONFormBuilder = {
-            ...formData,
+            formData: formData,
             questions: questions
         }
 
@@ -305,7 +306,7 @@ const FormBuilder: FC = () => {
                                                                     <label htmlFor={`form-editor-${formData.id}-question-${q.id}-rangemin`} className="col-form-label">Min: </label>
                                                                 </div>
                                                                 <div className="col-auto">
-                                                                    <input type="number" id={`form-editor-${formData.id}-question-${q.id}-rangemin`} className="form-control" onChange={(e) => updateQuestion({...q, type_data: {...q.type_data, min: Number.parseInt(e.target.value) || 1}})}  />
+                                                                    <input type="number" id={`form-editor-${formData.id}-question-${q.id}-rangemin`} className="form-control" onChange={(e) => updateQuestion({...q, type_data: {...q.type_data, min: Number.parseInt(e.target.value) || 0}})}  />
                                                                 </div>
                                                                 
                                                             </div>
@@ -314,7 +315,7 @@ const FormBuilder: FC = () => {
                                                                     <label htmlFor={`form-editor-${formData.id}-question-${q.id}-rangemin`} className="col-form-label">Max: </label>
                                                                 </div>
                                                                 <div className="col-auto">
-                                                                    <input type="number" id={`form-editor-${formData.id}-question-${q.id}-rangemin`} className="form-control" onChange={(e) => updateQuestion({...q, type_data: {...q.type_data, max: Number.parseInt(e.target.value) || 1}})}  />
+                                                                    <input type="number" id={`form-editor-${formData.id}-question-${q.id}-rangemin`} className="form-control" onChange={(e) => updateQuestion({...q, type_data: {...q.type_data, max: Number.parseInt(e.target.value) || 100}})}  />
                                                                 </div>
                                                                 
                                                             </div>
