@@ -11,19 +11,22 @@ def get_matches(mentee: User):
     """
     mentor_type = UserType.objects.get(type="mentor")
     mentor_mentee_type = UserType.objects.get(type="mentor mentee")
+    mentee_type = UserType.objects.get(type="mentee")
 
     mentee_topics = [ut.topic for ut in UserTopic.objects.filter(user=mentee)]
     all_mentors: List[User] = list(
-        User.objects.filter(user_type=mentor_type).exclude(
-            business_area=mentee.business_area
+        User.objects.filter(user_type=mentor_type)
+        .union(User.objects.filter(user_type=mentor_mentee_type))
+        .exclude(business_area=mentee.business_area)
+    )
+
+    total_n_mentees = len(
+        User.objects.filter(user_type=mentee_type).union(
+            User.objects.filter(user_type=mentor_mentee_type)
         )
     )
-    # add in users that are mentors and mentees
-    all_mentors += list(
-        User.objects.filter(user_type=mentor_mentee_type).exclude(
-            business_area=mentee.business_area
-        )
-    )
+
+    total_n_events = len(Event.objects.all())
 
     mentor_scores = []
     for mentor in all_mentors:
@@ -52,14 +55,20 @@ def get_matches(mentee: User):
             average_rating = sum(mentor_ratings) / len(mentor_ratings) / 5
 
         # calculate workload
-        n_mentees = len(MentorMentee.objects.filter(mentor=mentor))
-        n_workshops = len(Event.objects.filter(mentor=mentor))
+        mentees_score = (
+            len(MentorMentee.objects.filter(mentor=mentor)) / total_n_mentees
+        )
+        events_score = len(Event.objects.filter(mentor=mentor)) / total_n_events
 
-        # factor determines how weighted workshops are in calculating a mentors workload
-        workshop_workload_factor = 0.1
-        workload = n_mentees + n_workshops * workshop_workload_factor
-
-        score = 1.0  # some computation that is a factor of the things calculated
+        # final score is some linear combination of these 4 parameters
+        # workload scores are * (1-score), topic overlap score is the main factor
+        # designed to decrease score if the mentor is busy compared to other mentors
+        score = (
+            topic_overlap_score
+            * average_rating
+            * (1 - mentees_score)
+            * (1 - events_score)
+        )
         mentor_scores.append((mentor, score))
 
         mentor_scores.sort(key=lambda t: t[1], reverse=True)
