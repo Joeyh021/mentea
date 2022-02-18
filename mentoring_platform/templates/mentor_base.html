@@ -31,12 +31,16 @@
                 <li class="nav-item">
                   <a class="nav-link" aria-current="page" href="{% url "main:index" %}">Dashboard</a>
                 </li>
+                {% if user.user_type == "Mentee" or user.user_type == "MentorMentee" %}
                 <li class="nav-item">
                   <a class="nav-link" href="{% url "dashboard" %}">Mentee Portal</a>
                 </li>
+                {% endif %}
+                {% if user.user_type == "Mentor" or user.user_type == "MentorMentee" %}
                 <li class="nav-item">
-                  <a class="nav-link active" href="{% url "mentor_dashboard" %}">Mentor Portal</a>
+                  <a class="nav-link" href="{% url "mentor_dashboard" %}">Mentor Portal</a>
                 </li>
+                {% endif %}
                 <li class="nav-item">
                   {% if user.is_authenticated %}
                   <a class="nav-link" href="{% url "logout" %}">Logout</a>
