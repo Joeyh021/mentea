@@ -13,17 +13,27 @@ from .models import UserTopic
 class IsUserMenteeMixin(UserPassesTestMixin):
     def test_func(self):
         return (
-            self.request.user.user_type == "Mentee"
-            or self.request.user.user_type == "MentorMentee"
+                self.request.user.user_type == "Mentee"
+                or self.request.user.user_type == "MentorMentee"
         )
+
+    def dispatch(self, request, *args, **kwargs):
+        if not request.user.is_authenticated or not self.test_func():
+            return self.handle_no_permission()
+        return super().dispatch(request, *args, **kwargs)
 
 
 class IsUserMentorMixin(UserPassesTestMixin):
     def test_func(self):
         return (
-            self.request.user.user_type == "Mentor"
-            or self.request.user.user_type == "MentorMentee"
+                self.request.user.user_type == "Mentor"
+                or self.request.user.user_type == "MentorMentee"
         )
+
+    def dispatch(self, request, *args, **kwargs):
+        if not request.user.is_authenticated or not self.test_func():
+            return self.handle_no_permission()
+        return super().dispatch(request, *args, **kwargs)
 
 
 class UserSignupPage(TemplateView):
