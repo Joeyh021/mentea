@@ -4,14 +4,6 @@ from people import models
 
 def create_data() -> None:
 
-    # create user types
-    mentee_type = models.UserType.objects.create(id=uuid4(), type="mentee")
-    mentor_type = models.UserType.objects.create(id=uuid4(), type="mentor")
-    mentor_mentee_type = models.UserType.objects.create(
-        id=uuid4(), type="mentor mentee"
-    )
-    none_usertype = models.UserType.objects.create(id=uuid4(), type="")
-
     # create some business areas
     money_laundering = models.BusinessArea.objects.create(
         id=uuid4(), business_area="money laundering"
@@ -34,7 +26,7 @@ def create_data() -> None:
         email="john@gmail.com",
         business_area=money_laundering,
         bio="",
-        user_type=mentor_type,
+        user_type="Mentor",
     )
     # create some mentees
     models.User.objects.create(
@@ -44,5 +36,5 @@ def create_data() -> None:
         email="tim@db.com",
         business_area=money_laundering,
         bio="",
-        user_type=mentee_type,
+        user_type="Mentee",
     )
