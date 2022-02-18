@@ -1,5 +1,5 @@
 from django.contrib import messages
-from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.http import HttpRequest, HttpResponse
 from django.shortcuts import redirect, render
 from django.views.generic import FormView, TemplateView
@@ -8,6 +8,22 @@ from typing import Any
 
 from .forms import ProfileForm
 from .models import UserTopic
+
+
+class IsUserMenteeMixin(UserPassesTestMixin):
+    def test_func(self):
+        return (
+            self.request.user.user_type == "Mentee"
+            or self.request.user.user_type == "MentorMentee"
+        )
+
+
+class IsUserMentorMixin(UserPassesTestMixin):
+    def test_func(self):
+        return (
+            self.request.user.user_type == "Mentor"
+            or self.request.user.user_type == "MentorMentee"
+        )
 
 
 class UserSignupPage(TemplateView):
@@ -90,7 +106,7 @@ class UserProfileEditPage(LoginRequiredMixin, TemplateView):
             return render(request, self.template_name, {"form": form})
 
 
-class UserCalendarPage(TemplateView):
+class UserCalendarPage(LoginRequiredMixin, TemplateView):
     """Shows a user's calendar with all their upcoming meetings and events"""
 
     template_name: str = "people/calendar.html"
@@ -99,7 +115,7 @@ class UserCalendarPage(TemplateView):
         return render(request, self.template_name, {})
 
 
-class UserNotificationsPage(TemplateView):
+class UserNotificationsPage(LoginRequiredMixin, TemplateView):
     """Shows all of a users notifcations"""
 
     template_name: str = "people/notifications.html"
@@ -108,7 +124,7 @@ class UserNotificationsPage(TemplateView):
         return render(request, self.template_name, {})
 
 
-class MenteeDashboardPage(TemplateView):
+class MenteeDashboardPage(IsUserMenteeMixin, TemplateView):
     """A mentee's home page"""
 
     template_name: str = "people/mentee_dashboard.html"
@@ -117,7 +133,7 @@ class MenteeDashboardPage(TemplateView):
         return render(request, self.template_name, {})
 
 
-class MenteeFeedbackPage(TemplateView):
+class MenteeFeedbackPage(IsUserMenteeMixin, TemplateView):
     """A page for a mentee to discuss feedback with their mentor"""
 
     template_name: str = "people/mentee_feedback.html"
@@ -126,7 +142,7 @@ class MenteeFeedbackPage(TemplateView):
         return render(request, self.template_name, {})
 
 
-class MenteePlansPage(TemplateView):
+class MenteePlansPage(IsUserMenteeMixin, TemplateView):
     """A mentee's plans of action page"""
 
     template_name: str = "people/mentee_plans.html"
@@ -135,7 +151,7 @@ class MenteePlansPage(TemplateView):
         return render(request, self.template_name, {})
 
 
-class MenteeChatPage(TemplateView):
+class MenteeChatPage(IsUserMenteeMixin, TemplateView):
     """Chat between a mentee and their mentor"""
 
     template_name: str = "people/mentee_chat.html"
@@ -144,7 +160,7 @@ class MenteeChatPage(TemplateView):
         return render(request, self.template_name, {})
 
 
-class MenteeMeetingsPage(TemplateView):
+class MenteeMeetingsPage(IsUserMenteeMixin, TemplateView):
     """Upcoming meetings and records of past meetings between a mentee and their mentor"""
 
     template_name: str = "people/mentee_meetings.html"
@@ -153,7 +169,7 @@ class MenteeMeetingsPage(TemplateView):
         return render(request, self.template_name, {})
 
 
-class MentorDashboardPage(TemplateView):
+class MentorDashboardPage(IsUserMentorMixin, TemplateView):
     """A mentor's home/dashboard page"""
 
     template_name: str = "people/mentor_dashboard.html"
@@ -162,7 +178,7 @@ class MentorDashboardPage(TemplateView):
         return render(request, self.template_name, {})
 
 
-class MentorMenteesPage(TemplateView):
+class MentorMenteesPage(IsUserMentorMixin, TemplateView):
     """A mentor's view of all his current mentess, along with new mentee requests"""
 
     template_name: str = "people/mentor_mentees.html"
@@ -172,7 +188,7 @@ class MentorMenteesPage(TemplateView):
 
 
 # possible rename due to ambiguous names
-class MentorMenteePage(TemplateView):
+class MentorMenteePage(IsUserMentorMixin, TemplateView):
     """A mentor's overview of a specfic mentee and their relationship"""
 
     template_name: str = "people/mentor_mentee.html"
@@ -181,7 +197,7 @@ class MentorMenteePage(TemplateView):
         return render(request, self.template_name, {})
 
 
-class MentorMenteeFeedbackPage(TemplateView):
+class MentorMenteeFeedbackPage(IsUserMentorMixin, TemplateView):
     """Feedback between the mentor and specific mentee"""
 
     template_name: str = "people/mentor_feedback.html"
@@ -190,7 +206,7 @@ class MentorMenteeFeedbackPage(TemplateView):
         return render(request, self.template_name, {})
 
 
-class MentorMenteeChatPage(TemplateView):
+class MentorMenteeChatPage(IsUserMentorMixin, TemplateView):
     """Allows a mentor to send and view chats to a specific mentee"""
 
     template_name: str = "people/mentor_chat.html"
@@ -199,7 +215,7 @@ class MentorMenteeChatPage(TemplateView):
         return render(request, self.template_name, {})
 
 
-class MentorMenteePlansPage(TemplateView):
+class MentorMenteePlansPage(IsUserMentorMixin, TemplateView):
     """Allows a mentor to view and manage plans of action for a specific mentee"""
 
     template_name: str = "people/mentor_plans.html"
@@ -208,7 +224,7 @@ class MentorMenteePlansPage(TemplateView):
         return render(request, self.template_name, {})
 
 
-class MentorMenteeMeetingsPage(TemplateView):
+class MentorMenteeMeetingsPage(IsUserMentorMixin, TemplateView):
     """Allows a mentor to view and manage meetings and meeting history for a specific mentee"""
 
     template_name: str = "people/mentor_meetings.html"
