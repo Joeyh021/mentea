@@ -137,6 +137,12 @@ def create_data() -> None:
         user=joey, topic=python, usertype=mentor_type
     )  # already an expert in python
     UserTopic.objects.create(
+        user=joey, topic=crypto, usertype=mentor_type
+    )  # already an expert in python
+    UserTopic.objects.create(
+        user=joey, topic=tiktok, usertype=mentor_type
+    )  # already an expert in python
+    UserTopic.objects.create(
         user=joey, topic=trainspotting, usertype=mentee_type
     )  # want to learn about birdwatching, which i am doing from steve
 
@@ -159,6 +165,11 @@ def create_data() -> None:
         approved=True,
     )
 
+    # also give me an awful review so theres no way i get any new mentees
+    # my mentee thinks my tiktok dances are awful
+    Rating.objects.create(
+        mentor=joey, rating=1, associated_topic=tiktok, rated_by=joeys_mentee
+    )
     # create some new mentees
     # these will be our test cases
     tim = User.objects.create(
@@ -184,6 +195,7 @@ def create_data() -> None:
     UserTopic.objects.create(user=sandra, topic=cocaine)
     UserTopic.objects.create(user=sandra, topic=crypto)
     UserTopic.objects.create(user=sandra, topic=tiktok)
+    UserTopic.objects.create(user=sandra, topic=yoga)
 
     alex = User.objects.create(
         first_name="Alex",
