@@ -1,5 +1,3 @@
-from typing import Any, List, Tuple, Union, Dict
-
 from people.models import *
 from events.models import Event
 
@@ -14,7 +12,7 @@ def get_matches(mentee: User):
     mentee_type = UserType.objects.get(type="mentee")
 
     mentee_topics = [ut.topic for ut in UserTopic.objects.filter(user=mentee)]
-    all_mentors: List[User] = list(
+    all_mentors = list(
         User.objects.filter(user_type=mentor_type)
         .exclude(business_area=mentee.business_area)
         .union(
@@ -82,5 +80,5 @@ def get_matches(mentee: User):
         )
         mentor_scores.append((mentor, score))
 
-        mentor_scores.sort(key=lambda t: t[1], reverse=True)
-        return [t[0] for t in mentor_scores]
+    mentor_scores.sort(key=lambda t: t[1], reverse=True)
+    return mentor_scores
