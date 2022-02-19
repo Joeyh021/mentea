@@ -209,5 +209,5 @@ def create_data() -> None:
     UserTopic.objects.create(user=alex, topic=mortgages)
     UserTopic.objects.create(user=alex, topic=capitalism)
     UserTopic.objects.create(user=alex, topic=investment)
-    UserTopic.objects.create(user=alex, topic=birdwatching)
+    UserTopic.objects.create(user=alex, topic=stonks)
     UserTopic.objects.create(user=alex, topic=spreadsheets)

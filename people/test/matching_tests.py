@@ -50,17 +50,15 @@ def test_matches_2() -> None:
 @pytest.mark.dependency(depends=["test_matching_data"])
 def test_matches_3() -> None:
     """Test the matches are returned in the order expected with the scores expected"""
-    # testing sandra here
-    sandra = User.objects.get(first_name="Sandra")
-    matches = get_matches(sandra)
+    # testing alex
+    alex = User.objects.get(email="alex@gmail.net")
+    matches = get_matches(alex)
 
-    # gonna look at top two with overlap - john and joey
-    # john has an overlap score of 0.25
-    # joey has an overlap score of 0.5
-    # joey also has terrible reviews, bringing his score down to 0.1
-    # joey also has a mentee already, bringing his score down further to 0.0875
-    # minus 0.125 because john already has one mentor (Joey)
-    assert matches[0] == (User.objects.get(first_name="John"), pytest.approx(0.25))
-    assert matches[1] == (User.objects.get(first_name="Joey"), pytest.approx(0.0875))
-    # should be 5 matches total - no one else works in noncing at the moment
-    assert len(matches) == 5
+    # alex should match with craig and james
+    # james overlaps on 3/6 topics
+    # james also has 3 other mentors for a total score of 0.3125
+    # craig overlaps on 2/6 topics for a score of 2/6
+    assert matches[0] == (User.objects.get(first_name="Craig"), pytest.approx(1 / 3))
+    assert matches[1] == (User.objects.get(first_name="James"), pytest.approx(0.3125))
+    # 1 other match with no overlap -- john
+    assert len(matches) == 3
