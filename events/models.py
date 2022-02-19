@@ -19,17 +19,14 @@ class FeedbackSubmission(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
 
 
-class QuestionType(models.Model):
-    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
-    name = models.CharField(max_length=50)
-    type_data = models.JSONField()
+
 
 
 class Questions(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     name = models.CharField(max_length=200)
-    type = models.ForeignKey(QuestionType, on_delete=models.CASCADE)
-    data = models.JSONField()
+    type = models.CharField(max_length=100)
+    type_data = models.JSONField()
     form = models.ForeignKey(FeedbackForm, on_delete=models.CASCADE)
     order = models.IntegerField()
     required = models.BooleanField()

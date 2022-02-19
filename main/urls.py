@@ -29,11 +29,15 @@ class FeedbackFormReturn(TemplateView):
     def get(self, request: HttpRequest, formId=None):
         feedbackForm = FeedbackForm.objects.get(id=formId)
         
-        questions = json.loads(serializers.serialize('json', Questions.objects.filter(form=formId)))
+        #questions = json.loads(serializers.serialize('json', Questions.objects.filter(form=formId)))
+        questions = Questions.objects.filter(form=formId).all().values()
   
-        return JsonResponse({'formData': feedbackForm, 'questions': questions}, safe = False, encoder=JsonEncoder)
+        return JsonResponse({'formData': feedbackForm, 'questions': list(questions)}, safe = False, encoder=JsonEncoder)
     
-    def post(self, request, formId):
+
+    
+class FeedbackFormCreate(TemplateView):
+    def post(self, request):
         form = FormValidator(request.POST)
         if form.is_valid():
             
@@ -55,10 +59,19 @@ class FeedbackFormReturn(TemplateView):
             ff = FeedbackForm(name= data['formData']['name'], desc = data['formData']['desc'])
             ff.save()
             
+            order = 0
+            for q in data['questions']:
+                type_data = ""
+                if ("type_data" in q):
+                    type_data = q['type_data']
+                question = Questions(name=q['name'], type=q['type'], type_data=type_data, required=q['required'], order=order, form=ff)
+                question.save()
+                order = order + 1
+                
+            
             return HttpResponse(ff.id)
         else:
             return HttpResponse(form.errors.as_json())
-    
 
         
 
@@ -71,4 +84,5 @@ urlpatterns = [
     path("feedback/", FeedbackPage.as_view(), name="feedback"),
     path("terms-of-service/", TermosOfServicePage.as_view(), name="tos"),
     path("feedback-api/<uuid:formId>/",csrf_exempt( FeedbackFormReturn.as_view()), name="ff-get"),
+    path("feedback-api/create/",csrf_exempt( FeedbackFormCreate.as_view()), name="ff-create"),
 ]

@@ -7,7 +7,6 @@ from events.models import (
     Answer,
     FeedbackForm,
     FeedbackSubmission,
-    QuestionType,
     Questions,
 )
 
@@ -30,9 +29,6 @@ class AdminQuestion(admin.ModelAdmin[Questions]):
     pass
 
 
-@admin.register(QuestionType)
-class AdminQuestionType(admin.ModelAdmin[QuestionType]):
-    list_display = ("name",)
 
 
 @admin.register(Answer)
