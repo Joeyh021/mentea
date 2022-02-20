@@ -3,6 +3,8 @@ import React, { useState } from "react"
 import { FC } from "react"
 import { IQuestion, IQuestionTypeData, Question } from "."
 import { v4 as uuidv4 } from 'uuid';
+import axios from "axios";
+import { readSync } from "fs";
 
 interface IQuestionType {
     htmlName: string
@@ -51,7 +53,7 @@ const questionTypes: IQuestionType[] = [
 interface IFormEditorData {
     id: string
     name: string
-    desc?: string
+    desc: string
 }
 
 interface IJSONFormBuilder {
@@ -59,12 +61,22 @@ interface IJSONFormBuilder {
     questions: IQuestion[]
 }
 
-const FormBuilder: FC = () => {
+interface IFormBuilder {
+    defaultMode?: EFormBuilderMode
+}
 
+enum EFormBuilderMode {
+    CREATE, EDIT
+}
+
+const FormBuilder: FC<IFormBuilder> = ({ defaultMode  }) => {
+
+    const [mode, setMode] = useState<EFormBuilderMode>(defaultMode || EFormBuilderMode.CREATE)
 
     const [formData, setFormData] = useState<IFormEditorData>({
         id: "new-form",
-        name: ""
+        name: "",
+        desc: ""
     })
     const [questions, setQuestions] = useState<IQuestion[]>([])
 
@@ -119,6 +131,19 @@ const FormBuilder: FC = () => {
         }
     }
 
+    const convertResponseToForm = (json: any, id: string) => {
+        try {
+            let fromJSON: IJSONFormBuilder = json;
+
+            setFormData({...fromJSON.formData, id: id})
+            setQuestions(fromJSON.questions || [])
+
+            setMode(EFormBuilderMode.EDIT)
+        } catch (e) {
+            alert('Unable to parse form')
+        }
+    }
+
     const convertFormToJSON = () => {
         let toJson: IJSONFormBuilder = {
             formData: formData,
@@ -128,14 +153,56 @@ const FormBuilder: FC = () => {
         return JSON.stringify(toJson)
     }
 
-    const saveForm = () => {
-        console.log(convertFormToJSON())
+    const convertFormToObj = () => {
+        let toObj: IJSONFormBuilder = {
+            formData: formData,
+            questions: questions
+        }
+
+        return toObj
     }
 
-    const devLoadForm = () => {
+    const saveForm = () => {
+        let data = convertFormToObj()
 
-        let json: string = prompt("JSON Rep") || ""
-        convertJSONToForm(json)
+        let fd: FormData = new FormData()
+        fd.append('jsonData', JSON.stringify(data))
+
+        if (mode === EFormBuilderMode.CREATE){
+            axios.post('/feedback-api/create/', fd).then(res => {
+                console.log(res.data)
+                let json = res.data
+
+                if (json.result === 'success') {
+                    console.log(json.data)
+                    setFormData({...formData, id: json.data.formId})
+
+                    let updatedQuestions: IQuestion[] = []
+                    let counter = 0
+                    questions.forEach(q => {
+                        q.id = json.data.questionIds[counter]
+                        counter = counter + 1
+                        updatedQuestions.push(q)
+                    })
+
+                    setQuestions(updatedQuestions)
+                    setMode(EFormBuilderMode.EDIT)
+                }
+
+            })
+        } else {
+            axios.post('/feedback-api/editor-edit/', fd).then(r => console.log(r.data))
+        }
+
+    }
+
+    const loadFormFromId = () => {
+
+        let formId: string = prompt("Form ID") || ""
+
+        axios.get(`/feedback-api/${formId}/`).then(res => convertResponseToForm(res.data, formId))
+
+        
     }
     
 
@@ -352,8 +419,8 @@ const FormBuilder: FC = () => {
                 })
             }
             <button className="btn btn-primary" type="button" onClick={addQuestion}>Add</button>
-            <button className="btn btn-primary" type="button" onClick={saveForm}>Save Form</button>
-            <button className="btn btn-info" type="button" onClick={devLoadForm}>Load custom form</button>
+            <button className="btn btn-primary" type="button" onClick={saveForm}>{ mode === EFormBuilderMode.CREATE ? "Save Form" : "Update Form"}</button>
+            <button className="btn btn-info" type="button" onClick={loadFormFromId}>Load custom form</button>
         </div>
     )
 }

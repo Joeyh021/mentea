@@ -12,6 +12,8 @@ from events.models import FeedbackForm, Questions
 
 from django.views.decorators.csrf import csrf_exempt
 
+from django.db.models import Q
+
 from .views import *
 
 app_name = "main"
@@ -28,6 +30,7 @@ class FormValidator(forms.Form):
 class FeedbackFormReturn(TemplateView):
     def get(self, request: HttpRequest, formId=None):
         feedbackForm = FeedbackForm.objects.get(id=formId)
+        
         
         #questions = json.loads(serializers.serialize('json', Questions.objects.filter(form=formId)))
         questions = Questions.objects.filter(form=formId).all().values()
@@ -59,6 +62,8 @@ class FeedbackFormCreate(TemplateView):
             ff = FeedbackForm(name= data['formData']['name'], desc = data['formData']['desc'])
             ff.save()
             
+            qIds = []
+            
             order = 0
             for q in data['questions']:
                 type_data = ""
@@ -66,10 +71,80 @@ class FeedbackFormCreate(TemplateView):
                     type_data = q['type_data']
                 question = Questions(name=q['name'], type=q['type'], type_data=type_data, required=q['required'], order=order, form=ff)
                 question.save()
+                qIds.append(question.id)
                 order = order + 1
                 
             
-            return HttpResponse(ff.id)
+            return JsonResponse({'result': 'success', 'data': {'formId': ff.id, 'questionIds': qIds}})
+        else:
+            return HttpResponse(form.errors.as_json())
+        
+
+            
+class FeedbackFormEditorEdit(TemplateView):
+    def post(self, request):
+        form = FormValidator(request.POST) 
+        if form.is_valid():
+            data = json.loads(form.data['jsonData'])
+            
+            if ("id" not in data['formData'] or data['formData']['id'] == ""):
+                return HttpResponse('Missing Form ID')
+            
+            if ("name" not in data['formData'] or data['formData']['name'] == ""):
+                return HttpResponse('Missing name')
+            
+            if ('desc' not in data['formData']):
+                return HttpResponse('Missing desc')
+            
+            if ('questions' not in data or data['questions'] == []):
+                return HttpResponse('Missing questions') 
+            
+            formId = data['formData']['id']
+            
+            try:
+                ff = FeedbackForm.objects.get(id=formId)
+                
+                ff.name = data['formData']['name']
+                ff.desc = data['formData']['desc']
+                
+                ff.save()
+                
+                questionsIds = []
+                
+                order = 0
+                for q in data['questions']:
+                    type_data = ""
+                    if ("type_data" in q):
+                        type_data = q['type_data']
+                        
+                        
+                    question = Questions.objects.get(id=q['id'])
+                    question.name = q['name']
+                    question.type = q['type']
+                    question.type_data = type_data
+                    question.required = q['required']
+                    question.order = order
+                    
+                    questionsIds.append(question.id)
+                    
+                    question.save()
+                    order = order + 1
+                    
+                # DELETE FROM forms WHERE form=? AND id NOT IN (?,?,?)
+                
+                toDelete = Questions.objects.filter(form=ff.id).exclude(id__in=questionsIds)
+                toDelete.delete()
+                
+                    
+                return JsonResponse({'result': 'success', 'data': ff.id})
+                
+                
+            except:
+                
+                return HttpResponse('No form found with this given ID')
+            
+
+            
         else:
             return HttpResponse(form.errors.as_json())
 
@@ -85,4 +160,5 @@ urlpatterns = [
     path("terms-of-service/", TermosOfServicePage.as_view(), name="tos"),
     path("feedback-api/<uuid:formId>/",csrf_exempt( FeedbackFormReturn.as_view()), name="ff-get"),
     path("feedback-api/create/",csrf_exempt( FeedbackFormCreate.as_view()), name="ff-create"),
+    path("feedback-api/editor-edit/",csrf_exempt( FeedbackFormEditorEdit.as_view()), name="ff-editor-edit"),
 ]
