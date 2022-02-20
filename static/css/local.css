@@ -239,7 +239,7 @@ label{
 .bg-text-boxes-homepage {
     width:450px; 
     height:350px; 
-    padding: 20px 20px; 
+    padding: 30px; 
     border: none; 
     border-radius: 20px;
     background-color:#AFD5C7;
@@ -248,7 +248,7 @@ label{
 .bg-text-boxes-homepage2 {
     width:450px; 
     height:350px; 
-    padding: 20px 20px; 
+    padding: 30px; 
     border:10px solid #AFD5C7;
     border-radius: 20px;
 }
