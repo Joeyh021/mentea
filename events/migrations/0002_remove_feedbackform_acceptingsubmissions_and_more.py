@@ -6,22 +6,22 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('events', '0001_initial'),
+        ("events", "0001_initial"),
     ]
 
     operations = [
         migrations.RemoveField(
-            model_name='feedbackform',
-            name='acceptingSubmissions',
+            model_name="feedbackform",
+            name="acceptingSubmissions",
         ),
         migrations.AddField(
-            model_name='feedbackform',
-            name='acceptingSubmissionsUntil',
+            model_name="feedbackform",
+            name="acceptingSubmissionsUntil",
             field=models.DateTimeField(auto_now=True),
         ),
         migrations.AddField(
-            model_name='feedbackform',
-            name='desc',
+            model_name="feedbackform",
+            name="desc",
             field=models.TextField(blank=True),
         ),
     ]

@@ -19,9 +19,6 @@ class FeedbackSubmission(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
 
 
-
-
-
 class Questions(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     name = models.CharField(max_length=200)

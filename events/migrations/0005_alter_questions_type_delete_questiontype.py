@@ -6,16 +6,16 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('events', '0004_alter_feedbackform_acceptingsubmissionsuntil'),
+        ("events", "0004_alter_feedbackform_acceptingsubmissionsuntil"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='questions',
-            name='type',
+            model_name="questions",
+            name="type",
             field=models.CharField(max_length=100),
         ),
         migrations.DeleteModel(
-            name='QuestionType',
+            name="QuestionType",
         ),
     ]

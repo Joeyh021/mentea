@@ -6,13 +6,13 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('events', '0002_remove_feedbackform_acceptingsubmissions_and_more'),
+        ("events", "0002_remove_feedbackform_acceptingsubmissions_and_more"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='feedbackform',
-            name='acceptingSubmissionsUntil',
+            model_name="feedbackform",
+            name="acceptingSubmissionsUntil",
             field=models.DateTimeField(blank=True),
         ),
     ]
