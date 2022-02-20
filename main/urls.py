@@ -33,7 +33,7 @@ class FeedbackFormReturn(TemplateView):
         
         
         #questions = json.loads(serializers.serialize('json', Questions.objects.filter(form=formId)))
-        questions = Questions.objects.filter(form=formId).all().values()
+        questions = Questions.objects.filter(form=formId).order_by('order').all().values()
   
         return JsonResponse({'formData': feedbackForm, 'questions': list(questions)}, safe = False, encoder=JsonEncoder)
     
@@ -104,6 +104,8 @@ class FeedbackFormEditorEdit(TemplateView):
             try:
                 ff = FeedbackForm.objects.get(id=formId)
                 
+
+                
                 ff.name = data['formData']['name']
                 ff.desc = data['formData']['desc']
                 
@@ -118,16 +120,19 @@ class FeedbackFormEditorEdit(TemplateView):
                         type_data = q['type_data']
                         
                         
-                    question = Questions.objects.get(id=q['id'])
-                    question.name = q['name']
-                    question.type = q['type']
-                    question.type_data = type_data
-                    question.required = q['required']
-                    question.order = order
+                    (question, c) = Questions.objects.get_or_create(id=q['id'], defaults={"name": q['name'], 'type':q['type'], 'type_data':type_data, 'required': q['required'], 'order':order, 'form':ff})
                     
+                    if (not c):
+                        question.name = q['name']
+                        question.type = q['type']
+                        question.type_data = type_data
+                        question.required = q['required']
+                        question.order = order
+                    
+                    
+                    
+                        question.save()
                     questionsIds.append(question.id)
-                    
-                    question.save()
                     order = order + 1
                     
                 # DELETE FROM forms WHERE form=? AND id NOT IN (?,?,?)
@@ -139,7 +144,8 @@ class FeedbackFormEditorEdit(TemplateView):
                 return JsonResponse({'result': 'success', 'data': ff.id})
                 
                 
-            except:
+            except Exception as err:
+                print(err)
                 
                 return HttpResponse('No form found with this given ID')
             
