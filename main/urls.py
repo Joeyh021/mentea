@@ -2,6 +2,7 @@ import json
 from django import forms
 from django.forms import model_to_dict
 from django.http import JsonResponse
+from django.shortcuts import get_object_or_404
 from django.template import RequestContext
 from django.urls import path, include
 
@@ -29,7 +30,8 @@ class FormValidator(forms.Form):
 
 class FeedbackFormReturn(TemplateView):
     def get(self, request: HttpRequest, formId=None):
-        feedbackForm = FeedbackForm.objects.get(id=formId)
+        feedbackForm = get_object_or_404(FeedbackForm, id=formId)
+        #feedbackForm = FeedbackForm.objects.get(id=formId)
         
         
         #questions = json.loads(serializers.serialize('json', Questions.objects.filter(form=formId)))

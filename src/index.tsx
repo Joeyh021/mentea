@@ -1,4 +1,5 @@
-import React, { useState } from "react";
+import axios from "axios";
+import React, { useEffect, useState } from "react";
 import { FC } from "react";
 import ReactDOM from "react-dom";
 import FormBuilder from "./form-builder";
@@ -12,6 +13,7 @@ interface IFeedbackFormProps {
 interface IFeedbackForm {
   id: string
   name: string
+  desc: string
 }
 
 export interface IQuestion {
@@ -164,24 +166,58 @@ export const fakeQuestions: IQuestion[] = [
 
 const FeedbackFormViewer: FC<IFeedbackFormProps> = ({ id }) => {
 
-  const [questions, setQuestions] = useState<IQuestion[]>(fakeQuestions)
+  const [error, setError] = useState<string | null>(null)
 
-  const [formData, setFormData] = useState<IFeedbackForm>({id: 'Loading...', name: 'Loading Form Name...'})
+  const [questions, setQuestions] = useState<IQuestion[]>([])
+
+  const [formData, setFormData] = useState<IFeedbackForm>({id: 'Loading...', name: 'Loading Form Name...', desc: ""})
+
+  useEffect(() => {
+    loadFormFromId(id)
+  }, [id])
+
+  const loadFormFromId = (formId :string) => {
+
+    
+
+    axios.get(`/feedback-api/${formId}/`).then(res => {
+      setFormData(res.data.formData)
+      setQuestions(res.data.questions)
+    }).catch(e => {
+      setError("No form was found with the given ID, or it could not be loaded!")
+    })
+
+    
+  }
+
 
   return (
-    <form>
-      <h1 className="mb-0">{ formData.name }</h1>
-      <small>ID: { formData.id }</small>
+    <>
+    {
+      error === null && 
+      <form>
+      <h1>{ formData.name || 'Give me a name!' }</h1>
+      <p>{ formData.desc || "Give me a description above! (If you leave it blank then I won't show up when actually used!)" }</p>
       {
         questions.map(q => {
           return (
-            <Question {...q} key={q.id} />
+            <div key={q.id} className="pb-1">
+              <Question {...q} key={q.id} />
+            </div>
           )
         })
       }
 
       <button type="submit" className="btn btn-primary">Submit</button>
     </form>
+    } 
+    {
+      error &&
+      <div className="alert alert-danger">
+        { error }
+      </div>
+    }
+    </>
   )
 }
 

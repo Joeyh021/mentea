@@ -26,7 +26,7 @@ const questionTypes: IQuestionType[] = [
     },
     {
         htmlName: "email",
-        visualName: "email"
+        visualName: "Email"
     },
     {
         htmlName: "password",
@@ -329,7 +329,7 @@ const FormBuilder: FC<IFormBuilder> = ({ defaultMode  }) => {
                                                                     <label htmlFor={`form-editor-${formData.id}-question-${q.id}-addoption`} className="col-form-label">Add option: </label>
                                                                 </div>
                                                                 <div className="col-auto">
-                                                                    <input type="text" id={`form-editor-${formData.id}-question-${q.id}-addoption`} className="form-control" onKeyPress={(e) => {if (e.key === 'Enter') { updateQuestion({...q, type_data: {...q.type_data, options: [...q.type_data?.options || [], {key: e.target.value, value: uuidv4()}]}}); e.preventDefault()}}} />
+                                                                    <input type="text" id={`form-editor-${formData.id}-question-${q.id}-addoption`} className="form-control" onKeyPress={(e) => {if (e.key === 'Enter') { updateQuestion({...q, type_data: {...q.type_data, options: [...q.type_data?.options || [], {key: e.target.value, value: uuidv4()}]}}); e.target.value=""; e.preventDefault()}}} />
                                                                 </div>
                                                                 
                                                             </div>
@@ -418,9 +418,9 @@ const FormBuilder: FC<IFormBuilder> = ({ defaultMode  }) => {
                     )
                 })
             }
-            <button className="btn btn-primary" type="button" onClick={addQuestion}>Add</button>
-            <button className="btn btn-primary" type="button" onClick={saveForm}>{ mode === EFormBuilderMode.CREATE ? "Save Form" : "Update Form"}</button>
-            <button className="btn btn-info" type="button" onClick={loadFormFromId}>Load custom form</button>
+            <button className="btn btn-primary me-2" type="button" onClick={addQuestion}>Add Question</button>
+            <button className="btn btn-primary me-2" type="button" onClick={saveForm}>{ mode === EFormBuilderMode.CREATE ? "Save Form" : "Update Form"}</button>
+            <button className="btn btn-info " type="button" onClick={loadFormFromId}>Load custom form</button>
         </div>
     )
 }
