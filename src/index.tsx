@@ -2,6 +2,7 @@ import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { FC } from "react";
 import ReactDOM from "react-dom";
+import { FieldValues, useForm, UseFormRegister } from "react-hook-form";
 import FormBuilder from "./form-builder";
 
 
@@ -163,14 +164,34 @@ export const fakeQuestions: IQuestion[] = [
   },
 ]
 
+interface IAnswerableQuestion extends IQuestion {
+  register: UseFormRegister<FieldValues> | undefined
+  errors: {[error: string]: any} | undefined
+
+}
+
+interface ISubmission {
+  formId: string
+  answers: IAnswer[]
+}
+
+interface IAnswer {
+  id: string
+  value: any
+}
+
 
 const FeedbackFormViewer: FC<IFeedbackFormProps> = ({ id }) => {
 
   const [error, setError] = useState<string | null>(null)
 
-  const [questions, setQuestions] = useState<IQuestion[]>([])
+  const [questions, setQuestions] = useState<IAnswerableQuestion[]>([])
 
   const [formData, setFormData] = useState<IFeedbackForm>({id: 'Loading...', name: 'Loading Form Name...', desc: ""})
+
+  const { register, handleSubmit, formState: { errors } } = useForm()
+
+
 
   useEffect(() => {
     loadFormFromId(id)
@@ -181,7 +202,7 @@ const FeedbackFormViewer: FC<IFeedbackFormProps> = ({ id }) => {
     
 
     axios.get(`/feedback-api/${formId}/`).then(res => {
-      setFormData(res.data.formData)
+      setFormData({...res.data.formData, id: formId})
       setQuestions(res.data.questions)
     }).catch(e => {
       setError("No form was found with the given ID, or it could not be loaded!")
@@ -190,19 +211,39 @@ const FeedbackFormViewer: FC<IFeedbackFormProps> = ({ id }) => {
     
   }
 
+  const submitForm = (data: any) => {
+
+
+    let answers: IAnswer[] = []
+
+    Object.entries(data).forEach((entry: any) => {
+      answers.push({
+        id: entry[0],
+        value: entry[1]
+      })
+    })
+
+    let submission: ISubmission = {
+      formId: formData.id,
+      answers: answers
+    }
+
+    console.log(submission)
+  }
+
 
   return (
     <>
     {
       error === null && 
-      <form>
+      <form onSubmit={handleSubmit(submitForm)}>
       <h1>{ formData.name || 'Give me a name!' }</h1>
       <p>{ formData.desc || "Give me a description above! (If you leave it blank then I won't show up when actually used!)" }</p>
       {
         questions.map(q => {
           return (
             <div key={q.id} className="pb-1">
-              <Question {...q} key={q.id} />
+              <Question {...q} register={register} errors={errors} key={q.id} />
             </div>
           )
         })
@@ -222,7 +263,10 @@ const FeedbackFormViewer: FC<IFeedbackFormProps> = ({ id }) => {
 }
 
 
-export const Question: FC<IQuestion> = ({ ...props }) => {
+export const Question: FC<IAnswerableQuestion> = ({ ...props }) => {
+
+
+  const [hasFormHook, setHasFormHook] = useState<boolean>(props.register !== undefined)
 
   if (props.type === "checkbox") {
     return (
@@ -253,8 +297,15 @@ export const Question: FC<IQuestion> = ({ ...props }) => {
 
           { props.required && <p className="text-end mt-0 mb-0 text-danger" style={{'fontSize': '.8rem'}}>Required *</p>}
         </div>
+
+
+        {
+          hasFormHook && props.register && props.errors ? 
+          <input {...props.register(props.id, { required: props.required, minLength: props.type_data?.min, maxLength: props.type_data?.max })} type={props.type} placeholder={props.type_data?.placeholder} className={"form-control " + (props.errors[props.id] && "is-invalid")} id={`form-question-${props.id}`} onKeyPress={e => e.key === 'Enter' && e.preventDefault()} aria-describedby="emailHelp"  />
+          :
+          <input type={props.type} placeholder={props.type_data?.placeholder} className="form-control" id={`form-question-${props.id}`} onKeyPress={e => e.key === 'Enter' && e.preventDefault()} aria-describedby="emailHelp" required={props.required} />
+        }
         
-        <input type={props.type} placeholder={props.type_data?.placeholder} className="form-control" id={`form-question-${props.id}`} onKeyPress={e => e.key === 'Enter' && e.preventDefault()} aria-describedby="emailHelp" required={props.required} />
         <div id={`form-question-${props.id}-help`} className="form-text">{ props.desc }</div>
       </div>
     )
@@ -263,7 +314,10 @@ export const Question: FC<IQuestion> = ({ ...props }) => {
   return null
 }
 
-export const CheckboxQuestion: FC<IQuestion> = ({ ...props }) => {
+export const CheckboxQuestion: FC<IAnswerableQuestion> = ({ ...props }) => {
+
+  const [hasFormHook, setHasFormHook] = useState<boolean>(props.register !== undefined)
+
   return (
     <div className="mb-3">
           <div className="d-flex justify-content-between align-items-end">
@@ -271,16 +325,31 @@ export const CheckboxQuestion: FC<IQuestion> = ({ ...props }) => {
 
           { props.required && <p className="text-end mt-0 mb-0 text-danger" style={{'fontSize': '.8rem'}}>Required *</p>}
         </div>
-        <div>
+        {hasFormHook ? <div>
           { props.type_data?.options?.map(option => {
+            if (!props.register) return
+            if (!props.errors) return
             return (
               <div key={option.value} className="form-check form-check-inline">
-                <input className="form-check-input" type="checkbox" id={`form-question-${props.id}-option-${option.key}`} value={option.value} />
+                <input {...props.register(props.id, { required: true })} className={"form-check-input " + (props.errors[props.id] && "is-invalid")} type="checkbox" id={`form-question-${props.id}-option-${option.key}`} value={option.value} />
                 <label className="form-check-label" htmlFor={`form-question-${props.id}-option-${option.key}`}>{option.key}</label>
               </div>
             )
           })}
         </div>
+        :
+        <div>
+          { props.type_data?.options?.map(option => {
+            return (
+              <div key={option.value} className="form-check form-check-inline">
+                <input className={"form-check-input "} type="checkbox" id={`form-question-${props.id}-option-${option.key}`} value={option.value} />
+                <label className="form-check-label" htmlFor={`form-question-${props.id}-option-${option.key}`}>{option.key}</label>
+              </div>
+            )
+          })}
+        </div>
+        }
+
 
 
         <div id={`form-question-${props.id}-help`} className="form-text">{ props.desc }</div>
@@ -288,7 +357,10 @@ export const CheckboxQuestion: FC<IQuestion> = ({ ...props }) => {
   )
 }
 
-export const RadioQuestion: FC<IQuestion> = ({ ...props }) => {
+export const RadioQuestion: FC<IAnswerableQuestion> = ({ ...props }) => {
+
+  const [hasFormHook, setHasFormHook] = useState<boolean>(props.register !== undefined)
+
   return (
     <div className="mb-3">
   <div className="d-flex justify-content-between align-items-end">
@@ -296,16 +368,31 @@ export const RadioQuestion: FC<IQuestion> = ({ ...props }) => {
 
           { props.required && <p className="text-end mt-0 mb-0 text-danger" style={{'fontSize': '.8rem'}}>Required *</p>}
         </div>
+    { hasFormHook ? 
     <div>
       { props.type_data?.options?.map(option => {
+        if (!props.register) return
+        if (!props.errors) return
         return (
           <div key={option.value} className="form-check form-check-inline">
-            <input className="form-check-input" type="radio" name={`form-question-${props.id}-radio`} id={`form-question-${props.id}-option-${option.key}`} value={option.value} />
+            <input {...props.register(props.id, { required: true })} className={"form-check-input " + (props.errors[props.id] && "is-invalid")} type="radio" name={props.id} id={`form-question-${props.id}-option-${option.key}`} value={option.value} />
             <label className="form-check-label" htmlFor={`form-question-${props.id}-option-${option.key}`}>{option.key}</label>
           </div>
         )
       })}
     </div>
+    :
+    <div>
+      { props.type_data?.options?.map(option => {
+        return (
+          <div key={option.value} className="form-check form-check-inline">
+            <input  className={"form-check-input " } type="radio" name={props.id} id={`form-question-${props.id}-option-${option.key}`} value={option.value} />
+            <label className="form-check-label" htmlFor={`form-question-${props.id}-option-${option.key}`}>{option.key}</label>
+          </div>
+        )
+      })}
+    </div>
+    }
 
 
     <div id={`form-question-${props.id}-help`} className="form-text">{ props.desc }</div>
@@ -313,7 +400,10 @@ export const RadioQuestion: FC<IQuestion> = ({ ...props }) => {
   )
 }
 
-export const SelectQuestion: FC<IQuestion> = ({ ...props }) => {
+export const SelectQuestion: FC<IAnswerableQuestion> = ({ ...props }) => {
+
+  const [hasFormHook, setHasFormHook] = useState<boolean>(props.register !== undefined)
+
   return (
     <div className="mb-3">
   <div className="d-flex justify-content-between align-items-end">
@@ -321,16 +411,31 @@ export const SelectQuestion: FC<IQuestion> = ({ ...props }) => {
 
           { props.required && <p className="text-end mt-0 mb-0 text-danger" style={{'fontSize': '.8rem'}}>Required *</p>}
         </div>
-    <select className="form-select" id={`form-question-${props.id}`} aria-label="Default select example" required={props.required}>
-      <option selected>Open this select menu</option>
+    
+    {
+      hasFormHook && props.register && props.errors ?
+      <select {...props.register(props.id, { required: true, validate: v => v !== "default_none" })} className={"form-select " + ((props.errors[props.id] && "is-invalid"))} defaultValue="default_none" id={`form-question-${props.id}`} aria-label="Default select example" >
+      <option value="default_none">Open this select menu</option>
       {
         props.type_data?.options?.map(option => {
           return (
-            <option value={option.value}>{option.key}</option>
+            <option key={option.value} value={option.value}>{option.key}</option>
           )
         })
       }
     </select>
+    :
+    <select className="form-select" defaultValue="default_none" id={`form-question-${props.id}`} aria-label="Default select example" required={props.required}>
+      <option value="default_none">Open this select menu</option>
+      {
+        props.type_data?.options?.map(option => {
+          return (
+            <option key={option.value} value={option.value}>{option.key}</option>
+          )
+        })
+      }
+    </select>
+    }
 
 
     <div id={`form-question-${props.id}-help`} className="form-text">{ props.desc }</div>
@@ -338,7 +443,12 @@ export const SelectQuestion: FC<IQuestion> = ({ ...props }) => {
   )
 }
 
-export const TextareaQuestion: FC<IQuestion> = ({ ...props }) => {
+export const TextareaQuestion: FC<IAnswerableQuestion> = ({ ...props }) => {
+
+
+  const [hasFormHook, setHasFormHook] = useState<boolean>(props.register !== undefined)
+
+
   return (
     <div className="mb-3">
   <div className="d-flex justify-content-between align-items-end">
@@ -346,7 +456,14 @@ export const TextareaQuestion: FC<IQuestion> = ({ ...props }) => {
 
           { props.required && <p className="text-end mt-0 mb-0 text-danger" style={{'fontSize': '.8rem'}}>Required *</p>}
         </div>
-    <textarea id={`form-question-${props.id}`} rows={3} className="form-control"></textarea>
+
+      {
+        hasFormHook && props.register && props.errors ? 
+        <textarea {...props.register(props.id, { required: props.required })} id={`form-question-${props.id}`} rows={3} className={"form-control " + (props.errors[props.id] && "is-invalid")}></textarea>
+        :
+        <textarea id={`form-question-${props.id}`} rows={3} className="form-control"></textarea>
+      }
+    
 
 
     <div id={`form-question-${props.id}-help`} className="form-text">{ props.desc }</div>
@@ -354,8 +471,11 @@ export const TextareaQuestion: FC<IQuestion> = ({ ...props }) => {
   )
 }
 
-export const RangeQuestion: FC<IQuestion> = ({ ...props }) => {
+export const RangeQuestion: FC<IAnswerableQuestion> = ({ ...props }) => {
 
+  const [hasFormHook, setHasFormHook] = useState<boolean>(props.register !== undefined)
+
+ 
 
   const calcSteps = () => {
 
@@ -366,7 +486,7 @@ export const RangeQuestion: FC<IQuestion> = ({ ...props }) => {
   }
 
   return (
-    <div className="mb-3">
+    <div className="mb-3 pb-3">
       <div className="d-flex justify-content-between align-items-end">
         <label htmlFor={`form-question-${props.id}`} className="form-label">{ props.name }</label>
 
@@ -374,9 +494,14 @@ export const RangeQuestion: FC<IQuestion> = ({ ...props }) => {
       </div>
 
       
-      <input type={props.type} placeholder={props.type_data?.placeholder} min={props.type_data?.min} max={props.type_data?.max} step={props.type_data?.step} className="form-range" style={{padding: '0'}} id={`form-question-${props.id}`}  aria-describedby="emailHelp" required={props.required} />
-      
-      <div className="d-flex justify-content-between position-relative " style={{marginLeft: "7px", marginRight: "7px"}}>
+      {
+        hasFormHook && props.register && props.errors ?
+        <input {...props.register(props.id, { required: props.required })} defaultValue={(props.type_data?.max || 2)/2 || 0} type={props.type} placeholder={props.type_data?.placeholder} min={props.type_data?.min} max={props.type_data?.max} step={props.type_data?.step} className="form-range" style={{padding: '0'}} id={`form-question-${props.id}`}  aria-describedby="emailHelp" required={props.required} />
+        :
+        <input defaultValue={(props.type_data?.max || 2)/2 || 0} type={props.type} placeholder={props.type_data?.placeholder} min={props.type_data?.min} max={props.type_data?.max} step={props.type_data?.step} className="form-range" style={{padding: '0'}} id={`form-question-${props.id}`}  aria-describedby="emailHelp" required={props.required} />
+      }
+
+      <div className="d-flex justify-content-between position-relative mb-3" style={{marginLeft: "7px", marginRight: "7px"}}>
         <div className="position-relative">
           <div style={{height: "10px", width: "1px", backgroundColor: 'black'}} />
           <div className="position-absolute top-100 " style={{width: "10px", height: "10px", left: "-3.5px"}}>
@@ -391,6 +516,8 @@ export const RangeQuestion: FC<IQuestion> = ({ ...props }) => {
         </div>
         
       </div>
+
+
       
       <div id={`form-question-${props.id}-help`} className="form-text">{ props.desc }</div>
     </div>

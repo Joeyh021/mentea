@@ -132,16 +132,14 @@ const FormBuilder: FC<IFormBuilder> = ({ defaultMode  }) => {
     }
 
     const convertResponseToForm = (json: any, id: string) => {
-        try {
+        
             let fromJSON: IJSONFormBuilder = json;
 
             setFormData({...fromJSON.formData, id: id})
             setQuestions(fromJSON.questions || [])
 
             setMode(EFormBuilderMode.EDIT)
-        } catch (e) {
-            alert('Unable to parse form')
-        }
+
     }
 
     const convertFormToJSON = () => {
@@ -411,7 +409,7 @@ const FormBuilder: FC<IFormBuilder> = ({ defaultMode  }) => {
                                 
                             </div>
                             <div className="col-6 ps-5">
-                                <Question {...q} />
+                                <Question {...q} register={undefined} errors={undefined} />
                             </div>
                             <hr className="mt-4" />
                         </div>
