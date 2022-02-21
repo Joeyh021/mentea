@@ -1,5 +1,5 @@
 [tool.poetry]
-name = "mentoring_platform"
+name = "mentea"
 version = "0.1.0"
 description = ""
 authors = ["Joe Harrison <josephharrison1@me.com>"]
@@ -47,10 +47,10 @@ warn_unreachable = true
 plugins = ["mypy_django_plugin.main"]
 
 [tool.django-stubs]
-django_settings_module = "mentoring_platform.settings.dev"
+django_settings_module = "mentea.settings.dev"
 
 [tool.pytest.ini_options]
-DJANGO_SETTINGS_MODULE = "mentoring_platform.settings.dev"
+DJANGO_SETTINGS_MODULE = "mentea.settings.dev"
 python_files = ["tests.py", "test_*.py", "*_tests.py", "*_test.py"]
 addopts = "-p no:warnings"
 
