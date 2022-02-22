@@ -78,7 +78,11 @@ class UserProfileEditPage(LoginRequiredMixin, TemplateView):
         ba_form = self.ba_form_class()
         topic_form = self.topic_form_class()
 
-        return render(request, self.template_name, {"form": form, "ba_form": ba_form, "topic_form": topic_form})
+        return render(
+            request,
+            self.template_name,
+            {"form": form, "ba_form": ba_form, "topic_form": topic_form},
+        )
 
     def post(self, request: HttpRequest, *args: Any, **kwarsgs: Any) -> HttpResponse:
         print(request.POST)
@@ -96,14 +100,20 @@ class UserProfileEditPage(LoginRequiredMixin, TemplateView):
                 return redirect("profile_edit")
             else:
                 messages.error(request, "Error creating business area")
-                return render(request, self.template_name, {"form": self.form_class(), "ba_form": ba_form, "topic_form": self.topic_form_class()})
+                return render(
+                    request,
+                    self.template_name,
+                    {
+                        "form": self.form_class(),
+                        "ba_form": ba_form,
+                        "topic_form": self.topic_form_class(),
+                    },
+                )
         elif "topic_new" in request.POST:
             # Process topic form
             topic_form = self.topic_form_class(request.POST)
             if topic_form.is_valid():
-                new_topic = Topic(
-                    topic=topic_form.cleaned_data["topic_new"]
-                )
+                new_topic = Topic(topic=topic_form.cleaned_data["topic_new"])
                 new_topic.save()
 
                 # Show a message saying "Topic created" and redirect to profile page
@@ -111,7 +121,15 @@ class UserProfileEditPage(LoginRequiredMixin, TemplateView):
                 return redirect("profile_edit")
             else:
                 messages.error(request, "Error creating topic")
-                return render(request, self.template_name, {"form": self.form_class(), "ba_form": self.ba_form_class(), "topic_form": topic_form})
+                return render(
+                    request,
+                    self.template_name,
+                    {
+                        "form": self.form_class(),
+                        "ba_form": self.ba_form_class(),
+                        "topic_form": topic_form,
+                    },
+                )
         else:
             form = self.form_class(request.POST)
             if form.is_valid():
@@ -147,8 +165,15 @@ class UserProfileEditPage(LoginRequiredMixin, TemplateView):
 
                 # Show error messages and go back to form page
                 messages.error(request, "Error updating profile")
-                return render(request, self.template_name,
-                              {"form": form, "ba_form": self.ba_form_class(), "topic_form": self.topic_form_class()})
+                return render(
+                    request,
+                    self.template_name,
+                    {
+                        "form": form,
+                        "ba_form": self.ba_form_class(),
+                        "topic_form": self.topic_form_class(),
+                    },
+                )
 
 
 class UserCalendarPage(LoginRequiredMixin, TemplateView):

@@ -28,6 +28,4 @@ class BusinessAreaForm(forms.Form):
 
 
 class TopicForm(forms.Form):
-    topic_new = forms.CharField(
-        widget=forms.TextInput(attrs={"class": "form-control"})
-    )
+    topic_new = forms.CharField(widget=forms.TextInput(attrs={"class": "form-control"}))
