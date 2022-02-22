@@ -9,7 +9,7 @@ from django.urls import path, include
 from django.core import serializers
 from django.core.serializers.json import DjangoJSONEncoder
 from django.db.models import Model
-from events.models import FeedbackForm, Questions
+from events.models import Answer, FeedbackForm, FeedbackSubmission, Questions
 
 from django.views.decorators.csrf import csrf_exempt
 
@@ -171,6 +171,43 @@ class FeedbackFormEditorEdit(TemplateView):
         else:
             return HttpResponse(form.errors.as_json())
 
+class FeedbackFormSubmissionHandler(TemplateView):
+    def post(self, request):
+        form = FormValidator(request.POST)
+        if form.is_valid():
+            data = json.loads(form.data["jsonData"])
+
+            if "formId" not in data or data["formId"] == "":
+                return HttpResponse("Missing Form ID")
+            
+            if "answers" not in data or data['answers'] == []:
+                return HttpResponse("Missing answers")
+
+        
+
+            formId = data["formId"]
+            
+            ff = get_object_or_404(FeedbackForm, id=formId)
+            
+            submission = FeedbackSubmission(user=request.user.id, form=ff)
+            submission.save()
+            
+            try:
+                for a in data["answers"]:
+                    Questions.objects.get(id=a['q'])
+                    answer = Answer(associated_question=a['q'], associated_submission=submission, data=a['a'])
+                    answer.save()
+            
+            except Exception as err:
+                submission.delete()
+                return JsonResponse({"result": "error", "data": "A given question wasn't found in the database, try refreshing the form!"})
+            
+            return JsonResponse({"result": "success", "data": submission.id})
+
+            
+
+        else:
+            return HttpResponse(form.errors.as_json())
 
 urlpatterns = [
     path("", IndexPage.as_view(), name="index"),
@@ -193,4 +230,9 @@ urlpatterns = [
         csrf_exempt(FeedbackFormEditorEdit.as_view()),
         name="ff-editor-edit",
     ),
+    path(
+        "feedback-api/submission/",
+        csrf_exempt(FeedbackFormSubmissionHandler.as_view()),
+        name="ff-submission"
+    )
 ]

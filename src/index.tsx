@@ -176,8 +176,8 @@ interface ISubmission {
 }
 
 interface IAnswer {
-  id: string
-  value: any
+  q: string
+  a: any
 }
 
 
@@ -218,8 +218,8 @@ const FeedbackFormViewer: FC<IFeedbackFormProps> = ({ id }) => {
 
     Object.entries(data).forEach((entry: any) => {
       answers.push({
-        id: entry[0],
-        value: entry[1]
+        q: entry[0],
+        a: entry[1]
       })
     })
 
@@ -229,6 +229,12 @@ const FeedbackFormViewer: FC<IFeedbackFormProps> = ({ id }) => {
     }
 
     console.log(submission)
+
+    let fd = new FormData()
+    fd.append('jsonData', JSON.stringify(submission))
+
+    axios.post('/feedback-api/submission/', fd).then(res => console.log(res.data))
+
   }
 
 

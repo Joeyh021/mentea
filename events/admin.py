@@ -1,6 +1,8 @@
 from django.contrib import admin
 import django_stubs_ext
 
+from people.models import BusinessArea, User, UserType
+
 django_stubs_ext.monkeypatch()
 
 from events.models import (
@@ -32,3 +34,5 @@ class AdminQuestion(admin.ModelAdmin[Questions]):
 @admin.register(Answer)
 class AdminAnswer(admin.ModelAdmin[Answer]):
     pass
+
+
