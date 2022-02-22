@@ -6,8 +6,8 @@ from django.views.generic import FormView, TemplateView
 from django.contrib.auth.mixins import LoginRequiredMixin
 from typing import Any
 
-from .forms import ProfileForm
-from .models import UserTopic
+from .forms import ProfileForm, BusinessAreaForm, TopicForm
+from .models import UserTopic, BusinessArea, Topic
 
 
 class IsUserMenteeMixin(UserPassesTestMixin):
@@ -60,6 +60,8 @@ class UserProfileEditPage(LoginRequiredMixin, TemplateView):
 
     template_name: str = "people/profile_edit.html"
     form_class: Any = ProfileForm
+    ba_form_class: Any = BusinessAreaForm
+    topic_form_class: Any = TopicForm
 
     def get(self, request: HttpRequest, *args: Any, **kwarsgs: Any) -> HttpResponse:
         form = self.form_class(
@@ -72,48 +74,81 @@ class UserProfileEditPage(LoginRequiredMixin, TemplateView):
                 "usertype": request.user.user_type,
             }
         )
-        current_user = request.user
 
-        # Currently we only allow users to pick from business areas or topics that exist. We need to add the option to add missing ones.
+        ba_form = self.ba_form_class()
+        topic_form = self.topic_form_class()
 
-        return render(request, self.template_name, {"form": form})
+        return render(request, self.template_name, {"form": form, "ba_form": ba_form, "topic_form": topic_form})
 
     def post(self, request: HttpRequest, *args: Any, **kwarsgs: Any) -> HttpResponse:
-        form = self.form_class(request.POST)
-        if form.is_valid():
-
-            # Get the current user object
-            current_user = request.user
-
-            # Add bio and business area to it and save
-            current_user.bio = form.cleaned_data["bio"]
-            current_user.business_area = form.cleaned_data["business_area"]
-            current_user.user_type = form.cleaned_data["usertype"]
-            current_user.save()
-
-            # Get selected topics
-            selected_topics = form.cleaned_data.get("topics", None)
-
-            # Create UserTopic models storing these
-            UserTopic.objects.filter(user=current_user).delete()
-            for topic in selected_topics:
-                user_topic = UserTopic(
-                    user=request.user,
-                    topic=topic,
-                    usertype=form.cleaned_data["usertype"],
+        print(request.POST)
+        if "business_area_new" in request.POST:
+            # Process business area form
+            ba_form = self.ba_form_class(request.POST)
+            if ba_form.is_valid():
+                new_ba = BusinessArea(
+                    business_area=ba_form.cleaned_data["business_area_new"]
                 )
-                user_topic.save()
+                new_ba.save()
 
-            # Show a message saying "Profile updated" and redirect to profile page
-            messages.success(request, "Profile updated")
-            return redirect("profile")
+                # Show a message saying "Business area created" and redirect to profile page
+                messages.success(request, "Business area created")
+                return redirect("profile_edit")
+            else:
+                messages.error(request, "Error creating business area")
+                return render(request, self.template_name, {"form": self.form_class(), "ba_form": ba_form, "topic_form": self.topic_form_class()})
+        elif "topic_new" in request.POST:
+            # Process topic form
+            topic_form = self.topic_form_class(request.POST)
+            if topic_form.is_valid():
+                new_topic = Topic(
+                    topic=topic_form.cleaned_data["topic_new"]
+                )
+                new_topic.save()
 
+                # Show a message saying "Topic created" and redirect to profile page
+                messages.success(request, "Topic created")
+                return redirect("profile_edit")
+            else:
+                messages.error(request, "Error creating topic")
+                return render(request, self.template_name, {"form": self.form_class(), "ba_form": self.ba_form_class(), "topic_form": topic_form})
         else:
-            print(form.cleaned_data)
+            form = self.form_class(request.POST)
+            if form.is_valid():
 
-            # Show error messages and go back to form page
-            messages.error(request, "Error updating profile")
-            return render(request, self.template_name, {"form": form})
+                # Get the current user object
+                current_user = request.user
+
+                # Add bio and business area to it and save
+                current_user.bio = form.cleaned_data["bio"]
+                current_user.business_area = form.cleaned_data["business_area"]
+                current_user.user_type = form.cleaned_data["usertype"]
+                current_user.save()
+
+                # Get selected topics
+                selected_topics = form.cleaned_data.get("topics", None)
+
+                # Create UserTopic models storing these
+                UserTopic.objects.filter(user=current_user).delete()
+                for topic in selected_topics:
+                    user_topic = UserTopic(
+                        user=request.user,
+                        topic=topic,
+                        usertype=form.cleaned_data["usertype"],
+                    )
+                    user_topic.save()
+
+                # Show a message saying "Profile updated" and redirect to profile page
+                messages.success(request, "Profile updated")
+                return redirect("profile")
+
+            else:
+                print(form.cleaned_data)
+
+                # Show error messages and go back to form page
+                messages.error(request, "Error updating profile")
+                return render(request, self.template_name,
+                              {"form": form, "ba_form": self.ba_form_class(), "topic_form": self.topic_form_class()})
 
 
 class UserCalendarPage(LoginRequiredMixin, TemplateView):

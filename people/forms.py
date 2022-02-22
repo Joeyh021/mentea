@@ -19,3 +19,15 @@ class ProfileForm(forms.Form):
         choices=UserType.choices,
         widget=forms.Select(attrs={"class": "form-select"}),
     )
+
+
+class BusinessAreaForm(forms.Form):
+    business_area_new = forms.CharField(
+        widget=forms.TextInput(attrs={"class": "form-control"})
+    )
+
+
+class TopicForm(forms.Form):
+    topic_new = forms.CharField(
+        widget=forms.TextInput(attrs={"class": "form-control"})
+    )
