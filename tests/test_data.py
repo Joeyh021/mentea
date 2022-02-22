@@ -93,7 +93,7 @@ def create_data() -> None:
     james_mentee_1 = User.objects.create(
         first_name="",
         last_name="",
-        email="",
+        email="email1@email.com",
         business_area=financing_nonces,
         bio="",
         user_type=mentee_type,
@@ -106,7 +106,7 @@ def create_data() -> None:
     james_mentee_2 = User.objects.create(
         first_name="",
         last_name="",
-        email="",
+        email="email2@email.com",
         business_area=financing_nonces,
         bio="",
         user_type=mentee_type,
@@ -119,7 +119,7 @@ def create_data() -> None:
     james_mentee_3 = User.objects.create(
         first_name="",
         last_name="",
-        email="",
+        email="email3@email.com",
         business_area=financing_nonces,
         bio="",
         user_type=mentee_type,
@@ -157,7 +157,7 @@ def create_data() -> None:
     joeys_mentee = User.objects.create(
         first_name="",
         last_name="",
-        email="",
+        email="email4@email.com",
         business_area=financing_nonces,
         bio="",
         user_type=mentee_type,
