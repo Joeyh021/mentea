@@ -1,7 +1,13 @@
+from django.contrib import messages
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import HttpRequest, HttpResponse
-from django.shortcuts import render
-from django.views.generic import TemplateView
+from django.shortcuts import redirect, render
+from django.views.generic import FormView, TemplateView
+from django.contrib.auth.mixins import LoginRequiredMixin
 from typing import Any
+
+from .forms import ProfileForm
+from .models import UserTopic
 
 
 class UserLoginPage(TemplateView):
@@ -16,19 +22,66 @@ class UserLoginPage(TemplateView):
 class UserSignupPage(TemplateView):
     """Lets a user sign up with email, password, and business area"""
 
-    template_name = "people/signup.html"
+    template_name = "registration/register.html"
 
     def get(self, request: HttpRequest, *args: Any, **kwarsgs: Any) -> HttpResponse:
         return render(request, self.template_name, {})
 
 
-class UserProfilePage(TemplateView):
+class UserProfilePage(LoginRequiredMixin, TemplateView):
     """Shows a user's profile page and allows them to edit it"""
 
     template_name: str = "people/profile.html"
 
     def get(self, request: HttpRequest, *args: Any, **kwarsgs: Any) -> HttpResponse:
+
         return render(request, self.template_name, {})
+
+
+class UserProfileEditPage(LoginRequiredMixin, TemplateView):
+    """Allows a user to edit their profile"""
+
+    template_name: str = "people/profile_edit.html"
+    form_class: Any = ProfileForm
+
+    def get(self, request: HttpRequest, *args: Any, **kwarsgs: Any) -> HttpResponse:
+        form = self.form_class()
+
+        # We should autofill information here from the current user where possibleb
+
+        # Currently we only allow users to pick from business areas or topics that exist. We need to add the option to add missing ones.
+
+        return render(request, self.template_name, {"form": form})
+
+    def post(self, request: HttpRequest, *args: Any, **kwarsgs: Any) -> HttpResponse:
+        form = self.form_class(request.POST)
+        if form.is_valid():
+
+            # Get the current user object
+            current_user = request.user
+
+            # Add bio and business area to it and save
+            current_user.bio = form.cleaned_data["bio"]
+            current_user.business_area = form.cleaned_data["business_area"]
+            current_user.save()
+
+            # Get selected topics
+            selected_topics = form.cleaned_data["topics"]
+
+            # Create UserTopic models storing these
+            for topic in selected_topics:
+                user_topic = UserTopic(user=request.user, topic=topic)
+                user_topic.save()
+
+            # Show a message saying "Profile updated" and redirect to profile page
+            messages.success(request, "Profile updated")
+            return redirect("profile")
+
+        else:
+
+            # Show error messages and go back to form page
+            messages.error(request, "Error updating profile")
+            return render(request, self.template_name, {"form": form})
 
 
 class UserCalendarPage(TemplateView):

@@ -3,7 +3,7 @@ name: CI
 on: [push]
 
 jobs:
-  lint-and-test:
+  format-and-test:
     services:
       postgres:
         image: postgres:12
@@ -56,10 +56,6 @@ jobs:
       # check code has been formatted correctly
       - name: Check formatting
         run: poetry run black . --check
-
-      # check code passes mypy
-      - name: Run linting & type checking
-        run: poetry run mypy .
 
       # check tests pass
       - name: Test project

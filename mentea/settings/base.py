@@ -57,7 +57,7 @@ MIDDLEWARE = [
     "django_browser_reload.middleware.BrowserReloadMiddleware",
 ]
 
-ROOT_URLCONF = "mentoring_platform.urls"
+ROOT_URLCONF = "mentea.urls"
 
 TEMPLATES = [
     {
@@ -75,7 +75,7 @@ TEMPLATES = [
     },
 ]
 
-WSGI_APPLICATION = "mentoring_platform.wsgi.application"
+WSGI_APPLICATION = "mentea.wsgi.application"
 
 
 # Database

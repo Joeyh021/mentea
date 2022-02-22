@@ -2,18 +2,109 @@ import uuid
 
 from django.db import models
 
+from django.contrib.auth.models import BaseUserManager, AbstractBaseUser
 
-class User(models.Model):
+# Changing this to override the default model!
+
+
+class UserManager(BaseUserManager):
+    def create_user(self, email, password=None):
+        """
+        Creates and saves a User with the given email and password.
+        """
+        if not email:
+            raise ValueError("Users must have an email address")
+
+        user = self.model(
+            email=self.normalize_email(email),
+        )
+
+        user.set_password(password)
+        user.save(using=self._db)
+        return user
+
+    def create_staffuser(self, email, password):
+        """
+        Creates and saves a staff user with the given email and password.
+        """
+        user = self.create_user(
+            email,
+            password=password,
+        )
+        user.staff = True
+        user.save(using=self._db)
+        return user
+
+    def create_superuser(self, email, password):
+        """
+        Creates and saves a superuser with the given email and password.
+        """
+        user = self.create_user(
+            email,
+            password=password,
+        )
+        user.staff = True
+        user.admin = True
+        user.save(using=self._db)
+        return user
+
+
+class User(AbstractBaseUser):
     # Main user model
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
-    first_name = models.CharField(max_length=50)
-    last_name = models.CharField(max_length=50)
-    email = models.EmailField(max_length=254)
-    business_area = models.ForeignKey("BusinessArea", on_delete=models.CASCADE)
+    first_name = models.CharField(max_length=50, blank=True)
+    last_name = models.CharField(max_length=50, blank=True)
+    email = models.EmailField(max_length=254, unique=True)
+    business_area = models.ForeignKey(
+        "BusinessArea", on_delete=models.CASCADE, null=True
+    )
     bio = models.TextField(blank=True)
-    user_type = models.ForeignKey("UserType", on_delete=models.CASCADE)
+    user_type = models.ForeignKey("UserType", on_delete=models.CASCADE, null=True)
     updated_at = models.DateTimeField(auto_now=True)
     created_at = models.DateTimeField(auto_now_add=True)
+
+    is_active = models.BooleanField("active", default=True)
+    staff = models.BooleanField(default=False)  # a admin user; non super-user
+    admin = models.BooleanField(default=False)  # a superuser
+
+    USERNAME_FIELD = "email"
+    REQUIRED_FIELDS = []
+
+    def __str__(self):
+        return self.email
+
+    def get_full_name(self):
+        # The user is identified by their email address
+        return self.email
+
+    def get_short_name(self):
+        # The user is identified by their email address
+        return self.email
+
+    def __str__(self):
+        return self.email
+
+    def has_perm(self, perm, obj=None):
+        "Does the user have a specific permission?"
+        # Simplest possible answer: Yes, always
+        return self.admin
+
+    def has_module_perms(self, app_label):
+        "Does the user have permissions to view the app `app_label`?"
+        return self.admin
+        # Simplest possible
+
+    @property
+    def is_staff(self):
+        "Is the user a member of staff?"
+        return self.staff
+
+    @property
+    def is_admin(self):
+        "Is the user a admin member?"
+        return self.admin
+
+    objects = UserManager()
 
 
 class UserType(models.Model):
@@ -26,6 +117,9 @@ class BusinessArea(models.Model):
     # Business areas within the company
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     business_area = models.CharField(max_length=50)
+
+    def __str__(self):
+        return self.business_area
 
 
 class MentorMentee(models.Model):
@@ -56,14 +150,18 @@ class Topic(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     topic = models.CharField(max_length=50)
 
+    def __str__(self):
+        return self.topic
+
 
 class UserTopic(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     user = models.ForeignKey(User, on_delete=models.CASCADE, db_index=True)
     topic = models.ForeignKey(Topic, on_delete=models.CASCADE, db_index=True)
+    usertype = models.ForeignKey(UserType, null=True, on_delete=models.SET_NULL)
 
     class Meta:
-        indexes = [models.Index(fields=["user", "topic"])]
+        indexes = [models.Index(fields=["user", "topic", "usertype"])]
 
 
 class Rating(models.Model):
