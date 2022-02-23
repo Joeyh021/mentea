@@ -9,6 +9,8 @@ class FeedbackForm(models.Model):
     name = models.CharField(max_length=50)
     desc = models.TextField(blank=True)
     acceptingSubmissionsUntil = models.DateTimeField(blank=True, null=True)
+    allowsMultipleSubmissions = models.BooleanField(default=True)
+    allowsEditingSubmissions = models.BooleanField(default=False)
 
 
 class FeedbackSubmission(models.Model):

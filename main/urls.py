@@ -41,11 +41,30 @@ class FeedbackFormReturn(TemplateView):
             Questions.objects.filter(form=formId).order_by("order").all().values()
         )
 
-        return JsonResponse(
-            {"formData": feedbackForm, "questions": list(questions)},
-            safe=False,
-            encoder=JsonEncoder,
-        )
+        # Gather any previous submissions for the user (if logged in)
+
+        if request.user.is_authenticated:
+            responses = (
+                FeedbackSubmission.objects.filter(form=feedbackForm, user=request.user)
+                .all()
+                .values("id")
+            )
+
+            return JsonResponse(
+                {
+                    "formData": feedbackForm,
+                    "previousSubmissions": list(responses),
+                    "questions": list(questions),
+                },
+                safe=False,
+                encoder=JsonEncoder,
+            )
+        else:
+            return JsonResponse(
+                {"formData": feedbackForm, "questions": list(questions)},
+                safe=False,
+                encoder=JsonEncoder,
+            )
 
 
 class FeedbackFormCreate(TemplateView):
@@ -173,6 +192,21 @@ class FeedbackFormEditorEdit(TemplateView):
 
 
 class FeedbackFormSubmissionHandler(TemplateView):
+    def get(self, request, submissionId=None):
+        submission = get_object_or_404(FeedbackSubmission, id=submissionId)
+
+        answers = (
+            Answer.objects.filter(associated_submission=submission)
+            .all()
+            .values("id", "associated_question", "data")
+        )
+
+        return JsonResponse(
+            {"submissionData": submission, "answers": list(answers)},
+            safe=False,
+            encoder=JsonEncoder,
+        )
+
     def post(self, request):
         form = FormValidator(request.POST)
         if form.is_valid():
@@ -216,6 +250,46 @@ class FeedbackFormSubmissionHandler(TemplateView):
             return HttpResponse(form.errors.as_json())
 
 
+class FeedbackFormSubmissionUpdateHandler(TemplateView):
+    def post(self, request):
+        form = FormValidator(request.POST)
+        if form.is_valid():
+            data = json.loads(form.data["jsonData"])
+
+            if "submissionId" not in data or data["submissionId"] == "":
+                return HttpResponse("Missing Submission ID")
+
+            if "answers" not in data or data["answers"] == []:
+                return HttpResponse("Missing answers")
+
+            subId = data["submissionId"]
+
+            ss = get_object_or_404(FeedbackSubmission, id=subId)
+
+            try:
+                for a in data["answers"]:
+                    answer = Answer.objects.get(
+                        associated_question=a["q"], associated_submission=ss
+                    )
+                    answer.data = a["a"]
+
+                    answer.save()
+
+            except Exception as err:
+
+                return JsonResponse(
+                    {
+                        "result": "error",
+                        "data": "Unable to update an answer!",
+                    }
+                )
+
+            return JsonResponse({"result": "success", "data": ss.id})
+
+        else:
+            return HttpResponse(form.errors.as_json())
+
+
 urlpatterns = [
     path("", IndexPage.as_view(), name="index"),
     path("faq/", FAQPage.as_view(), name="faq"),
@@ -240,6 +314,16 @@ urlpatterns = [
     path(
         "feedback-api/submission/",
         csrf_exempt(FeedbackFormSubmissionHandler.as_view()),
+        name="ff-submission",
+    ),
+    path(
+        "feedback-api/submission/<uuid:submissionId>",
+        csrf_exempt(FeedbackFormSubmissionHandler.as_view()),
+        name="ff-submission",
+    ),
+    path(
+        "feedback-api/submission-update/",
+        csrf_exempt(FeedbackFormSubmissionUpdateHandler.as_view()),
         name="ff-submission",
     ),
 ]

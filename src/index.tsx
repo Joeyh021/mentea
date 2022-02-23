@@ -15,6 +15,10 @@ interface IFeedbackForm {
   id: string
   name: string
   desc: string
+  acceptingSubmissionsUntil: string | null
+  allowsMultipleSubmissions: boolean
+  allowsEditingSubmissions: boolean
+  
 }
 
 export interface IQuestion {
@@ -24,6 +28,7 @@ export interface IQuestion {
   type: string // E.g. 'text' 'number' 'range' 'radio' etc
   type_data?: IQuestionTypeData
   required: boolean
+  readonly?: boolean
 }
 
 export interface IQuestionTypeData {
@@ -175,13 +180,17 @@ interface ISubmission {
   answers: IAnswer[]
 }
 
+interface IStoredSubmission {
+  id: string
+}
+
 interface IAnswer {
   q: string
   a: any
 }
 
 enum EFormState {
-  SUBMITTING, SUBMITTED, LOADING, CANT_SUBMIT_AGAIN, CANT_ACCESS, NOT_LOGGED_IN, CAN_EDIT, READY
+  SUBMITTED, LOADING, READY
 }
 
 
@@ -189,19 +198,55 @@ const FeedbackFormViewer: FC<IFeedbackFormProps> = ({ id }) => {
 
   const [error, setError] = useState<string | null>(null)
 
+
+
+  const [loading, setLoading] = useState<boolean>(false)
+
   const [questions, setQuestions] = useState<IAnswerableQuestion[]>([])
 
-  const [formData, setFormData] = useState<IFeedbackForm>({id: 'Loading...', name: 'Loading Form Name...', desc: ""})
+  const [formData, setFormData] = useState<IFeedbackForm>({id: 'Loading...', name: 'Loading Form Name...', desc: "", allowsEditingSubmissions: false, allowsMultipleSubmissions: true, acceptingSubmissionsUntil: null})
 
-  const { register, handleSubmit, formState: { errors } } = useForm()
+  const { register, handleSubmit, formState: { errors }, reset, setValue } = useForm()
 
   const [state, setState] = useState<EFormState>(EFormState.LOADING)
 
+  const [recentSubmission, setRecentSubmission] = useState<IStoredSubmission>()
 
+  const [prevSubmissions, setPreviousSubmissions] = useState<IStoredSubmission[]>([])
+
+  const [isEditing, setEditing] = useState<boolean>(false)
+
+  const [readOnly, setReadOnly] = useState<boolean>(false)
 
   useEffect(() => {
     loadFormFromId(id)
   }, [id])
+
+  // Immediately load previous answers if the form can only be submitted once and they already have a submission!
+  useEffect(() => {
+    if (!formData.allowsMultipleSubmissions && prevSubmissions.length !== 0) {
+      let subId: string = prevSubmissions[0].id
+      // Load submission here
+
+      axios.get(`/feedback-api/submission/${subId}`).then(res => {
+        let ans: IAnswer[] = []
+
+        let data: [] = res.data.answers
+        data.forEach((d: {associated_question: string, data: any}) => {
+          ans.push({a: d.data, q: d.associated_question})
+        })
+
+        ans.forEach(a => setValue(a.q, a.a))
+      })
+
+      setEditing(true)
+    }
+  }, [formData.allowsMultipleSubmissions, prevSubmissions])
+
+  useEffect(() => {
+
+    setReadOnly(!formData.allowsMultipleSubmissions && !formData.allowsEditingSubmissions && prevSubmissions.length > 0)
+  }, [formData, prevSubmissions])
 
   const loadFormFromId = (formId :string) => {
 
@@ -210,6 +255,7 @@ const FeedbackFormViewer: FC<IFeedbackFormProps> = ({ id }) => {
     axios.get(`/feedback-api/${formId}/`).then(res => {
       setFormData({...res.data.formData, id: formId})
       setQuestions(res.data.questions)
+      setPreviousSubmissions(res.data.previousSubmissions || [])
       setState(EFormState.READY)
     }).catch(e => {
       setError("No form was found with the given ID, or it could not be loaded!")
@@ -220,7 +266,7 @@ const FeedbackFormViewer: FC<IFeedbackFormProps> = ({ id }) => {
 
   const submitForm = (data: any) => {
 
-
+    setLoading(true)
     let answers: IAnswer[] = []
 
     Object.entries(data).forEach((entry: any) => {
@@ -240,43 +286,75 @@ const FeedbackFormViewer: FC<IFeedbackFormProps> = ({ id }) => {
     let fd = new FormData()
     fd.append('jsonData', JSON.stringify(submission))
 
-    axios.post('/feedback-api/submission/', fd).then(res => {
+    let submitUrl = '/feedback-api/submission/'
+
+    if (isEditing) {
+      submitUrl = '/feedback-api/submission-update/'
+      let ss: {submissionId: string, answers: IAnswer[]} = {submissionId: prevSubmissions[0].id, answers: answers}
+      fd.set('jsonData', JSON.stringify(ss))
+    }
+
+    axios.post(submitUrl, fd).then(res => {
       if (res.data.result === "success") {
         setState(EFormState.SUBMITTED)
+
+        let ss: IStoredSubmission = { id: res.data.data}
+
+        setFormData(formData)
+        setPreviousSubmissions([...prevSubmissions || [], ss])
+         setRecentSubmission(ss)
       }
-    })
+
+    }).finally(() => {setLoading(false); })
 
   }
+
+  
 
 
   return (
     <>
-    { state === EFormState.LOADING && "Loading form..."}
-    { state === EFormState.SUBMITTED && "Thanks for submitting this form!"}
-    { state === EFormState.READY &&
-      error === null && 
-      <form onSubmit={handleSubmit(submitForm)}>
-      <h1>{ formData.name || 'Give me a name!' }</h1>
-      <p>{ formData.desc || "Give me a description above! (If you leave it blank then I won't show up when actually used!)" }</p>
-      {
-        questions.map(q => {
-          return (
-            <div key={q.id} className="pb-1">
-              <Question {...q} register={register} errors={errors} key={q.id} />
-            </div>
-          )
-        })
+  
+
+      <form onSubmit={handleSubmit(submitForm)} className="position-relative">
+        {loading && <div className="position-absolute top-0 start-0 w-100 h-100 bg-light opacity-50 rounded ">
+
+          </div>}
+      <h1>{ formData.name || 'Loading form...' }</h1>
+      <p>{ formData.desc || "Loading description..." }</p>
+      { state === EFormState.READY &&
+        error === null && 
+        <>
+          {
+          questions.map(q => {
+            return (
+              <div key={q.id} className="pb-1">
+                <Question {...q} register={register} errors={errors} key={q.id} readonly={readOnly} />
+              </div>
+            )
+          })}
+          {!readOnly && <button type="submit" className="btn btn-primary">{ loading ? (<><span className="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+          <span className="visually-hidden">Loading...</span></>) : (isEditing ? "Save" : "Submit")}</button>}
+          <small className="ms-2 text-secondary">{ (formData.allowsMultipleSubmissions && `You've submitted this form ${ prevSubmissions.length } times.`) || (readOnly ? 'You have already submitted this form and cannot edit it!' : `You may only submit this form once! ${formData.allowsEditingSubmissions && '(You can edit it later!)'}`)}</small>
+        </>
+      }
+      { state === EFormState.LOADING && "Loading form..."}
+      { state === EFormState.SUBMITTED && 
+        <div className="alert alert-success">
+          Your response has been recorded! (ID: {recentSubmission?.id}) { formData.allowsMultipleSubmissions && <a href="#" onClick={() => {reset(); setState(EFormState.READY)}} className="alert-link">Submit again</a> }
+        </div>
+      }
+      { error && 
+        <div className="alert alert-danger">
+          Oops, something went wrong! <a href="#" onClick={() => {setError(null); setState(EFormState.READY)}} className="alert-link">Try again</a>
+        </div>
       }
 
-      <button type="submit" className="btn btn-primary">Submit</button>
+
+      
     </form>
-    } 
-    {
-      error &&
-      <div className="alert alert-danger">
-        { error }
-      </div>
-    }
+    
+
     </>
   )
 }
@@ -313,7 +391,7 @@ export const Question: FC<IAnswerableQuestion> = ({ ...props }) => {
 
     return (
       <div className="mb-3">
-        <div className="d-flex justify-content-between align-items-end">
+        <div className="d-flex justify-content-between align-items-end ">
           <label htmlFor={`form-question-${props.id}`} className="form-label">{ props.name }</label>
 
           { props.required && <p className="text-end mt-0 mb-0 text-danger" style={{'fontSize': '.8rem'}}>Required *</p>}
@@ -322,7 +400,7 @@ export const Question: FC<IAnswerableQuestion> = ({ ...props }) => {
 
         {
           hasFormHook && props.register && props.errors ? 
-          <input {...props.register(props.id, { required: props.required, minLength: props.type_data?.min, maxLength: props.type_data?.max })} type={props.type} placeholder={props.type_data?.placeholder} className={"form-control " + (props.errors[props.id] && "is-invalid")} id={`form-question-${props.id}`} onKeyPress={e => e.key === 'Enter' && e.preventDefault()} aria-describedby="emailHelp"  />
+          <input {...props.register(props.id, { required: props.required, minLength: props.type_data?.min, maxLength: props.type_data?.max })} readOnly={props.readonly || false} type={props.type} placeholder={props.type_data?.placeholder} className={"form-control " + (props.errors[props.id] && "is-invalid")} id={`form-question-${props.id}`} onKeyPress={e => e.key === 'Enter' && e.preventDefault()} aria-describedby="emailHelp"  />
           :
           <input type={props.type} placeholder={props.type_data?.placeholder} className="form-control" id={`form-question-${props.id}`} onKeyPress={e => e.key === 'Enter' && e.preventDefault()} aria-describedby="emailHelp" required={props.required} />
         }
@@ -352,7 +430,7 @@ export const CheckboxQuestion: FC<IAnswerableQuestion> = ({ ...props }) => {
             if (!props.errors) return
             return (
               <div key={option.value} className="form-check form-check-inline">
-                <input {...props.register(props.id, { required: true })} className={"form-check-input " + (props.errors[props.id] && "is-invalid")} type="checkbox" id={`form-question-${props.id}-option-${option.key}`} value={option.value} />
+                <input {...props.register(props.id, { required: true })} disabled={props.readonly || false}  className={"form-check-input " + (props.errors[props.id] && "is-invalid")} type="checkbox" id={`form-question-${props.id}-option-${option.key}`} value={option.value} />
                 <label className="form-check-label" htmlFor={`form-question-${props.id}-option-${option.key}`}>{option.key}</label>
               </div>
             )
@@ -396,7 +474,7 @@ export const RadioQuestion: FC<IAnswerableQuestion> = ({ ...props }) => {
         if (!props.errors) return
         return (
           <div key={option.value} className="form-check form-check-inline">
-            <input {...props.register(props.id, { required: true })} className={"form-check-input " + (props.errors[props.id] && "is-invalid")} type="radio" name={props.id} id={`form-question-${props.id}-option-${option.key}`} value={option.value} />
+            <input {...props.register(props.id, { required: true })} disabled={props.readonly || false}  className={"form-check-input " + (props.errors[props.id] && "is-invalid")} type="radio" name={props.id} id={`form-question-${props.id}-option-${option.key}`} value={option.value} />
             <label className="form-check-label" htmlFor={`form-question-${props.id}-option-${option.key}`}>{option.key}</label>
           </div>
         )
@@ -435,7 +513,7 @@ export const SelectQuestion: FC<IAnswerableQuestion> = ({ ...props }) => {
     
     {
       hasFormHook && props.register && props.errors ?
-      <select {...props.register(props.id, { required: true, validate: v => v !== "default_none" })} className={"form-select " + ((props.errors[props.id] && "is-invalid"))} defaultValue="default_none" id={`form-question-${props.id}`} aria-label="Default select example" >
+      <select {...props.register(props.id, { required: true, validate: v => v !== "default_none" })} disabled={props.readonly || false}  className={"form-select " + ((props.errors[props.id] && "is-invalid"))} defaultValue="default_none" id={`form-question-${props.id}`} aria-label="Default select example" >
       <option value="default_none">Open this select menu</option>
       {
         props.type_data?.options?.map(option => {
@@ -480,7 +558,7 @@ export const TextareaQuestion: FC<IAnswerableQuestion> = ({ ...props }) => {
 
       {
         hasFormHook && props.register && props.errors ? 
-        <textarea {...props.register(props.id, { required: props.required })} id={`form-question-${props.id}`} rows={3} className={"form-control " + (props.errors[props.id] && "is-invalid")}></textarea>
+        <textarea {...props.register(props.id, { required: props.required })} readOnly={props.readonly || false}  id={`form-question-${props.id}`} rows={3} className={"form-control " + (props.errors[props.id] && "is-invalid")}></textarea>
         :
         <textarea id={`form-question-${props.id}`} rows={3} className="form-control"></textarea>
       }
@@ -517,7 +595,7 @@ export const RangeQuestion: FC<IAnswerableQuestion> = ({ ...props }) => {
       
       {
         hasFormHook && props.register && props.errors ?
-        <input {...props.register(props.id, { required: props.required })} defaultValue={(props.type_data?.max || 2)/2 || 0} type={props.type} placeholder={props.type_data?.placeholder} min={props.type_data?.min} max={props.type_data?.max} step={props.type_data?.step} className="form-range" style={{padding: '0'}} id={`form-question-${props.id}`}  aria-describedby="emailHelp" required={props.required} />
+        <input {...props.register(props.id, { required: props.required })} disabled={props.readonly || false}  defaultValue={(props.type_data?.max || 2)/2 || 0} type={props.type} placeholder={props.type_data?.placeholder} min={props.type_data?.min} max={props.type_data?.max} step={props.type_data?.step} className="form-range" style={{padding: '0'}} id={`form-question-${props.id}`}  aria-describedby="emailHelp" required={props.required} />
         :
         <input defaultValue={(props.type_data?.max || 2)/2 || 0} type={props.type} placeholder={props.type_data?.placeholder} min={props.type_data?.min} max={props.type_data?.max} step={props.type_data?.step} className="form-range" style={{padding: '0'}} id={`form-question-${props.id}`}  aria-describedby="emailHelp" required={props.required} />
       }
