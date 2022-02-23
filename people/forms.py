@@ -11,7 +11,11 @@ class ProfileForm(forms.Form):
         queryset=BusinessArea.objects.all(),
         widget=forms.Select(attrs={"class": "form-select"}),
     )
-    topics = forms.ModelMultipleChoiceField(
+    mentee_topics = forms.ModelMultipleChoiceField(
+        queryset=Topic.objects.all(),
+        widget=forms.SelectMultiple(attrs={"class": "form-select"}),
+    )
+    mentor_topics = forms.ModelMultipleChoiceField(
         queryset=Topic.objects.all(),
         widget=forms.SelectMultiple(attrs={"class": "form-select"}),
     )

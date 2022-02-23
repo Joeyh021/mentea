@@ -72,6 +72,40 @@
             {% endif %}
         </div>
 
+        <div class="mb-3 d-none" id="menteeTopics">
+            <div class="row">
+                <label class="form-label" for="id_mentee_topics">Topics I am interested in</label>
+                <div class="col">
+                    {{ form.mentee_topics }}
+                    {% if form.mentee_topics.errors %}
+                        {% for e in form.mentee_topics.errors %}
+                            <p class="help is-danger">{{ e }}</p>
+                        {% endfor %}
+                    {% endif %}
+                </div>
+                <div class="col-sm-2">
+                    <button class="btn btn-primary" type="button" data-bs-toggle="modal" data-bs-target="#topicsModal">Add new topic</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="mb-3 d-none" id="mentorTopics">
+            <div class="row">
+                <label class="form-label" for="id_mentor_topics">Topics I am interested in mentoring</label>
+                <div class="col">
+                    {{ form.mentor_topics }}
+                    {% if form.mentor_topics.errors %}
+                        {% for e in form.mentor_topics.errors %}
+                            <p class="help is-danger">{{ e }}</p>
+                        {% endfor %}
+                    {% endif %}
+                </div>
+                <div class="col-sm-2">
+                    <button class="btn btn-primary" type="button" data-bs-toggle="modal" data-bs-target="#topicsModal">Add new topic</button>
+                </div>
+            </div>
+        </div>
+
         <div class="mb-3">
             <label class="form-label" for="id_bio">Bio</label>
             {{ form.bio }}
@@ -99,25 +133,40 @@
             </div>
         </div>
 
-        <div class="mb-3">
-            <div class="row">
-                <label class="form-label" for="id_topics">Topics I am interested in</label>
-                <div class="col">
-                    {{ form.topics }}
-                    {% if form.topics.errors %}
-                        {% for e in form.topics.errors %}
-                            <p class="help is-danger">{{ e }}</p>
-                        {% endfor %}
-                    {% endif %}
-                </div>
-                <div class="col-sm-2">
-                    <button class="btn btn-primary" type="button" data-bs-toggle="modal" data-bs-target="#topicsModal">Add new topic</button>
-                </div>
-            </div>
-        </div>
-
         <div>
             <input type="submit" class="btn btn-primary" value="Submit">
         </div>
     </form>
+{% endblock %}
+
+{% block bottomscripts %}
+    {{ block.super }}
+    <script>
+        if ($('#id_usertype').val() == 'Mentee') {
+            $('#menteeTopics').removeClass('d-none');
+            $('#mentorTopics').addClass('d-none');
+        } else if ($('#id_usertype').val() == 'Mentor') {
+            $('#menteeTopics').addClass('d-none');
+            $('#mentorTopics').removeClass('d-none');
+        } else if ($('#id_usertype').val() == 'MentorMentee') {
+            $('#menteeTopics').removeClass('d-none');
+            $('#mentorTopics').removeClass('d-none');
+        }
+
+        $('#id_usertype').on('change', (e) => {
+            if (e.currentTarget.value == 'Mentee') {
+                $('#menteeTopics').removeClass('d-none');
+                $('#mentorTopics').addClass('d-none');
+            } else if (e.currentTarget.value == 'Mentor') {
+                $('#menteeTopics').addClass('d-none');
+                $('#mentorTopics').removeClass('d-none');
+            } else if (e.currentTarget.value == 'MentorMentee') {
+                $('#menteeTopics').removeClass('d-none');
+                $('#mentorTopics').removeClass('d-none');
+            } else {
+                $('#menteeTopics').addClass('d-none');
+                $('#mentorTopics').addClass('d-none');
+            }
+        }).filter(':checked').trigger('change');
+    </script>
 {% endblock %}

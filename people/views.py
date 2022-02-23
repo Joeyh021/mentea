@@ -7,7 +7,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from typing import Any
 
 from .forms import ProfileForm, BusinessAreaForm, TopicForm
-from .models import UserTopic, BusinessArea, Topic
+from .models import UserTopic, BusinessArea, Topic, UserType
 
 
 class IsUserMenteeMixin(UserPassesTestMixin):
@@ -68,7 +68,10 @@ class UserProfileEditPage(LoginRequiredMixin, TemplateView):
             initial={
                 "bio": request.user.bio,
                 "business_area": request.user.business_area,
-                "topics": UserTopic.objects.filter(user=request.user).values_list(
+                "mentee_topics": UserTopic.objects.filter(user=request.user, usertype=UserType.Mentee).values_list(
+                    "topic", flat=True
+                ),
+                "mentor_topics": UserTopic.objects.filter(user=request.user, usertype=UserType.Mentor).values_list(
                     "topic", flat=True
                 ),
                 "usertype": request.user.user_type,
@@ -144,15 +147,27 @@ class UserProfileEditPage(LoginRequiredMixin, TemplateView):
                 current_user.save()
 
                 # Get selected topics
-                selected_topics = form.cleaned_data.get("topics", None)
+                selected_mentee_topics = form.cleaned_data.get("mentee_topics", None)
 
                 # Create UserTopic models storing these
                 UserTopic.objects.filter(user=current_user).delete()
-                for topic in selected_topics:
+                for topic in selected_mentee_topics:
                     user_topic = UserTopic(
                         user=request.user,
                         topic=topic,
-                        usertype=form.cleaned_data["usertype"],
+                        usertype=UserType.Mentee,
+                    )
+                    user_topic.save()
+
+                # Get selected topics
+                selected_mentor_topics = form.cleaned_data.get("mentor_topics", None)
+
+                # Create UserTopic models storing these
+                for topic in selected_mentor_topics:
+                    user_topic = UserTopic(
+                        user=request.user,
+                        topic=topic,
+                        usertype=UserType.Mentor,
                     )
                     user_topic.save()
 
