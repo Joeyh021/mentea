@@ -5,7 +5,7 @@
 <!--Register--> 
 <div class="container py-5">
 	<h1>Register</h1>
-	<form method="POST" action="{% url 'register' %}">{% csrf_token %}
+	<form method="POST">{% csrf_token %}
 	<!--	{{form.as_p}}  -->
 
 	{% for field in form %}

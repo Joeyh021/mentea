@@ -4,7 +4,10 @@ from django.views.generic import TemplateView, FormView
 from typing import Any
 from django.http import HttpResponseRedirect
 from django.contrib.auth.forms import UserCreationForm
-from people.forms import RegistrationForm
+from django.contrib.auth import login, authenticate
+from django.contrib import messages
+
+from .forms import RegistrationForm
 
 
 class UserLoginPage(TemplateView):
@@ -16,23 +19,24 @@ class UserLoginPage(TemplateView):
         return render(request, self.template_name, {})
 
 
-class UserSignupPage(FormView):
+class UserSignupPage(TemplateView):
     """Lets a user sign up with email, password, and business area"""
 
-    template_name: str = "people/register.html"
+    template_name = "people/register.html"
 
-    form_class = RegistrationForm
-    success_url = "/profile/"
+    form_class: Any = RegistrationForm
 
-    def register(request):
-        form = RegistrationForm(request.POST or None)
+    def get(self, request: HttpRequest, *args: Any, **kwarsgs: Any) -> HttpResponse:
+        form = self.form_class()
+        return render(request, self.template_name, {"form": form})
+
+    def post(self, request: HttpRequest, *args: Any, **kwargs: Any) -> HttpResponse:
+        form = self.form_class(request.POST)
         if form.is_valid():
-            user_obj = form.save()
-            return redirect("/profile")
-        return render(request, "people/register.html", {"form": form})
-
-    # def get(self, request: HttpRequest, *args: Any, **kwarsgs: Any) -> HttpResponse:
-    # return render(request, self.template_name, {})
+            form.save()
+            messages.success(request, "Account created successfully!")
+            return redirect("login")
+        return render(request, self.template_name, {"form": form})
 
 
 class UserProfilePage(TemplateView):
