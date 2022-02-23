@@ -6,7 +6,7 @@
 <div class="row">
     <div class="col-4 text-center d-flex flex-column  align-items-center ">
         <i class="fa-solid fa-circle-user color-mentea" style="width: 16rem; height: 16rem"></i>
-        <button class="btn btn-primary btn-rounded btn-mentea mt-4 px-4">Edit Profile</button>
+        <a href="{% url "profile_edit" %}" class="btn btn-primary btn-rounded btn-mentea mt-4 px-4">Edit Profile</a>
     </div>
     <div class="col-8">
         <h1 class="mt-2 mb-0" style="font-size: 6rem;">
@@ -16,26 +16,51 @@
             <strong>Department:</strong> {{ user.business_area }}
         </p>
         <p>
-            Hi, my name is John Smith and I work in the Drug testing, development and consumption department. I can't say I've had a low day since starting here!
+            {{ user.bio }}
         </p>
-        
-        <span class="badge rounded-pill bg-mentee-green p-2 px-3 " style="font-size: 0.9rem;">Mentee</span>
-        <span class="badge rounded-pill bg-mentor-blue ms-2 p-2 px-3 " style="font-size: 0.9rem;">Mentor</span>
+
+        {% if user.user_type == "Mentee" %}
+            <span class="badge rounded-pill bg-mentee-green p-2 px-3 " style="font-size: 0.9rem;">Mentee</span>
+        {% elif user.user_type == "Mentor" %}
+            <span class="badge rounded-pill bg-mentor-blue p-2 px-3 " style="font-size: 0.9rem;">Mentor</span>
+        {% else %}
+            <span class="badge rounded-pill bg-mentee-green p-2 px-3 " style="font-size: 0.9rem;">Mentee</span>
+            <span class="badge rounded-pill bg-mentor-blue ms-2 p-2 px-3 " style="font-size: 0.9rem;">Mentor</span>
+        {% endif %}
     </div>
     
 </div>
 <div class="row mt-4">
     <div class="col-4">
-        <div class="card">
-            <div class="card-header">
-                Interested in:
+        {% if mentee_topics %}
+            <div class="card">
+                <div class="card-header">
+                    Interested in:
+                </div>
+                <ul class="list-group list-group-flush">
+                    {% for topic in mentee_topics %}
+                        <li class="list-group-item">
+                            {{ topic.topic }}
+                        </li>
+                    {% endfor %}
+                  </ul>
             </div>
-            <ul class="list-group list-group-flush">
-                <li class="list-group-item">An item</li>
-                <li class="list-group-item">A second item</li>
-                <li class="list-group-item">A third item</li>
-              </ul>
-        </div>
+            <br />
+        {% endif %}
+        {% if mentor_topics %}
+            <div class="card">
+                <div class="card-header">
+                    Interested in mentoring:
+                </div>
+                <ul class="list-group list-group-flush">
+                    {% for topic in mentor_topics %}
+                        <li class="list-group-item">
+                            {{ topic.topic }}
+                        </li>
+                    {% endfor %}
+                  </ul>
+            </div>
+        {% endif %}
     </div>
 </div>
 {% endblock %}

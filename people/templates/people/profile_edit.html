@@ -3,14 +3,112 @@
 {% block title %}Edit Profile{% endblock %}
 
 {% block body %}
-    <p>Edit Your Profile (or Set It Up)</p>
+    <h1>Edit Profile</h1>
 
-    <form method="post">
+    <div id="businessAreaModal" class="modal fade" tabindex="-1">
+        <form name="ba_form" method="post">
+            {% csrf_token %}
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="mt-3">
+                            <div class="mb-3">
+                                <label for="id_business_area_new">Enter a new Business Area</label>
+                                {{ ba_form.business_area_new }}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <div class="btn-group">
+                            <input type="submit" name="ba_form_submit" value="Submit" class="btn btn-primary">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+
+    <div id="topicsModal" class="modal fade" tabindex="-1">
+        <form name="topic_form" method="post">
+            {% csrf_token %}
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="mt-3">
+                            <div class="mb-3">
+                                <label for="id_topic_new">Enter a new Topic</label>
+                                {{ topic_form.topic_new }}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <div class="btn-group">
+                            <input type="submit" name="ba_form_submit" value="Submit" class="btn btn-primary">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+
+    <form name="form" method="post">
         {% csrf_token %}
 
         <div class="mb-3">
+            <label class="form-label" for="id_usertype">I am a</label>
+            {{ form.usertype }}
+            {% if form.usertype.errors %}
+                {% for e in form.usertype.errors %}
+                    <p class="help is-danger">{{ e }}</p>
+                {% endfor %}
+            {% endif %}
+        </div>
+
+        <div class="mb-3 d-none" id="menteeTopics">
+            <div class="row">
+                <label class="form-label" for="id_mentee_topics">Topics I am interested in</label>
+                <div class="col">
+                    {{ form.mentee_topics }}
+                    {% if form.mentee_topics.errors %}
+                        {% for e in form.mentee_topics.errors %}
+                            <p class="help is-danger">{{ e }}</p>
+                        {% endfor %}
+                    {% endif %}
+                </div>
+                <div class="col-sm-2">
+                    <button class="btn btn-primary" type="button" data-bs-toggle="modal" data-bs-target="#topicsModal">Add new topic</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="mb-3 d-none" id="mentorTopics">
+            <div class="row">
+                <label class="form-label" for="id_mentor_topics">Topics I am interested in mentoring</label>
+                <div class="col">
+                    {{ form.mentor_topics }}
+                    {% if form.mentor_topics.errors %}
+                        {% for e in form.mentor_topics.errors %}
+                            <p class="help is-danger">{{ e }}</p>
+                        {% endfor %}
+                    {% endif %}
+                </div>
+                <div class="col-sm-2">
+                    <button class="btn btn-primary" type="button" data-bs-toggle="modal" data-bs-target="#topicsModal">Add new topic</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="mb-3">
             <label class="form-label" for="id_bio">Bio</label>
-            <input id="id_bio" class="form-control" type="text" name="bio" placeholder="Bio"></input>
+            {{ form.bio }}
             {% if form.bio.errors %}
                 {% for e in form.bio.errors %}
                     <p class="help is-danger">{{ e }}</p>
@@ -18,20 +116,57 @@
             {% endif %}
         </div>
 
-        {% comment %}Formatting here is weird, we should make it more Bootstrappy - whether this is a job for us or UI peeps we can decide later :D{% endcomment %}
-
         <div class="mb-3">
-            <label class="form-label" for="{{ form.business_area.id_for_label }}">Business Area</label>
-            {{ form.business_area }}
-        </div>
-
-        <div class="mb-3">
-            <label class="form-label" for="{{ form.topics.id_for_label }}">Topics I am interested in</label>
-            {{ form.topics }}
+            <div class="row">
+                <label class="form-label" for="id_business_area">Business Area</label>
+                <div class="col">
+                    {{ form.business_area }}
+                    {% if form.business_area.errors %}
+                        {% for e in form.business_area.errors %}
+                            <p class="help is-danger">{{ e }}</p>
+                        {% endfor %}
+                    {% endif %}
+                </div>
+                <div class="col-sm-2">
+                    <button class="btn btn-primary" type="button" data-bs-toggle="modal" data-bs-target="#businessAreaModal">Add new business area</button>
+                </div>
+            </div>
         </div>
 
         <div>
             <input type="submit" class="btn btn-primary" value="Submit">
         </div>
     </form>
+{% endblock %}
+
+{% block bottomscripts %}
+    {{ block.super }}
+    <script>
+        if ($('#id_usertype').val() == 'Mentee') {
+            $('#menteeTopics').removeClass('d-none');
+            $('#mentorTopics').addClass('d-none');
+        } else if ($('#id_usertype').val() == 'Mentor') {
+            $('#menteeTopics').addClass('d-none');
+            $('#mentorTopics').removeClass('d-none');
+        } else if ($('#id_usertype').val() == 'MentorMentee') {
+            $('#menteeTopics').removeClass('d-none');
+            $('#mentorTopics').removeClass('d-none');
+        }
+
+        $('#id_usertype').on('change', (e) => {
+            if (e.currentTarget.value == 'Mentee') {
+                $('#menteeTopics').removeClass('d-none');
+                $('#mentorTopics').addClass('d-none');
+            } else if (e.currentTarget.value == 'Mentor') {
+                $('#menteeTopics').addClass('d-none');
+                $('#mentorTopics').removeClass('d-none');
+            } else if (e.currentTarget.value == 'MentorMentee') {
+                $('#menteeTopics').removeClass('d-none');
+                $('#mentorTopics').removeClass('d-none');
+            } else {
+                $('#menteeTopics').addClass('d-none');
+                $('#mentorTopics').addClass('d-none');
+            }
+        }).filter(':checked').trigger('change');
+    </script>
 {% endblock %}

@@ -7,9 +7,9 @@ def get_matches(mentee: User):
     given the uuid of a mentee, find the best possible mentors, returning a list of their uuids in order of suitability
     if debug, then a dict of the calculated values is returned for testing/debugging purposes
     """
-    mentor_type = UserType.objects.get(type="mentor")
-    mentor_mentee_type = UserType.objects.get(type="mentor mentee")
-    mentee_type = UserType.objects.get(type="mentee")
+    mentee_type = UserType.Mentee
+    mentor_mentee_type = UserType.MentorMentee
+    mentor_type = UserType.Mentor
 
     mentee_topics = [ut.topic for ut in UserTopic.objects.filter(user=mentee)]
     all_mentors = list(

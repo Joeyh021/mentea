@@ -5,10 +5,9 @@ from people.models import *
 def create_data() -> None:
 
     # create user types
-    mentee_type = UserType.objects.create(type="mentee")
-    mentor_type = UserType.objects.create(type="mentor")
-    mentor_mentee_type = UserType.objects.create(type="mentor mentee")
-    none_usertype = UserType.objects.create(type="")
+    mentee_type = UserType.Mentee
+    mentor_type = UserType.Mentor
+    mentor_mentee_type = UserType.MentorMentee
 
     # create some business areas
     money_laundering = BusinessArea.objects.create(
@@ -46,6 +45,7 @@ def create_data() -> None:
         last_name="Mentor",
         email="john@gmail.com",
         business_area=money_laundering,
+        bio="",
         user_type=mentor_type,
     )
     # john is really into his yoga these days
@@ -56,6 +56,7 @@ def create_data() -> None:
         last_name="The Banker",
         email="steve@db.com",
         business_area=tax_evasion,
+        bio="",
         user_type=mentor_type,
     )
     UserTopic.objects.create(user=steve, topic=python)
@@ -67,6 +68,7 @@ def create_data() -> None:
         last_name="Mentor",
         email="craig@db.com",
         business_area=global_economy_manipulation,
+        bio="",
         user_type=mentor_type,
     )
     UserTopic.objects.create(user=craig, topic=stonks)
@@ -79,6 +81,7 @@ def create_data() -> None:
         last_name="Archbold",
         email="james.archbold@warwick.ac.uk",
         business_area=money_laundering,
+        bio="",
         user_type=mentor_type,
     )
     UserTopic.objects.create(user=james, topic=making_money)
@@ -90,8 +93,9 @@ def create_data() -> None:
     james_mentee_1 = User.objects.create(
         first_name="",
         last_name="",
-        email="",
+        email="email1@email.com",
         business_area=financing_nonces,
+        bio="",
         user_type=mentee_type,
     )
     MentorMentee.objects.create(
@@ -102,8 +106,9 @@ def create_data() -> None:
     james_mentee_2 = User.objects.create(
         first_name="",
         last_name="",
-        email="",
+        email="email2@email.com",
         business_area=financing_nonces,
+        bio="",
         user_type=mentee_type,
     )
     MentorMentee.objects.create(
@@ -114,8 +119,9 @@ def create_data() -> None:
     james_mentee_3 = User.objects.create(
         first_name="",
         last_name="",
-        email="",
+        email="email3@email.com",
         business_area=financing_nonces,
+        bio="",
         user_type=mentee_type,
     )
     MentorMentee.objects.create(
@@ -131,6 +137,7 @@ def create_data() -> None:
         last_name="Harrison",
         email="joey@db.com",
         business_area=tax_evasion,
+        bio="",
         user_type=mentor_mentee_type,
     )
     UserTopic.objects.create(
@@ -150,8 +157,9 @@ def create_data() -> None:
     joeys_mentee = User.objects.create(
         first_name="",
         last_name="",
-        email="",
+        email="email4@email.com",
         business_area=financing_nonces,
+        bio="",
         user_type=mentee_type,
     )
     MentorMentee.objects.create(
@@ -177,6 +185,7 @@ def create_data() -> None:
         last_name="Mentee",
         email="tim@db.com",
         business_area=money_laundering,
+        bio="",
         user_type=mentee_type,
     )
     # tim wants to learn more about python programming and trainspotting
@@ -190,6 +199,7 @@ def create_data() -> None:
         last_name="The Intern",
         email="sandra@db.com",
         business_area=financing_nonces,
+        bio="",
         user_type=mentee_type,
     )
     UserTopic.objects.create(user=sandra, topic=cocaine)
@@ -202,6 +212,7 @@ def create_data() -> None:
         last_name="Ander",
         email="alex@gmail.net",
         business_area=tax_evasion,
+        bio="",
         user_type=mentee_type,
     )
     # alex knows he has a lot to learn!
