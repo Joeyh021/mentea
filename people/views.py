@@ -68,12 +68,12 @@ class UserProfileEditPage(LoginRequiredMixin, TemplateView):
             initial={
                 "bio": request.user.bio,
                 "business_area": request.user.business_area,
-                "mentee_topics": UserTopic.objects.filter(user=request.user, usertype=UserType.Mentee).values_list(
-                    "topic", flat=True
-                ),
-                "mentor_topics": UserTopic.objects.filter(user=request.user, usertype=UserType.Mentor).values_list(
-                    "topic", flat=True
-                ),
+                "mentee_topics": UserTopic.objects.filter(
+                    user=request.user, usertype=UserType.Mentee
+                ).values_list("topic", flat=True),
+                "mentor_topics": UserTopic.objects.filter(
+                    user=request.user, usertype=UserType.Mentor
+                ).values_list("topic", flat=True),
                 "usertype": request.user.user_type,
             }
         )
