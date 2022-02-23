@@ -1,6 +1,6 @@
 from django.contrib import messages
-from django.contrib.auth.mixins import UserPassesTestMixin
-from django.http import HttpRequest, HttpResponse
+from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
+from django.http import HttpRequest, HttpResponse, HttpResponseRedirect
 from django.shortcuts import redirect, render
 from django.views.generic import TemplateView
 from django.contrib.auth.mixins import LoginRequiredMixin
@@ -265,7 +265,25 @@ class MenteePlansPage(IsUserMenteeMixin, TemplateView):
     template_name: str = "people/mentee_plans.html"
 
     def get(self, request: HttpRequest, *args: Any, **kwarsgs: Any) -> HttpResponse:
-        return render(request, self.template_name, {})
+        return render(
+            request,
+            self.template_name,
+            {
+                "plans_list": [
+                    {
+                        "name": "balls",
+                        "targets": [
+                            {"name": "test", "description": "nope", "acheived": False},
+                            {"name": "test", "description": "nope", "acheived": True},
+                        ],
+                    }
+                ]
+            },
+        )
+
+    def post(self, request: HttpRequest, *args, **kwargs) -> HttpResponse:
+        print(request.POST)
+        return HttpResponseRedirect("/")
 
 
 class MenteeChatPage(IsUserMenteeMixin, TemplateView):

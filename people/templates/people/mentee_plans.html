@@ -1,0 +1,52 @@
+{% extends "mentee_base.html" %}
+
+{% block title %}Plans of Action{% endblock %}
+
+{% block body %}
+<h1>Plans of Action</h1>
+<p>The below plans of action have been created for you to track your progress</p>
+<div class="accordion" id="accordionExample">
+    {% for plan in plans_list %}
+        <div class="accordion-item">
+            <h2 class="accordion-header" id="headingOne">
+                <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                    {{plan.name}}
+                </button>
+            </h2>
+            <div id="collapseOne" class="accordion-collapse collapse show" aria-labelledby="headingOne" data-bs-parent="#accordionExample">
+                <div class="accordion-body">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th scope="col">Target</th>
+                                <th scope="col">Details</th>
+                                <th scope="col">Achieved</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for target in plan.targets %}
+                                <tr>
+                                    <th scope="row">{{target.name}}</th>
+                                    <td>{{target.description}}</td>
+                                    <td>
+                                        <form method="post">
+                                            {% csrf_token %}
+
+                                            {% if target.acheived %}
+                                                <p class="text-muted">Completed!</p>
+                                            {% else %}
+                                                <button type="button" class="btn btn-primary" name="completed" value="true">Mark as Complete</button>
+                                            {% endif %}
+                                        </form>
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    {% endfor %}              
+</div>
+Create new
+{% endblock %}
