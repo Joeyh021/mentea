@@ -34,5 +34,3 @@ class AdminQuestion(admin.ModelAdmin[Questions]):
 @admin.register(Answer)
 class AdminAnswer(admin.ModelAdmin[Answer]):
     pass
-
-

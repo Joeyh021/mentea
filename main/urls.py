@@ -171,6 +171,7 @@ class FeedbackFormEditorEdit(TemplateView):
         else:
             return HttpResponse(form.errors.as_json())
 
+
 class FeedbackFormSubmissionHandler(TemplateView):
     def post(self, request):
         form = FormValidator(request.POST)
@@ -179,35 +180,41 @@ class FeedbackFormSubmissionHandler(TemplateView):
 
             if "formId" not in data or data["formId"] == "":
                 return HttpResponse("Missing Form ID")
-            
-            if "answers" not in data or data['answers'] == []:
+
+            if "answers" not in data or data["answers"] == []:
                 return HttpResponse("Missing answers")
 
-        
-
             formId = data["formId"]
-            
+
             ff = get_object_or_404(FeedbackForm, id=formId)
-            
-            submission = FeedbackSubmission(user=request.user.id, form=ff)
+
+            submission = FeedbackSubmission(user=request.user, form=ff)
             submission.save()
-            
+
             try:
                 for a in data["answers"]:
-                    Questions.objects.get(id=a['q'])
-                    answer = Answer(associated_question=a['q'], associated_submission=submission, data=a['a'])
+                    quest = Questions.objects.get(id=a["q"])
+                    answer = Answer(
+                        associated_question=quest,
+                        associated_submission=submission,
+                        data=a["a"],
+                    )
                     answer.save()
-            
+
             except Exception as err:
                 submission.delete()
-                return JsonResponse({"result": "error", "data": "A given question wasn't found in the database, try refreshing the form!"})
-            
-            return JsonResponse({"result": "success", "data": submission.id})
+                return JsonResponse(
+                    {
+                        "result": "error",
+                        "data": "A given question wasn't found in the database, try refreshing the form!",
+                    }
+                )
 
-            
+            return JsonResponse({"result": "success", "data": submission.id})
 
         else:
             return HttpResponse(form.errors.as_json())
+
 
 urlpatterns = [
     path("", IndexPage.as_view(), name="index"),
@@ -233,6 +240,6 @@ urlpatterns = [
     path(
         "feedback-api/submission/",
         csrf_exempt(FeedbackFormSubmissionHandler.as_view()),
-        name="ff-submission"
-    )
+        name="ff-submission",
+    ),
 ]

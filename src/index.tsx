@@ -180,6 +180,10 @@ interface IAnswer {
   a: any
 }
 
+enum EFormState {
+  SUBMITTING, SUBMITTED, LOADING, CANT_SUBMIT_AGAIN, CANT_ACCESS, NOT_LOGGED_IN, CAN_EDIT, READY
+}
+
 
 const FeedbackFormViewer: FC<IFeedbackFormProps> = ({ id }) => {
 
@@ -190,6 +194,8 @@ const FeedbackFormViewer: FC<IFeedbackFormProps> = ({ id }) => {
   const [formData, setFormData] = useState<IFeedbackForm>({id: 'Loading...', name: 'Loading Form Name...', desc: ""})
 
   const { register, handleSubmit, formState: { errors } } = useForm()
+
+  const [state, setState] = useState<EFormState>(EFormState.LOADING)
 
 
 
@@ -204,6 +210,7 @@ const FeedbackFormViewer: FC<IFeedbackFormProps> = ({ id }) => {
     axios.get(`/feedback-api/${formId}/`).then(res => {
       setFormData({...res.data.formData, id: formId})
       setQuestions(res.data.questions)
+      setState(EFormState.READY)
     }).catch(e => {
       setError("No form was found with the given ID, or it could not be loaded!")
     })
@@ -233,14 +240,20 @@ const FeedbackFormViewer: FC<IFeedbackFormProps> = ({ id }) => {
     let fd = new FormData()
     fd.append('jsonData', JSON.stringify(submission))
 
-    axios.post('/feedback-api/submission/', fd).then(res => console.log(res.data))
+    axios.post('/feedback-api/submission/', fd).then(res => {
+      if (res.data.result === "success") {
+        setState(EFormState.SUBMITTED)
+      }
+    })
 
   }
 
 
   return (
     <>
-    {
+    { state === EFormState.LOADING && "Loading form..."}
+    { state === EFormState.SUBMITTED && "Thanks for submitting this form!"}
+    { state === EFormState.READY &&
       error === null && 
       <form onSubmit={handleSubmit(submitForm)}>
       <h1>{ formData.name || 'Give me a name!' }</h1>
@@ -273,6 +286,8 @@ export const Question: FC<IAnswerableQuestion> = ({ ...props }) => {
 
 
   const [hasFormHook, setHasFormHook] = useState<boolean>(props.register !== undefined)
+
+  
 
   if (props.type === "checkbox") {
     return (
