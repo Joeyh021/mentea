@@ -51,8 +51,10 @@ class UserProfilePage(LoginRequiredMixin, TemplateView):
     template_name: str = "people/profile.html"
 
     def get(self, request: HttpRequest, *args: Any, **kwarsgs: Any) -> HttpResponse:
+        mentee_topics = UserTopic.objects.filter(user=request.user, usertype=UserType.Mentee)
+        mentor_topics = UserTopic.objects.filter(user=request.user, usertype=UserType.Mentor)
 
-        return render(request, self.template_name, {})
+        return render(request, self.template_name, {"mentee_topics": mentee_topics, "mentor_topics": mentor_topics})
 
 
 class UserProfileEditPage(LoginRequiredMixin, TemplateView):

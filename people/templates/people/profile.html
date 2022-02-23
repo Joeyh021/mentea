@@ -32,16 +32,35 @@
 </div>
 <div class="row mt-4">
     <div class="col-4">
-        <div class="card">
-            <div class="card-header">
-                Interested in:
+        {% if mentee_topics %}
+            <div class="card">
+                <div class="card-header">
+                    Interested in:
+                </div>
+                <ul class="list-group list-group-flush">
+                    {% for topic in mentee_topics %}
+                        <li class="list-group-item">
+                            {{ topic.topic }}
+                        </li>
+                    {% endfor %}
+                  </ul>
             </div>
-            <ul class="list-group list-group-flush">
-                <li class="list-group-item">An item</li>
-                <li class="list-group-item">A second item</li>
-                <li class="list-group-item">A third item</li>
-              </ul>
-        </div>
+            <br />
+        {% endif %}
+        {% if mentor_topics %}
+            <div class="card">
+                <div class="card-header">
+                    Interested in mentoring:
+                </div>
+                <ul class="list-group list-group-flush">
+                    {% for topic in mentor_topics %}
+                        <li class="list-group-item">
+                            {{ topic.topic }}
+                        </li>
+                    {% endfor %}
+                  </ul>
+            </div>
+        {% endif %}
     </div>
 </div>
 {% endblock %}
