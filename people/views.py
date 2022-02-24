@@ -1,22 +1,39 @@
 from django.contrib import messages
-from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.http import HttpRequest, HttpResponse
 from django.shortcuts import redirect, render
 from django.views.generic import FormView, TemplateView
 from django.contrib.auth.mixins import LoginRequiredMixin
 from typing import Any
 
-from .forms import ProfileForm
-from .models import UserTopic
+from .forms import ProfileForm, BusinessAreaForm, TopicForm
+from .models import UserTopic, BusinessArea, Topic, UserType
 
 
-class UserLoginPage(TemplateView):
-    """The user log in page, with your standard email/password form"""
+class IsUserMenteeMixin(UserPassesTestMixin):
+    def test_func(self):
+        return (
+            self.request.user.user_type == "Mentee"
+            or self.request.user.user_type == "MentorMentee"
+        )
 
-    template_name: str = "people/login.html"
+    def dispatch(self, request, *args, **kwargs):
+        if not request.user.is_authenticated or not self.test_func():
+            return self.handle_no_permission()
+        return super().dispatch(request, *args, **kwargs)
 
-    def get(self, request: HttpRequest, *args: Any, **kwarsgs: Any) -> HttpResponse:
-        return render(request, self.template_name, {})
+
+class IsUserMentorMixin(UserPassesTestMixin):
+    def test_func(self):
+        return (
+            self.request.user.user_type == "Mentor"
+            or self.request.user.user_type == "MentorMentee"
+        )
+
+    def dispatch(self, request, *args, **kwargs):
+        if not request.user.is_authenticated or not self.test_func():
+            return self.handle_no_permission()
+        return super().dispatch(request, *args, **kwargs)
 
 
 class UserSignupPage(TemplateView):
@@ -34,8 +51,18 @@ class UserProfilePage(LoginRequiredMixin, TemplateView):
     template_name: str = "people/profile.html"
 
     def get(self, request: HttpRequest, *args: Any, **kwarsgs: Any) -> HttpResponse:
+        mentee_topics = UserTopic.objects.filter(
+            user=request.user, usertype=UserType.Mentee
+        )
+        mentor_topics = UserTopic.objects.filter(
+            user=request.user, usertype=UserType.Mentor
+        )
 
-        return render(request, self.template_name, {})
+        return render(
+            request,
+            self.template_name,
+            {"mentee_topics": mentee_topics, "mentor_topics": mentor_topics},
+        )
 
 
 class UserProfileEditPage(LoginRequiredMixin, TemplateView):
@@ -43,48 +70,138 @@ class UserProfileEditPage(LoginRequiredMixin, TemplateView):
 
     template_name: str = "people/profile_edit.html"
     form_class: Any = ProfileForm
+    ba_form_class: Any = BusinessAreaForm
+    topic_form_class: Any = TopicForm
 
     def get(self, request: HttpRequest, *args: Any, **kwarsgs: Any) -> HttpResponse:
-        form = self.form_class()
+        form = self.form_class(
+            initial={
+                "bio": request.user.bio,
+                "business_area": request.user.business_area,
+                "mentee_topics": UserTopic.objects.filter(
+                    user=request.user, usertype=UserType.Mentee
+                ).values_list("topic", flat=True),
+                "mentor_topics": UserTopic.objects.filter(
+                    user=request.user, usertype=UserType.Mentor
+                ).values_list("topic", flat=True),
+                "usertype": request.user.user_type,
+            }
+        )
 
-        # We should autofill information here from the current user where possibleb
+        ba_form = self.ba_form_class()
+        topic_form = self.topic_form_class()
 
-        # Currently we only allow users to pick from business areas or topics that exist. We need to add the option to add missing ones.
-
-        return render(request, self.template_name, {"form": form})
+        return render(
+            request,
+            self.template_name,
+            {"form": form, "ba_form": ba_form, "topic_form": topic_form},
+        )
 
     def post(self, request: HttpRequest, *args: Any, **kwarsgs: Any) -> HttpResponse:
-        form = self.form_class(request.POST)
-        if form.is_valid():
+        print(request.POST)
+        if "business_area_new" in request.POST:
+            # Process business area form
+            ba_form = self.ba_form_class(request.POST)
+            if ba_form.is_valid():
+                new_ba = BusinessArea(
+                    business_area=ba_form.cleaned_data["business_area_new"]
+                )
+                new_ba.save()
 
-            # Get the current user object
-            current_user = request.user
+                # Show a message saying "Business area created" and redirect to profile page
+                messages.success(request, "Business area created")
+                return redirect("profile_edit")
+            else:
+                messages.error(request, "Error creating business area")
+                return render(
+                    request,
+                    self.template_name,
+                    {
+                        "form": self.form_class(),
+                        "ba_form": ba_form,
+                        "topic_form": self.topic_form_class(),
+                    },
+                )
+        elif "topic_new" in request.POST:
+            # Process topic form
+            topic_form = self.topic_form_class(request.POST)
+            if topic_form.is_valid():
+                new_topic = Topic(topic=topic_form.cleaned_data["topic_new"])
+                new_topic.save()
 
-            # Add bio and business area to it and save
-            current_user.bio = form.cleaned_data["bio"]
-            current_user.business_area = form.cleaned_data["business_area"]
-            current_user.save()
-
-            # Get selected topics
-            selected_topics = form.cleaned_data["topics"]
-
-            # Create UserTopic models storing these
-            for topic in selected_topics:
-                user_topic = UserTopic(user=request.user, topic=topic)
-                user_topic.save()
-
-            # Show a message saying "Profile updated" and redirect to profile page
-            messages.success(request, "Profile updated")
-            return redirect("profile")
-
+                # Show a message saying "Topic created" and redirect to profile page
+                messages.success(request, "Topic created")
+                return redirect("profile_edit")
+            else:
+                messages.error(request, "Error creating topic")
+                return render(
+                    request,
+                    self.template_name,
+                    {
+                        "form": self.form_class(),
+                        "ba_form": self.ba_form_class(),
+                        "topic_form": topic_form,
+                    },
+                )
         else:
+            form = self.form_class(request.POST)
+            if form.is_valid():
 
-            # Show error messages and go back to form page
-            messages.error(request, "Error updating profile")
-            return render(request, self.template_name, {"form": form})
+                # Get the current user object
+                current_user = request.user
+
+                # Add bio and business area to it and save
+                current_user.bio = form.cleaned_data["bio"]
+                current_user.business_area = form.cleaned_data["business_area"]
+                current_user.user_type = form.cleaned_data["usertype"]
+                current_user.save()
+
+                # Get selected topics
+                selected_mentee_topics = form.cleaned_data.get("mentee_topics", None)
+
+                # Create UserTopic models storing these
+                UserTopic.objects.filter(user=current_user).delete()
+                for topic in selected_mentee_topics:
+                    user_topic = UserTopic(
+                        user=request.user,
+                        topic=topic,
+                        usertype=UserType.Mentee,
+                    )
+                    user_topic.save()
+
+                # Get selected topics
+                selected_mentor_topics = form.cleaned_data.get("mentor_topics", None)
+
+                # Create UserTopic models storing these
+                for topic in selected_mentor_topics:
+                    user_topic = UserTopic(
+                        user=request.user,
+                        topic=topic,
+                        usertype=UserType.Mentor,
+                    )
+                    user_topic.save()
+
+                # Show a message saying "Profile updated" and redirect to profile page
+                messages.success(request, "Profile updated")
+                return redirect("profile")
+
+            else:
+                print(form.cleaned_data)
+
+                # Show error messages and go back to form page
+                messages.error(request, "Error updating profile")
+                return render(
+                    request,
+                    self.template_name,
+                    {
+                        "form": form,
+                        "ba_form": self.ba_form_class(),
+                        "topic_form": self.topic_form_class(),
+                    },
+                )
 
 
-class UserCalendarPage(TemplateView):
+class UserCalendarPage(LoginRequiredMixin, TemplateView):
     """Shows a user's calendar with all their upcoming meetings and events"""
 
     template_name: str = "people/calendar.html"
@@ -93,7 +210,7 @@ class UserCalendarPage(TemplateView):
         return render(request, self.template_name, {})
 
 
-class UserNotificationsPage(TemplateView):
+class UserNotificationsPage(LoginRequiredMixin, TemplateView):
     """Shows all of a users notifcations"""
 
     template_name: str = "people/notifications.html"
@@ -102,7 +219,7 @@ class UserNotificationsPage(TemplateView):
         return render(request, self.template_name, {})
 
 
-class MenteeDashboardPage(TemplateView):
+class MenteeDashboardPage(IsUserMenteeMixin, TemplateView):
     """A mentee's home page"""
 
     template_name: str = "people/mentee_dashboard.html"
@@ -111,7 +228,7 @@ class MenteeDashboardPage(TemplateView):
         return render(request, self.template_name, {})
 
 
-class MenteeFeedbackPage(TemplateView):
+class MenteeFeedbackPage(IsUserMenteeMixin, TemplateView):
     """A page for a mentee to discuss feedback with their mentor"""
 
     template_name: str = "people/mentee_feedback.html"
@@ -120,7 +237,7 @@ class MenteeFeedbackPage(TemplateView):
         return render(request, self.template_name, {})
 
 
-class MenteePlansPage(TemplateView):
+class MenteePlansPage(IsUserMenteeMixin, TemplateView):
     """A mentee's plans of action page"""
 
     template_name: str = "people/mentee_plans.html"
@@ -129,7 +246,7 @@ class MenteePlansPage(TemplateView):
         return render(request, self.template_name, {})
 
 
-class MenteeChatPage(TemplateView):
+class MenteeChatPage(IsUserMenteeMixin, TemplateView):
     """Chat between a mentee and their mentor"""
 
     template_name: str = "people/mentee_chat.html"
@@ -138,7 +255,7 @@ class MenteeChatPage(TemplateView):
         return render(request, self.template_name, {})
 
 
-class MenteeMeetingsPage(TemplateView):
+class MenteeMeetingsPage(IsUserMenteeMixin, TemplateView):
     """Upcoming meetings and records of past meetings between a mentee and their mentor"""
 
     template_name: str = "people/mentee_meetings.html"
@@ -147,7 +264,7 @@ class MenteeMeetingsPage(TemplateView):
         return render(request, self.template_name, {})
 
 
-class MentorDashboardPage(TemplateView):
+class MentorDashboardPage(IsUserMentorMixin, TemplateView):
     """A mentor's home/dashboard page"""
 
     template_name: str = "people/mentor_dashboard.html"
@@ -156,7 +273,7 @@ class MentorDashboardPage(TemplateView):
         return render(request, self.template_name, {})
 
 
-class MentorMenteesPage(TemplateView):
+class MentorMenteesPage(IsUserMentorMixin, TemplateView):
     """A mentor's view of all his current mentess, along with new mentee requests"""
 
     template_name: str = "people/mentor_mentees.html"
@@ -166,7 +283,7 @@ class MentorMenteesPage(TemplateView):
 
 
 # possible rename due to ambiguous names
-class MentorMenteePage(TemplateView):
+class MentorMenteePage(IsUserMentorMixin, TemplateView):
     """A mentor's overview of a specfic mentee and their relationship"""
 
     template_name: str = "people/mentor_mentee.html"
@@ -175,7 +292,7 @@ class MentorMenteePage(TemplateView):
         return render(request, self.template_name, {})
 
 
-class MentorMenteeFeedbackPage(TemplateView):
+class MentorMenteeFeedbackPage(IsUserMentorMixin, TemplateView):
     """Feedback between the mentor and specific mentee"""
 
     template_name: str = "people/mentor_feedback.html"
@@ -184,7 +301,7 @@ class MentorMenteeFeedbackPage(TemplateView):
         return render(request, self.template_name, {})
 
 
-class MentorMenteeChatPage(TemplateView):
+class MentorMenteeChatPage(IsUserMentorMixin, TemplateView):
     """Allows a mentor to send and view chats to a specific mentee"""
 
     template_name: str = "people/mentor_chat.html"
@@ -193,7 +310,7 @@ class MentorMenteeChatPage(TemplateView):
         return render(request, self.template_name, {})
 
 
-class MentorMenteePlansPage(TemplateView):
+class MentorMenteePlansPage(IsUserMentorMixin, TemplateView):
     """Allows a mentor to view and manage plans of action for a specific mentee"""
 
     template_name: str = "people/mentor_plans.html"
@@ -202,7 +319,7 @@ class MentorMenteePlansPage(TemplateView):
         return render(request, self.template_name, {})
 
 
-class MentorMenteeMeetingsPage(TemplateView):
+class MentorMenteeMeetingsPage(IsUserMentorMixin, TemplateView):
     """Allows a mentor to view and manage meetings and meeting history for a specific mentee"""
 
     template_name: str = "people/mentor_meetings.html"
