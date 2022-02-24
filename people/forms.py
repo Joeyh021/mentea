@@ -29,6 +29,7 @@ class RegistrationForm(UserCreationForm):
             user.save()
         return user
 
+
 from .models import BusinessArea, Topic, UserType
 
 
