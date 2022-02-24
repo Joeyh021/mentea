@@ -46,17 +46,14 @@ class FeedbackPage(TemplateView):
     """A page with a feedback box allowing users to send feedback about the application.""" ""
 
     template_name: str = "main/feedback.html"
-    
+
     dffId = ""
-    
+
     try:
         dff = DefaultFeedbackForms.objects.get(id=1)
         dffId = dff.feedback.id
     except:
         pass
-    
-    
-    
 
     def get(self, request: HttpRequest, *args: Any, **kwarsgs: Any) -> HttpResponse:
-        return render(request, self.template_name, {'feedbackId': self.dffId})
+        return render(request, self.template_name, {"feedbackId": self.dffId})

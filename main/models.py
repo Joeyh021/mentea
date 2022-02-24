@@ -26,5 +26,3 @@ class AppFeedback(models.Model):
     feedback = models.CharField(max_length=200)
     updated_at = models.DateTimeField(auto_now=True)
     created_at = models.DateTimeField(auto_now_add=True)
-
-

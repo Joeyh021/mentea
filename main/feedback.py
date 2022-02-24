@@ -20,6 +20,7 @@ from django.views.generic import TemplateView
 
 from typing import Any
 
+
 class JsonEncoder(DjangoJSONEncoder):
     def default(self, o):
         if isinstance(o, Model):
@@ -288,7 +289,8 @@ class FeedbackFormSubmissionUpdateHandler(TemplateView):
 
         else:
             return HttpResponse(form.errors.as_json())
-        
+
+
 class FeedbackFormBuilder(TemplateView):
     """contains privacy and GDPR notices. We care about your data:tm:"""
 

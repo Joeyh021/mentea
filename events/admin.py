@@ -36,6 +36,7 @@ class AdminQuestion(admin.ModelAdmin[Questions]):
 class AdminAnswer(admin.ModelAdmin[Answer]):
     pass
 
+
 @admin.register(DefaultFeedbackForms)
 class AdminDefaultFeedbackForms(admin.ModelAdmin[DefaultFeedbackForms]):
     pass

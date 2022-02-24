@@ -7,15 +7,26 @@ import django.db.models.deletion
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('events', '0007_feedbackform_allowseditingsubmissions_and_more'),
+        ("events", "0007_feedbackform_allowseditingsubmissions_and_more"),
     ]
 
     operations = [
         migrations.CreateModel(
-            name='DefaultFeedbackForms',
+            name="DefaultFeedbackForms",
             fields=[
-                ('id', models.IntegerField(editable=False, primary_key=True, serialize=False)),
-                ('feedback', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='events.feedbackform')),
+                (
+                    "id",
+                    models.IntegerField(
+                        editable=False, primary_key=True, serialize=False
+                    ),
+                ),
+                (
+                    "feedback",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        to="events.feedbackform",
+                    ),
+                ),
             ],
         ),
     ]
