@@ -40,6 +40,19 @@ class Answer(models.Model):
     data = models.CharField(max_length=200)
 
 
+class DefaultFeedbackForms(models.Model):
+    id = models.IntegerField(primary_key=True, editable=False)
+    feedback = models.ForeignKey(FeedbackForm, on_delete=models.CASCADE)
+
+    @classmethod
+    def object(cls):
+        return cls._default_manager.all().first()  # Since only one item
+
+    def save(self, *args, **kwargs):
+        self.pk = self.id = 1
+        return super().save(*args, **kwargs)
+
+
 class EventType(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     name = models.CharField(max_length=50)

@@ -44,4 +44,5 @@ urlpatterns = [
         FeedbackFormSubmissionUpdateHandler.as_view(),
         name="ff-submission",
     ),
+    path("feedback-api/builder/", FeedbackFormBuilder.as_view(), name="ff-builder"),
 ]

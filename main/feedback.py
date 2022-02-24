@@ -15,6 +15,11 @@ from django.shortcuts import get_object_or_404
 from django.views.generic import TemplateView
 from django.http import HttpRequest, HttpResponse
 
+from django.shortcuts import render
+from django.views.generic import TemplateView
+
+from typing import Any
+
 
 class JsonEncoder(DjangoJSONEncoder):
     def default(self, o):
@@ -284,3 +289,12 @@ class FeedbackFormSubmissionUpdateHandler(TemplateView):
 
         else:
             return HttpResponse(form.errors.as_json())
+
+
+class FeedbackFormBuilder(TemplateView):
+    """contains privacy and GDPR notices. We care about your data:tm:"""
+
+    template_name: str = "main/feedback-builder.html"
+
+    def get(self, request: HttpRequest, *args: Any, **kwarsgs: Any) -> HttpResponse:
+        return render(request, self.template_name, {})
