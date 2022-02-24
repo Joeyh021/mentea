@@ -4,7 +4,7 @@ from ..views import *
 
 
 urlpatterns = [
-    path("dashboard/", MentorDashboardPage.as_view(), name="dashboard"),
+    path("", MentorDashboardPage.as_view(), name="mentor_dashboard"),
     path("mentees/", MentorMenteesPage.as_view(), name="mentees"),
     path("mentees/<uuid:menteeid>/", MentorMenteePage.as_view(), name="mentee"),
     path(

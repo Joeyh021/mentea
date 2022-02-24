@@ -1,6 +1,5 @@
-# Group 32 CS261 Software Engineering Project
-
-If you can come up with a more fancy name please let us know
+# Mentea
+Group 32's CS261 Software Engineering Project
 
 ## Getting Started with Development
 
@@ -48,6 +47,15 @@ If you can come up with a more fancy name please let us know
 - CI is currently gated on `mypy`, `black`, and `pytest` all passing. If any of these throw errors, you won't be able to merge code into the repo
   - Just because it isn't also gated on `pylint` doesn't mean you shouldn't check code with it, as it also makes life easier for the person reviewing your code
 
+### Editing the Client side form system
+- If you don't need to make any changes then please don't!
+- If you are planning on making changes then:
+  - Run npm install
+  - If typescript doesn't work then install it with npm globally `npm install -g typescript`
+  - Run the bundle script `npm run bundle` command to build the code, it will automatically watch for changes
+    - You can optionally run the `type-check:watch` to provide realtime typescript errors
+- If you haven't made any changes then the production script in `static/js/dist` is all you need. IT IS ALREADY INCLUDED IN `base.html`.
+- If you need any help then just ask :)
 ## Best Practices
 
 - Work on a new branch for each feature, bug fix, or series of commits you intend to make.

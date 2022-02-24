@@ -1,5 +1,5 @@
 [tool.poetry]
-name = "mentoring_platform"
+name = "mentea"
 version = "0.1.0"
 description = ""
 authors = ["Joe Harrison <josephharrison1@me.com>"]
@@ -11,6 +11,7 @@ manage = "manage:main"
 python = "^3.8"
 Django = "^4.0.1"
 psycopg2-binary = "^2.9.3"
+pywatchman = "^1.4.1"
 
 [tool.poetry.dev-dependencies]
 pytest = "^6.2.5"
@@ -18,7 +19,10 @@ pylint = "^2.12.2"
 mypy = "^0.931"
 black = "^21.12b0"
 django-stubs = "^1.9.0"
+django-browser-reload = "^1.3.0"
+django-stubs-ext = "^0.3.1"
 pytest-django = "^4.5.2"
+pytest-dependency = "^0.5.1"
 
 
 [build-system]
@@ -38,17 +42,16 @@ disable = [
 
 
 [tool.mypy]
-strict = true
 warn_unused_configs = true
 warn_unreachable = true
 plugins = ["mypy_django_plugin.main"]
 
 [tool.django-stubs]
-django_settings_module = "mentoring_platform.settings.dev"
+django_settings_module = "mentea.settings.dev"
 
 [tool.pytest.ini_options]
-DJANGO_SETTINGS_MODULE = "mentoring_platform.settings.dev"
-python_files = ["tests.py","test_*.py"]
+DJANGO_SETTINGS_MODULE = "mentea.settings.dev"
+python_files = ["tests.py", "test_*.py", "*_tests.py", "*_test.py"]
 addopts = "-p no:warnings"
 
 [[tool.mypy.overrides]]

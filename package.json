@@ -2,24 +2,54 @@
   "name": "softeng-project",
   "version": "1.0.0",
   "description": "If you can come up with a more fancy name please let us know",
+  "main": "index.js",
   "directories": {
-    "test": "test"
+    "test": "tests"
   },
   "scripts": {
-    "test": "cypress run"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "type-check": "tsc --noEmit",
+    "type-check:watch": "npm run type-check -- --watch",
+    "build": "npm run build:types && npm run build:js",
+    "build:types": "tsc --emitDeclarationOnly",
+    "build:js": "babel src --out-dir ./static/js/react --extensions \".ts,.tsx\" --source-maps inline",
+    "bundle": "webpack"
   },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/Joeyh021/SoftEng-Project.git"
   },
-  "author": "Josh Davies",
+  "keywords": [],
+  "author": "",
   "license": "ISC",
   "bugs": {
     "url": "https://github.com/Joeyh021/SoftEng-Project/issues"
   },
   "homepage": "https://github.com/Joeyh021/SoftEng-Project#readme",
+  "dependencies": {
+    "@types/react-dom": "^17.0.11",
+    "@types/uuid": "^8.3.4",
+    "axios": "^0.26.0",
+    "babel-cli": "^6.26.0",
+    "babel-preset-react-app": "^3.1.2",
+    "react": "^17.0.2",
+    "react-dom": "^17.0.2",
+    "react-hook-form": "^7.27.1",
+    "uuid": "^8.3.2"
+  },
   "devDependencies": {
-    "cypress": "^9.4.1",
-    "lighthouse": "^9.3.1"
+    "@babel/cli": "^7.17.0",
+    "@babel/core": "^7.17.2",
+    "@babel/plugin-proposal-class-properties": "^7.16.7",
+    "@babel/plugin-proposal-object-rest-spread": "^7.16.7",
+    "@babel/preset-env": "^7.16.11",
+    "@babel/preset-react": "^7.16.7",
+    "@babel/preset-typescript": "^7.16.7",
+    "@types/node": "^17.0.18",
+    "@types/react": "^17.0.39",
+    "babel-loader": "^8.2.3",
+    "typescript": "^4.5.5",
+    "webpack": "^5.68.0",
+    "webpack-cli": "^4.9.2"
   }
 }
