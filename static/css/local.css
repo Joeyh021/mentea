@@ -116,11 +116,20 @@ blockquote {
     border-left-style: solid
 }
 
+label{
+    display:block;
+    /*font-size:20px; */
+}
+
+::placeholder {
+    color: black;
+}
 
 :root {
     --mentea-generic-bg: #7d4394;
     --mentea-generic-sidenav-bg: #fcf5fb
 }
+
 /* NEW CONTENT FOR MENTEA */
 .bg-mentea {
     background-color: var(--mentea-generic-bg) !important;
@@ -160,4 +169,39 @@ blockquote {
 
 .color-mentea {
     color: var(--mentea-generic-bg) !important;
+}
+
+.float-container {
+    padding: 10px;
+}
+
+.float-child {
+    width: 50%;
+    float: left;
+    padding: 10px;
+}  
+
+.select-mentor {
+    width: 30%;
+    padding: 16px 20px;
+    border: none;
+    border-radius: 20px;
+    background-color: #80BAE4;
+}
+
+.text-mentor {
+    width: 30%;
+    padding: 16px 20px;
+    border: none;
+    border-radius: 20px;
+    background-color: #80BAE4;
+}
+
+.bg-block-mentor {
+    width: 100%;
+    padding: 16px 20px;
+    border-radius: 20px;
+    color: white;
+    background-color: #32357b;
+    
 }

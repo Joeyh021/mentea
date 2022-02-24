@@ -29,4 +29,5 @@ jobs:
             cd mentea
             git pull
             poetry install
+            poetry run manage migrate
             sudo systemctl restart gunicorn
