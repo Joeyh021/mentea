@@ -47,8 +47,6 @@ class FeedbackPage(TemplateView):
 
     template_name: str = "main/feedback.html"
 
-    
-
     def get(self, request: HttpRequest, *args: Any, **kwarsgs: Any) -> HttpResponse:
         dffId = ""
 
