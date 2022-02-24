@@ -3,13 +3,22 @@
 {% block title %}Events Index{% endblock %}
 
 {% block body %}
+<small>
+    <a href="../">Back to all workshops</a>
+</small>
 <h1>{{ event.name }}</h1>
-<small>{{ event.startTime|date:'h:mA' }} - {{ event.calc_end_date|date:"h:mA"|lower }} on {{ event.startTime|date:"M d, Y"}}</small>
+<small>{{ event.startTime|date:'M d, Y @ h:iA' }} - {{ event.calc_end_date|date:"M d, Y @ h:iA" }}</small>
 
-<p>
+<p class="mt-2">
     <strong>Event:</strong>
-    {{ event.type.name|lower|capfirst }},
+    {{ event.type.name|lower|capfirst }}
+    <br>
+    <strong>Topic:</strong>
+    {{ event.topic }}
+    <br>
+    <strong>Where</strong>
     {{ event.location }}
+    
 </p>
 
 <p>
@@ -22,7 +31,7 @@
 </p>
 
 
-{% if event.can_show_form %}
+{% if event.has_event_finished %}
     <div>
         <custom-form form-id="{{ form.feedback_form.id }}">Loading form...</custom-form>
     </div>

@@ -1,4 +1,5 @@
 from datetime import datetime, timedelta
+from random import randint
 from django.utils import timezone
 import uuid
 
@@ -66,6 +67,7 @@ class Event(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     name = models.CharField(max_length=50)
     startTime = models.DateTimeField()
+    endTime = models.DateTimeField()
     location = models.TextField()
     duration = models.IntegerField()
     description = models.TextField(blank=True)
@@ -74,12 +76,19 @@ class Event(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
     created_at = models.DateTimeField(auto_now_add=True)
     feedback_form = models.ForeignKey(FeedbackForm, on_delete=models.CASCADE, null=True, default=None)
+    topic = models.ForeignKey(Topic, on_delete=models.SET_NULL, null=True, default=None)
     
     def calc_end_date(self):
         return self.startTime + timedelta(minutes=self.duration)
     
-    def can_show_form(self):
+    def has_event_finished(self):
         return self.calc_end_date() < timezone.now()
+    
+    def get_pattern(self):
+        return 'bg-pattern-' + str(randint(1,3))
+    
+    def in_progress(self):
+        return self.startTime < timezone.now() and self.endTime > timezone.now()
     
     
 

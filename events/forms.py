@@ -1,3 +1,6 @@
+from attr import attrs
+
+from people.models import Topic
 from .models import Event
 from django import forms
 from django.forms import TextInput
@@ -19,6 +22,10 @@ class WorkshopForm(forms.Form):
     )
     desc = forms.CharField(
         widget=forms.Textarea(attrs={"rows": 4, "cols": 40, "class": "form-control"})
+    )
+    topic = forms.ModelChoiceField(
+        queryset=Topic.objects.all(),
+        widget=forms.Select(attrs={'class': 'form-select'})
     )
     
     class Meta:

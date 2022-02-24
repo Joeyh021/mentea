@@ -1,6 +1,7 @@
 
 
 
+from datetime import datetime, timedelta, timezone
 from django.shortcuts import redirect, render
 from django.urls import reverse
 from django.views.generic import TemplateView
@@ -9,9 +10,12 @@ from typing import Any
 from django.contrib import messages
 
 from events.forms import WorkshopForm
+from people.models import Topic
 
 from .models import Event, EventType
 
+from django.core.paginator import Paginator
+from django.db.models import F
 
 
 
@@ -25,7 +29,14 @@ class EventsIndexPage(TemplateView):
     template_name = "workshops/index.html"
 
     def get(self, request: HttpRequest, *args: Any, **kwarsgs: Any) -> HttpResponse:
-        return render(request, self.template_name, {})
+        
+        event_list = Event.objects.order_by("startTime").filter(endTime__gte=datetime.now()).all()
+        paginator = Paginator(event_list, 9)
+        
+        page_number = request.GET.get('page')
+        page_obj = paginator.get_page(page_number)
+        
+        return render(request, self.template_name, {'page_obj': page_obj})
 
 
 class EventRequestPage(TemplateView):
@@ -50,9 +61,7 @@ class EventCreatePage(TemplateView):
 
     def get(self, request: HttpRequest, *args: Any, **kwarsgs: Any) -> HttpResponse:
         form = self.form_class(
-            initial={
-                "mentor": request.user.id
-            }
+      
         )
         return render(request, self.template_name, {"form": form})
     
@@ -65,7 +74,10 @@ class EventCreatePage(TemplateView):
             
             etype = EventType.objects.get(name="WORKSHOP")
             
-            event = Event(name=formData['name'], startTime=formData['startTime'], duration=formData['duration'], location="Online", mentor=request.user, type=etype, description=formData['desc'])
+            startTime = formData["startTime"]
+            endTime = startTime + timedelta(minutes = formData["duration"])
+            
+            event = Event(name=formData['name'], startTime=formData['startTime'], endTime=endTime, duration=formData['duration'], location="Online", mentor=request.user, type=etype, description=formData['desc'], topic=formData['topic'])
             event.save()
             
             return redirect("/workshops/"+ str(event.id)+"/")

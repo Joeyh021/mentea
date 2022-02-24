@@ -37,6 +37,15 @@
         {% endif %}
     </div>
     <div class="mb-3">
+        <label class="form-label" for="id_bio">Topic</label>
+        {{ form.topic }}
+        {% if form.topic.errors %}
+            {% for e in form.topic.errors %}
+                <p class="help is-danger">{{ e }}</p>
+            {% endfor %}
+        {% endif %}
+    </div>
+    <div class="mb-3">
         <label class="form-label" for="id_bio">Description</label>
         {{ form.desc }}
         {% if form.desc.errors %}
