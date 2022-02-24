@@ -188,6 +188,8 @@ const FormBuilder: FC<IFormBuilder> = ({ defaultMode  }) => {
 
                     setQuestions(updatedQuestions)
                     setMode(EFormBuilderMode.EDIT)
+                } else {
+                    alert(res.data || res.data.data)
                 }
 
             })

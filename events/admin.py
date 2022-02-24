@@ -7,6 +7,7 @@ django_stubs_ext.monkeypatch()
 
 from events.models import (
     Answer,
+    DefaultFeedbackForms,
     FeedbackForm,
     FeedbackSubmission,
     Questions,
@@ -33,4 +34,8 @@ class AdminQuestion(admin.ModelAdmin[Questions]):
 
 @admin.register(Answer)
 class AdminAnswer(admin.ModelAdmin[Answer]):
+    pass
+
+@admin.register(DefaultFeedbackForms)
+class AdminDefaultFeedbackForms(admin.ModelAdmin[DefaultFeedbackForms]):
     pass
