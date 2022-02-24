@@ -4,7 +4,8 @@ import { FC } from "react";
 import ReactDOM from "react-dom";
 import { FieldValues, useForm, UseFormRegister } from "react-hook-form";
 import FormBuilder from "./form-builder";
-
+axios.defaults.xsrfHeaderName = "X-CSRFTOKEN";
+axios.defaults.xsrfCookieName = "csrftoken";
 
 
 interface IFeedbackFormProps {
@@ -293,6 +294,9 @@ const FeedbackFormViewer: FC<IFeedbackFormProps> = ({ id }) => {
       let ss: {submissionId: string, answers: IAnswer[]} = {submissionId: prevSubmissions[0].id, answers: answers}
       fd.set('jsonData', JSON.stringify(ss))
     }
+
+
+  
 
     axios.post(submitUrl, fd).then(res => {
       if (res.data.result === "success") {

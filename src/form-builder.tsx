@@ -6,6 +6,9 @@ import { v4 as uuidv4 } from 'uuid';
 import axios from "axios";
 import { readSync } from "fs";
 
+axios.defaults.xsrfHeaderName = "X-CSRFTOKEN";
+axios.defaults.xsrfCookieName = "csrftoken";
+
 interface IQuestionType {
     htmlName: string
     visualName: string
