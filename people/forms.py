@@ -64,3 +64,19 @@ class BusinessAreaForm(forms.Form):
 
 class TopicForm(forms.Form):
     topic_new = forms.CharField(widget=forms.TextInput(attrs={"class": "form-control"}))
+
+
+class PlanOfActionForm(forms.Form):
+    name = forms.CharField(label="Plan Name", max_length=100)
+    #
+    target_1 = forms.CharField(label="Target", max_length=100)
+    target_2 = forms.CharField(label="Target", max_length=100, required=False)
+    target_3 = forms.CharField(label="Target", max_length=100, required=False)
+    target_4 = forms.CharField(label="Target", max_length=100, required=False)
+    target_5 = forms.CharField(label="Target", max_length=100, required=False)
+
+    description_1 = forms.CharField(label="Description", max_length=100, required=False)
+    description_2 = forms.CharField(label="Description", max_length=100, required=False)
+    description_3 = forms.CharField(label="Description", max_length=100, required=False)
+    description_4 = forms.CharField(label="Description", max_length=100, required=False)
+    description_5 = forms.CharField(label="Description", max_length=100, required=False)

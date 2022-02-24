@@ -1,0 +1,71 @@
+{% extends "mentee_base.html" %}
+
+{% block title %}Create New Plan of Action{% endblock %}
+
+{% block body %}
+<h1>Plans of Action</h1>
+<h2>Creating new...</h2>
+<form action="{% url 'new_plan' %}" method="post">
+    {% csrf_token %}
+    <div class="p-2">
+        {{ form.name.errors }}
+        <label for="{{ form.name.id_for_label }}">Plan Title:</label>
+        {{ form.name }}
+    </div>
+
+    <table>
+        <tr>
+            <div class="p-3">
+                {{ form.target_1.errors }}
+                <label for="{{ form.target_1.id_for_label }}">Target:</label>
+                {{ form.target_1 }}
+                {{ form.description_1.errors }}
+                <label for="{{ form.description_1.id_for_label }}">Description:</label>
+                {{ form.description_1 }}
+            </div>
+        </tr>
+        <tr>
+            <div class="p-3">
+                {{ form.target_2.errors }}
+                <label for="{{ form.target_2.id_for_label }}">Target:</label>
+                {{ form.target_2 }}
+                {{ form.description_2.errors }}
+                <label for="{{ form.description_2.id_for_label }}">Description:</label>
+                {{ form.description_2 }}
+            </div>
+        </tr>
+        <tr>
+            <div class="p-3">
+                {{ form.target_3.errors }}
+                <label for="{{ form.target_3.id_for_label }}">Target:</label>
+                {{ form.target_3 }}
+                {{ form.description_3.errors }}
+                <label for="{{ form.description_3.id_for_label }}">Description:</label>
+                {{ form.description_3 }}
+            </div>
+        </tr>
+        <tr>
+            <div class="p-3">
+                {{ form.target_4.errors }}
+                <label for="{{ form.target_4.id_for_label }}">Target:</label>
+                {{ form.target_4 }}
+                {{ form.description_4.errors }}
+                <label for="{{ form.description_4.id_for_label }}">Description:</label>
+                {{ form.description_4 }}
+            </div>
+        </tr>
+        <tr>
+            <div class="p-3">
+                {{ form.target_5.errors }}
+                <label for="{{ form.target_5.id_for_label }}">Target:</label>
+                {{ form.target_5 }}
+                {{ form.description_5.errors }}
+                <label for="{{ form.description_5.id_for_label }}">Description:</label>
+                {{ form.description_5 }}
+            </div>
+        </tr>
+    </table>
+    <input type="submit" value="Submit">
+
+</form>
+{% endblock %}

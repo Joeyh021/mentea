@@ -7,8 +7,9 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from typing import Any
 from django.contrib.auth import login, authenticate
 
-from .forms import ProfileForm, BusinessAreaForm, TopicForm, RegistrationForm
-from .models import UserTopic, BusinessArea, Topic, UserType
+from .forms import PlanOfActionForm, ProfileForm, BusinessAreaForm, TopicForm
+from .models import *
+from .util import get_mentor
 
 
 class IsUserMenteeMixin(UserPassesTestMixin):
@@ -265,6 +266,10 @@ class MenteePlansPage(IsUserMenteeMixin, TemplateView):
     template_name: str = "people/mentee_plans.html"
 
     def get(self, request: HttpRequest, *args: Any, **kwarsgs: Any) -> HttpResponse:
+        user_plans = PlanOfAction.objects.all().filter(
+            associated_mentee=request.user.id
+        )
+        print(user_plans)
         return render(
             request,
             self.template_name,
@@ -276,14 +281,66 @@ class MenteePlansPage(IsUserMenteeMixin, TemplateView):
                             {"name": "test", "description": "nope", "acheived": False},
                             {"name": "test", "description": "nope", "acheived": True},
                         ],
-                    }
+                    },
+                    {
+                        "name": "balls2",
+                        "targets": [
+                            {"name": "test", "description": "nope", "acheived": False},
+                            {"name": "test", "description": "nope", "acheived": True},
+                        ],
+                    },
                 ]
             },
         )
 
     def post(self, request: HttpRequest, *args, **kwargs) -> HttpResponse:
         print(request.POST)
-        return HttpResponseRedirect("/")
+
+        return HttpResponseRedirect("")
+
+
+class MenteeNewPlanPage(IsUserMentorMixin, TemplateView):
+    """allows a mentee to create a new plan of action for themselves"""
+
+    template_name: str = "people/new_plan.html"
+
+    def get(self, request: HttpRequest, *args, **kwargs) -> HttpResponse:
+        form = PlanOfActionForm()
+        return render(request, self.template_name, {"form": form})
+
+    def post(self, request: HttpRequest, *args, **kwargs) -> HttpResponse:
+        form = PlanOfActionForm(request.POST)
+        print(request.POST)
+
+        if form.is_valid():
+            plan_name = form.cleaned_data["name"]
+            plan = PlanOfAction.objects.create(
+                name=plan_name,
+                associated_mentee=request.user,
+                associated_mentor=get_mentor(request.user),
+            )
+
+            for i in range(1, 6):
+                target = form.cleaned_data[f"target_{i}"]
+                description = form.cleaned_data[f"description_{i}"]
+                if target != "":
+                    PlanOfActionTarget.objects.create(
+                        name=target,
+                        description=description,
+                        associated_poa=plan,
+                        set_by=request.user,
+                    )
+
+            return HttpResponseRedirect("/mentee/plans")
+        else:
+            messages.error(request, "Error creating plan")
+            return render(
+                request,
+                self.template_name,
+                {
+                    "form": PlanOfActionForm(),
+                },
+            )
 
 
 class MenteeChatPage(IsUserMenteeMixin, TemplateView):

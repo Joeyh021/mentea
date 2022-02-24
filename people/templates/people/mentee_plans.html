@@ -8,12 +8,12 @@
 <div class="accordion" id="accordionExample">
     {% for plan in plans_list %}
         <div class="accordion-item">
-            <h2 class="accordion-header" id="headingOne">
-                <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+            <h2 class="accordion-header" id="heading{{plan}}">
+                <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapse{{plan.name}}" aria-expanded="true" aria-controls="collapse{{plan}}">
                     {{plan.name}}
                 </button>
             </h2>
-            <div id="collapseOne" class="accordion-collapse collapse show" aria-labelledby="headingOne" data-bs-parent="#accordionExample">
+            <div id="collapse{{plan.name}}" class="accordion-collapse collapse show" aria-labelledby="headingOne" data-bs-parent="#accordionExample">
                 <div class="accordion-body">
                     <table class="table">
                         <thead>
@@ -35,7 +35,7 @@
                                             {% if target.acheived %}
                                                 <p class="text-muted">Completed!</p>
                                             {% else %}
-                                                <button type="button" class="btn btn-primary" name="completed" value="true">Mark as Complete</button>
+                                                <button type="submit" class="btn btn-primary" name="completed" value="{{target.name}}">Mark as Complete</button>
                                             {% endif %}
                                         </form>
                                     </td>
@@ -44,9 +44,11 @@
                         </tbody>
                     </table>
                 </div>
+
             </div>
         </div>
     {% endfor %}              
 </div>
-Create new
+<a href="{% url 'new_plan' %}">
+<button type="button" class="btn btn-primary">Create New</button></a>
 {% endblock %}
