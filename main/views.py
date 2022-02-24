@@ -47,13 +47,14 @@ class FeedbackPage(TemplateView):
 
     template_name: str = "main/feedback.html"
 
-    dffId = ""
-
-    try:
-        dff = DefaultFeedbackForms.objects.get(id=1)
-        dffId = dff.feedback.id
-    except:
-        pass
+    
 
     def get(self, request: HttpRequest, *args: Any, **kwarsgs: Any) -> HttpResponse:
-        return render(request, self.template_name, {"feedbackId": self.dffId})
+        dffId = ""
+
+        try:
+            dff = DefaultFeedbackForms.objects.get(id=1)
+            dffId = dff.feedback.id
+        except:
+            pass
+        return render(request, self.template_name, {"feedbackId": dffId})
