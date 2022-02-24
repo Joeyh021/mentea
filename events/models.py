@@ -1,3 +1,5 @@
+from datetime import datetime, timedelta
+from django.utils import timezone
 import uuid
 
 from django.db import models
@@ -66,11 +68,20 @@ class Event(models.Model):
     startTime = models.DateTimeField()
     location = models.TextField()
     duration = models.IntegerField()
+    description = models.TextField(blank=True)
     mentor = models.ForeignKey(User, on_delete=models.CASCADE)
     type = models.ForeignKey(EventType, on_delete=models.CASCADE)
     updated_at = models.DateTimeField(auto_now=True)
     created_at = models.DateTimeField(auto_now_add=True)
-    feedback_form = models.ForeignKey(FeedbackForm, on_delete=models.CASCADE)
+    feedback_form = models.ForeignKey(FeedbackForm, on_delete=models.CASCADE, null=True, default=None)
+    
+    def calc_end_date(self):
+        return self.startTime + timedelta(minutes=self.duration)
+    
+    def can_show_form(self):
+        return self.calc_end_date() < timezone.now()
+    
+    
 
 
 class EventAttendee(models.Model):

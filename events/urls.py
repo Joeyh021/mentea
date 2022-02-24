@@ -9,5 +9,5 @@ urlpatterns = [
     path("", EventsIndexPage.as_view(), name="index"),
     path("create/", EventCreatePage.as_view(), name="create"),
     path("request/", EventRequestPage.as_view(), name="request"),
-    path("<uuid:eventid>/", EventPage.as_view(), name="workshop"),
+    path("<uuid:eventId>/", EventPage.as_view(), name="workshop"),
 ]
