@@ -1,8 +1,9 @@
 import uuid
 
 from django.db import models
-
+from typing import Optional
 from django.contrib.auth.models import BaseUserManager, AbstractBaseUser
+from datetime import datetime
 
 # Changing this to override the default model!
 
@@ -203,7 +204,7 @@ class PlanOfActionTarget(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     name = models.CharField(max_length=50)
     description = models.CharField(max_length=200)
-    achieved_at = models.DateTimeField(auto_now=True, blank=True, null=True)
+    achieved_at = models.BooleanField(default=False)
     associated_poa = models.ForeignKey(
         PlanOfAction, on_delete=models.CASCADE, db_index=True
     )
