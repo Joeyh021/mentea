@@ -1,18 +1,13 @@
 from django.contrib import messages
-from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
+from django.contrib.auth.mixins import UserPassesTestMixin
 from django.http import HttpRequest, HttpResponse
 from django.shortcuts import redirect, render
-from django.views.generic import FormView, TemplateView
+from django.views.generic import TemplateView
 from django.contrib.auth.mixins import LoginRequiredMixin
 from typing import Any
-from django.http import HttpResponseRedirect
-from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth import login, authenticate
-from django.contrib import messages
 
-from .forms import RegistrationForm
-
-from .forms import ProfileForm, BusinessAreaForm, TopicForm
+from .forms import ProfileForm, BusinessAreaForm, TopicForm, RegistrationForm
 from .models import UserTopic, BusinessArea, Topic, UserType
 
 
@@ -57,8 +52,9 @@ class UserSignupPage(TemplateView):
         form = self.form_class(request.POST)
         if form.is_valid():
             form.save()
-            messages.success(request, "Account created successfully!")
-            return redirect("login")
+            messages.success(request, "Account created successfully! Please now complete your profile before continuing.")
+            login(request, authenticate(username=form.cleaned_data["email"], password=form.cleaned_data["password1"]))
+            return redirect("profile_edit")
         return render(request, self.template_name, {"form": form})
 
 
