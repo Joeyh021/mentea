@@ -63,9 +63,13 @@ class User(AbstractBaseUser):
     first_name = models.CharField(max_length=50, blank=True)
     last_name = models.CharField(max_length=50, blank=True)
     email = models.EmailField(max_length=254, unique=True)
-    business_area = models.ForeignKey("BusinessArea", on_delete=models.CASCADE)
+    business_area = models.ForeignKey(
+        "BusinessArea", on_delete=models.CASCADE, null=True
+    )
     bio = models.TextField(blank=True)
-    user_type = models.CharField(choices=UserType.choices, max_length=50, blank=True)
+    user_type = models.CharField(
+        choices=UserType.choices, max_length=50, blank=True, default="None"
+    )
     updated_at = models.DateTimeField(auto_now=True)
     created_at = models.DateTimeField(auto_now_add=True)
 
@@ -204,7 +208,7 @@ class PlanOfActionTarget(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     name = models.CharField(max_length=50)
     description = models.CharField(max_length=200)
-    achieved_at = models.BooleanField(default=False)
+    achieved = models.BooleanField(default=False)
     associated_poa = models.ForeignKey(
         PlanOfAction, on_delete=models.CASCADE, db_index=True
     )
