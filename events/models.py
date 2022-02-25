@@ -75,25 +75,27 @@ class Event(models.Model):
     type = models.ForeignKey(EventType, on_delete=models.CASCADE)
     updated_at = models.DateTimeField(auto_now=True)
     created_at = models.DateTimeField(auto_now_add=True)
-    feedback_form = models.ForeignKey(FeedbackForm, on_delete=models.CASCADE, null=True, default=None)
+    feedback_form = models.ForeignKey(
+        FeedbackForm, on_delete=models.CASCADE, null=True, default=None
+    )
     topic = models.ForeignKey(Topic, on_delete=models.SET_NULL, null=True, default=None)
     attendees = models.ManyToManyField(User, related_name="eusers")
-    
+
     def calc_end_date(self):
         return self.startTime + timedelta(minutes=self.duration)
-    
+
     def has_event_finished(self):
         return self.calc_end_date() < timezone.now()
-    
+
     def get_pattern(self):
-        return 'bg-pattern-' + str(randint(1,3))
-    
+        return "bg-pattern-" + str(randint(1, 3))
+
     def in_progress(self):
         return self.startTime < timezone.now() and self.endTime > timezone.now()
-    
+
     def has_finished(self):
         return self.endTime < timezone.now()
-    
+
     def current_user_is_part_of_event(self, user: User):
         # Check if they are the mentor
         if self.current_user_is_mentor(user):
@@ -103,12 +105,9 @@ class Event(models.Model):
             return True
         except:
             return False
-        
-        
+
     def current_user_is_mentor(self, user: User):
         return self.mentor == user
-    
-    
 
 
 class EventAttendee(models.Model):

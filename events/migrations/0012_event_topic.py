@@ -7,14 +7,19 @@ import django.db.models.deletion
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('people', '0008_alter_user_user_type_alter_usertopic_usertype'),
-        ('events', '0011_event_description'),
+        ("people", "0008_alter_user_user_type_alter_usertopic_usertype"),
+        ("events", "0011_event_description"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='event',
-            name='topic',
-            field=models.ForeignKey(default=None, null=True, on_delete=django.db.models.deletion.SET_NULL, to='people.topic'),
+            model_name="event",
+            name="topic",
+            field=models.ForeignKey(
+                default=None,
+                null=True,
+                on_delete=django.db.models.deletion.SET_NULL,
+                to="people.topic",
+            ),
         ),
     ]
