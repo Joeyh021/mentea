@@ -52,8 +52,17 @@ class UserSignupPage(TemplateView):
         form = self.form_class(request.POST)
         if form.is_valid():
             form.save()
-            messages.success(request, "Account created successfully! Please now complete your profile before continuing.")
-            login(request, authenticate(username=form.cleaned_data["email"], password=form.cleaned_data["password1"]))
+            messages.success(
+                request,
+                "Account created successfully! Please now complete your profile before continuing.",
+            )
+            login(
+                request,
+                authenticate(
+                    username=form.cleaned_data["email"],
+                    password=form.cleaned_data["password1"],
+                ),
+            )
             return redirect("profile_edit")
         return render(request, self.template_name, {"form": form})
 
