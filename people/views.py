@@ -269,17 +269,24 @@ class MenteePlansPage(IsUserMenteeMixin, TemplateView):
         user_plans = PlanOfAction.objects.all().filter(
             associated_mentee=request.user.id
         )
+        print(
+            {
+                "plans_list": self.__parse_plans(user_plans),
+            },
+        )
         return render(
             request,
             self.template_name,
-            {"plans_list": self.__parse_plans(user_plans)},
+            {
+                "plans_list": self.__parse_plans(user_plans),
+            },
         )
 
     def post(self, request: HttpRequest, *args, **kwargs) -> HttpResponse:
         print(request.POST)
         if "completed" in request.POST:
             target = PlanOfActionTarget.objects.get(name=request.POST["completed"])
-            target.acheived = True
+            target.achieved = True
             target.save()
         return HttpResponseRedirect("")
 
@@ -287,7 +294,13 @@ class MenteePlansPage(IsUserMenteeMixin, TemplateView):
         plans_list = []
         for p in plans:
             plan_targets = PlanOfActionTarget.objects.filter(associated_poa=p)
-            plans_list.append({"name": p.name, "targets": list(plan_targets)})
+            plans_list.append(
+                {
+                    "name": p.name,
+                    "targets": list(plan_targets),
+                    "progress": str(p.progress),
+                }
+            )
         return plans_list
 
 

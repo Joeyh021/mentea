@@ -13,39 +13,41 @@
                     {{plan.name}}
                 </button>
             </h2>
-            <div id="collapse{{plan.name}}" class="accordion-collapse collapse show" aria-labelledby="headingOne" data-bs-parent="#accordionExample">
-                <div class="accordion-body">
-                    <table class="table">
-                        <thead>
-                            <tr>
-                                <th scope="col">Target</th>
-                                <th scope="col">Details</th>
-                                <th scope="col">Achieved</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {% for target in plan.targets %}
+                <div id="collapse{{plan.name}}" class="accordion-collapse collapse show" aria-labelledby="headingOne" data-bs-parent="#accordionExample">
+                    <div class="progress">
+                        <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" aria-valuenow="{{ plan.progress }}" aria-valuemin="0" aria-valuemax="100" style="width: {{ plan.progress }}%"></div>
+                    </div>        
+                    <div class="accordion-body">
+                        <table class="table">
+                            <thead>
                                 <tr>
-                                    <th scope="row">{{target.name}}</th>
-                                    <td>{{target.description}}</td>
-                                    <td>
-                                        <form method="post">
-                                            {% csrf_token %}
-
-                                            {% if target.is_acheived %}
-                                                <p class="text-muted">Completed!</p>
-                                            {% else %}
-                                                <button type="submit" class="btn btn-primary" name="completed" value="{{target.name}}">Mark as Complete</button>
-                                            {% endif %}
-                                        </form>
-                                    </td>
+                                    <th scope="col">Target</th>
+                                    <th scope="col">Details</th>
+                                    <th scope="col">Achieved</th>
                                 </tr>
-                            {% endfor %}
-                        </tbody>
-                    </table>
-                </div>
+                            </thead>
+                            <tbody>
+                                {% for target in plan.targets %}
+                                    <tr>
+                                        <th scope="row">{{target.name}}</th>
+                                        <td>{{target.description}}</td>
+                                        <td>
+                                            <form method="post">
+                                                {% csrf_token %}
 
-            </div>
+                                                {% if target.achieved %}
+                                                    <p class="text-muted">Completed!</p>
+                                                {% else %}
+                                                    <button type="submit" class="btn btn-primary" name="completed" value="{{target.name}}">Mark as Complete</button>
+                                                {% endif %}
+                                            </form>
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
         </div>
     {% endfor %}              
 </div>

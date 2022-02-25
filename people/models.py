@@ -1,9 +1,7 @@
 import uuid
 
 from django.db import models
-from typing import Optional
 from django.contrib.auth.models import BaseUserManager, AbstractBaseUser
-from datetime import datetime
 
 # Changing this to override the default model!
 
@@ -202,6 +200,12 @@ class PlanOfAction(models.Model):
     )
     updated_at = models.DateTimeField(auto_now=True)
     created_at = models.DateTimeField(auto_now_add=True)
+
+    @property
+    def progress(self) -> int:
+        targets = PlanOfActionTarget.objects.filter(associated_poa=self)
+        completed_targets = targets.filter(achieved=True)
+        return int((len(completed_targets) / len(targets)) * 100)
 
 
 class PlanOfActionTarget(models.Model):
