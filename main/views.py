@@ -3,6 +3,8 @@ from django.views.generic import TemplateView
 from django.http import HttpRequest, HttpResponse
 from typing import Any
 
+from events.models import DefaultFeedbackForms
+
 
 class IndexPage(TemplateView):
     """the main site homepage: mentea.com or whatever"""
@@ -46,4 +48,11 @@ class FeedbackPage(TemplateView):
     template_name: str = "main/feedback.html"
 
     def get(self, request: HttpRequest, *args: Any, **kwarsgs: Any) -> HttpResponse:
-        return render(request, self.template_name, {})
+        dffId = ""
+
+        try:
+            dff = DefaultFeedbackForms.objects.get(id=1)
+            dffId = dff.feedback.id
+        except:
+            pass
+        return render(request, self.template_name, {"feedbackId": dffId})

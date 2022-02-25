@@ -1,13 +1,15 @@
 from django.contrib import admin
 import django_stubs_ext
 
+from people.models import BusinessArea, User, UserType
+
 django_stubs_ext.monkeypatch()
 
 from events.models import (
     Answer,
+    DefaultFeedbackForms,
     FeedbackForm,
     FeedbackSubmission,
-    QuestionType,
     Questions,
 )
 
@@ -30,11 +32,11 @@ class AdminQuestion(admin.ModelAdmin[Questions]):
     pass
 
 
-@admin.register(QuestionType)
-class AdminQuestionType(admin.ModelAdmin[QuestionType]):
-    list_display = ("name",)
-
-
 @admin.register(Answer)
 class AdminAnswer(admin.ModelAdmin[Answer]):
+    pass
+
+
+@admin.register(DefaultFeedbackForms)
+class AdminDefaultFeedbackForms(admin.ModelAdmin[DefaultFeedbackForms]):
     pass
