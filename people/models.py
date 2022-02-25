@@ -11,6 +11,7 @@ class UserType(models.TextChoices):
     Mentor = "Mentor"
     Mentee = "Mentee"
     MentorMentee = "MentorMentee", "Mentor & Mentee"
+    Nothing = "None", "Neither"
 
 
 class UserManager(BaseUserManager):
@@ -61,13 +62,9 @@ class User(AbstractBaseUser):
     first_name = models.CharField(max_length=50, blank=True)
     last_name = models.CharField(max_length=50, blank=True)
     email = models.EmailField(max_length=254, unique=True)
-    business_area = models.ForeignKey(
-        "BusinessArea", on_delete=models.CASCADE, null=True
-    )
+    business_area = models.ForeignKey("BusinessArea", on_delete=models.CASCADE)
     bio = models.TextField(blank=True)
-    user_type = models.CharField(
-        choices=UserType.choices, max_length=50, blank=True, null=True
-    )
+    user_type = models.CharField(choices=UserType.choices, max_length=50, blank=True)
     updated_at = models.DateTimeField(auto_now=True)
     created_at = models.DateTimeField(auto_now_add=True)
 
