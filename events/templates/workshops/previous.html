@@ -4,52 +4,11 @@
 
 {% block body %}
 <div class="d-flex align-items-center">
-    <h1 style="margin-bottom: 0px;">My Workshops </h1>
+    <h1 style="margin-bottom: 0px;">Previously Attended Workshops </h1>
 
     
-
-    <div class="ms-auto g-2">
-        {% if user.user_type == "Mentor" or user.user_type == "MentorMentee" %}
-            <a href="create" class="btn btn-primary">Create Event</a>
-        {% endif %}
-        {% if user.user_type == "Mentee" or user.user_type == "MentorMentee"  %}
-            <a href="request" class="btn btn-primary">Request Event</a>
-        {% endif %}
-    </div>
 </div>
-<small><a href="{% url 'events:workshop-prev' %}">View previous</a></small>
-
-<div>
-    <div class="row row-cols-1 row-cols-md-3 g-4 mb-4">
-        {% for event in my_events %}
-            <div class="col">
-                <div class="card h-100">
-                    <div src="..." class="w-100 {{ event.get_pattern }}" style="height: 150px" alt="..." ></div>
-                    <div class="card-body">
-                        <h5 class="card-title d-flex">{{ event.name }} {% if event.in_progress %}<span class="ms-auto badge rounded-pill bg-success text-light">Running</span>{% endif %}</h5>
-                        <small><strong>Mentor:</strong> {{ event.mentor.get_full_name }}</small>
-                        <small class="ms-2"><strong>Topic:</strong> {{ event.topic }}</small>
-                        <p class="card-text">{{ event.description }}</p>
-
-                        
-                    </div>
-                    <div class="card-footer d-flex">
-                        <small class="text-muted">{{ event.startTime|date:"d m, Y @ h:iA" }}</small>
-                        <div class="ms-auto">
-                            {% if event.mentor == user %}
-                                <a href="edit/{{ event.id }}" class="stretched-link mt-auto me-2">Edit</a>
-                            {% endif %}
-                            <a href="{{ event.id }}" class="stretched-link mt-auto">View</a></div>
-                    </div>
-                </div>
-            </div>
-        {% endfor %}
-    </div>
-</div>
-<br>
-<hr>
-<br>
-<h1>All available workshops:</h1>
+<small><a href="{% url 'events:workshop-index' %}">View current</a></small>
 
 <div>
     <div class="row row-cols-1 row-cols-md-3 g-4 mb-4">
@@ -69,9 +28,9 @@
                         <small class="text-muted">{{ event.startTime|date:"d m, Y @ h:iA" }}</small>
                         <div class="ms-auto">
                             {% if event.mentor == user %}
-                                <a href="edit/{{ event.id }}" class="stretched-link mt-auto me-2">Edit</a>
+                                <a href="../edit/{{ event.id }}" class="stretched-link mt-auto me-2">Edit</a>
                             {% endif %}
-                            <a href="{{ event.id }}" class="stretched-link mt-auto">View</a></div>
+                            <a href="../{{ event.id }}" class="stretched-link mt-auto">View</a></div>
                     </div>
                 </div>
             </div>

@@ -6,11 +6,27 @@
 <small>
     <a href="../">Back to all workshops</a>
 </small>
-<h1>{{ event.name }}</h1>
+<div class="row">
+    <div class="col">
+        <h1>{{ event.name }}</h1>
+    </div>
+    <div class="col">
+        <form class="d-flex align-items-center" action="toggleAttendance" method="get">
+            {% csrf_token %}
+            {% if not registeredToEvent and not event.has_finished %}
+            <button class="ms-auto btn btn-primary">Join Workshop</button>
+            {% elif not isMentor and not event.has_finished %}
+            <button class="ms-auto btn btn-danger">Leave Workshop</button>
+            {% endif %}
+        </form>
+        
+        
+    </div>
+</div>
 <small>{{ event.startTime|date:'M d, Y @ h:iA' }} - {{ event.calc_end_date|date:"M d, Y @ h:iA" }}</small>
 
 <p class="mt-2">
-    <strong>Event:</strong>
+    <strong>Type:</strong>
     {{ event.type.name|lower|capfirst }}
     <br>
     <strong>Topic:</strong>
@@ -28,16 +44,30 @@
 
 <p>
     {{ event.description }}
-</p>
 
 
-{% if event.has_event_finished %}
-    <div>
-        <custom-form form-id="{{ form.feedback_form.id }}">Loading form...</custom-form>
-    </div>
+
+{% if not registeredToEvent %}
+    <div class="alert alert-danger">
+        To view this content, you must be part of this workshop! <strong>{% if not event.has_finished %}(Please use the 'Join' button above!){% else %}(This workshop has already run!){% endif %}</strong>
+        </div>
 {% else %}
-    <div class="alert alert-info">
-        The feedback form for this event will be available after <strong>{{ event.calc_end_date|date:"h:mA"|lower }} on the {{ event.calc_end_date|date:"jS F, Y" }}</strong>
-    </div>
+    {% if event.has_event_finished and not isMentor %}
+        <div class="pt-4">
+            <custom-form form-id="{{ event.feedback_form.id }}">Loading form...</custom-form>
+        </div>
+    {% elif event.has_event_finished and isMentor %}
+        <div class="alert alert-info">
+            You cannot provide feedback for a workshop that you ran!
+        </div>
+    {% else %}
+        <div class="alert alert-info">
+            The feedback form for this workshop will be available after <strong>{{ event.calc_end_date|date:"h:iA"|lower }} on the {{ event.calc_end_date|date:"jS F, Y" }}</strong>
+        </div>
+    {% endif %}
 {% endif %}
+
+
+
+
 {% endblock %}
