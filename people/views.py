@@ -5,6 +5,12 @@ from django.shortcuts import redirect, render
 from django.views.generic import FormView, TemplateView
 from django.contrib.auth.mixins import LoginRequiredMixin
 from typing import Any
+from django.http import HttpResponseRedirect
+from django.contrib.auth.forms import UserCreationForm
+from django.contrib.auth import login, authenticate
+from django.contrib import messages
+
+from .forms import RegistrationForm
 
 from .forms import ProfileForm, BusinessAreaForm, TopicForm
 from .models import UserTopic, BusinessArea, Topic, UserType
@@ -39,10 +45,21 @@ class IsUserMentorMixin(UserPassesTestMixin):
 class UserSignupPage(TemplateView):
     """Lets a user sign up with email, password, and business area"""
 
-    template_name = "registration/register.html"
+    template_name = "people/register.html"
+
+    form_class: Any = RegistrationForm
 
     def get(self, request: HttpRequest, *args: Any, **kwarsgs: Any) -> HttpResponse:
-        return render(request, self.template_name, {})
+        form = self.form_class()
+        return render(request, self.template_name, {"form": form})
+
+    def post(self, request: HttpRequest, *args: Any, **kwargs: Any) -> HttpResponse:
+        form = self.form_class(request.POST)
+        if form.is_valid():
+            form.save()
+            messages.success(request, "Account created successfully!")
+            return redirect("login")
+        return render(request, self.template_name, {"form": form})
 
 
 class UserProfilePage(LoginRequiredMixin, TemplateView):
