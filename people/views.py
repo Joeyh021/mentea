@@ -269,37 +269,29 @@ class MenteePlansPage(IsUserMenteeMixin, TemplateView):
         user_plans = PlanOfAction.objects.all().filter(
             associated_mentee=request.user.id
         )
-        print(user_plans)
         return render(
             request,
             self.template_name,
-            {
-                "plans_list": [
-                    {
-                        "name": "balls",
-                        "targets": [
-                            {"name": "test", "description": "nope", "acheived": False},
-                            {"name": "test", "description": "nope", "acheived": True},
-                        ],
-                    },
-                    {
-                        "name": "balls2",
-                        "targets": [
-                            {"name": "test", "description": "nope", "acheived": False},
-                            {"name": "test", "description": "nope", "acheived": True},
-                        ],
-                    },
-                ]
-            },
+            {"plans_list": self.__parse_plans(user_plans)},
         )
 
     def post(self, request: HttpRequest, *args, **kwargs) -> HttpResponse:
         print(request.POST)
-
+        if "completed" in request.POST:
+            target = PlanOfActionTarget.objects.get(name=request.POST["completed"])
+            target.acheived = True
+            target.save()
         return HttpResponseRedirect("")
 
+    def __parse_plans(self, plans):
+        plans_list = []
+        for p in plans:
+            plan_targets = PlanOfActionTarget.objects.filter(associated_poa=p)
+            plans_list.append({"name": p.name, "targets": list(plan_targets)})
+        return plans_list
 
-class MenteeNewPlanPage(IsUserMentorMixin, TemplateView):
+
+class MenteeNewPlanPage(IsUserMenteeMixin, TemplateView):
     """allows a mentee to create a new plan of action for themselves"""
 
     template_name: str = "people/new_plan.html"
@@ -309,6 +301,7 @@ class MenteeNewPlanPage(IsUserMentorMixin, TemplateView):
         return render(request, self.template_name, {"form": form})
 
     def post(self, request: HttpRequest, *args, **kwargs) -> HttpResponse:
+        current_user = request.user
         form = PlanOfActionForm(request.POST)
         print(request.POST)
 
@@ -316,8 +309,8 @@ class MenteeNewPlanPage(IsUserMentorMixin, TemplateView):
             plan_name = form.cleaned_data["name"]
             plan = PlanOfAction.objects.create(
                 name=plan_name,
-                associated_mentee=request.user,
-                associated_mentor=get_mentor(request.user),
+                associated_mentee=current_user,
+                associated_mentor=get_mentor(current_user),
             )
 
             for i in range(1, 6):

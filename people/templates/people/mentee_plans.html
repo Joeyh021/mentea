@@ -32,7 +32,7 @@
                                         <form method="post">
                                             {% csrf_token %}
 
-                                            {% if target.acheived %}
+                                            {% if target.is_acheived %}
                                                 <p class="text-muted">Completed!</p>
                                             {% else %}
                                                 <button type="submit" class="btn btn-primary" name="completed" value="{{target.name}}">Mark as Complete</button>
