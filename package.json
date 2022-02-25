@@ -1,25 +1,16 @@
 {
-  "name": "softeng-project",
-  "version": "1.0.0",
-  "description": "If you can come up with a more fancy name please let us know",
-  "directories": {
-    "test": "test"
-  },
-  "scripts": {
-    "test": "cypress run"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/Joeyh021/SoftEng-Project.git"
-  },
-  "author": "Josh Davies",
-  "license": "ISC",
-  "bugs": {
-    "url": "https://github.com/Joeyh021/SoftEng-Project/issues"
-  },
-  "homepage": "https://github.com/Joeyh021/SoftEng-Project#readme",
-  "devDependencies": {
-    "cypress": "^9.4.1",
-    "lighthouse": "^9.3.1"
-  }
+    "name": "softeng-project",
+    "version": "1.0.0",
+    "description": "If you can come up with a more fancy name please let us know",
+    "directories": {"test": "test"},
+    "scripts": {"test": "cypress run"},
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/Joeyh021/SoftEng-Project.git",
+    },
+    "author": "Josh Davies",
+    "license": "ISC",
+    "bugs": {"url": "https://github.com/Joeyh021/SoftEng-Project/issues"},
+    "homepage": "https://github.com/Joeyh021/SoftEng-Project#readme",
+    "devDependencies": {"cypress": "^9.4.1", "lighthouse": "^9.3.1"},
 }

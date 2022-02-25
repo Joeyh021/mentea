@@ -1,0 +1,89 @@
+{% extends "main.html" %}
+
+{% block title %}Frequently Asked Questions{% endblock %}
+
+{% block body %}
+<h1 class="mb-5">
+    Frequently Asked Questions
+</h1>
+
+<div class="accordion" id="accordionExample">
+    <div class="accordion-item">
+      <h2 class="accordion-header" id="headingOne">
+        <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+          How do I change my interested topics?
+        </button>
+      </h2>
+      <div id="collapseOne" class="accordion-collapse collapse show" aria-labelledby="headingOne" data-bs-parent="#accordionExample">
+        <div class="accordion-body">
+          Visit <a href="/user/profile">your profile</a>, then head to the topics section and click edit!
+        </div>
+      </div>
+    </div>
+    <div class="accordion-item">
+      <h2 class="accordion-header" id="headingTwo">
+        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+          How do I join / request a workshop or group event?
+        </button>
+      </h2>
+      <div id="collapseTwo" class="accordion-collapse collapse" aria-labelledby="headingTwo" data-bs-parent="#accordionExample">
+        <div class="accordion-body">
+         Head over to the <a href="/mentee/">Mentee dashboard</a> and then to <a href="/workshops/">workshops/group events</a>. You'll be able to events here for the topics you're interested in and others. You are free to join other ones aswell if they interest you. Events may have limited space, so all attendance will be first-come first-serve!
+         <br><br>
+         If you want to request a workshop/event on a particular topic, <a href="/workshops/request/">click here</a>. Then fill out the form, and available mentors in the respective topic areas will be notified of you're interest.
+        </div>
+      </div>
+    </div>
+    <div class="accordion-item">
+      <h2 class="accordion-header" id="headingThree">
+        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
+          How do I see available mentors?
+        </button>
+      </h2>
+      <div id="collapseThree" class="accordion-collapse collapse" aria-labelledby="headingThree" data-bs-parent="#accordionExample">
+        <div class="accordion-body">
+          Head over to your <a href="/mentee/">Mentee dashboard</a>. You'll be able to view mentors recommended to you there.
+        </div>
+      </div>
+    </div>
+    <div class="accordion-item">
+        <h2 class="accordion-header" id="headingThree">
+          <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseFour" aria-expanded="false" aria-controls="collapseThree">
+            Do I need anything special to use Menta?
+          </button>
+        </h2>
+        <div id="collapseFour" class="accordion-collapse collapse" aria-labelledby="headingThree" data-bs-parent="#accordionExample">
+          <div class="accordion-body">
+            All you need to use Mentea is internet access and a web browser. This can be on your PC, laptop or mobile.
+          </div>
+        </div>
+      </div>
+      <div class="accordion-item">
+        <h2 class="accordion-header" id="headingThree">
+          <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseFive" aria-expanded="false" aria-controls="collapseThree">
+            What are Plans of Action?
+          </button>
+        </h2>
+        <div id="collapseFive" class="accordion-collapse collapse" aria-labelledby="headingThree" data-bs-parent="#accordionExample">
+          <div class="accordion-body">
+            Plans of Action are ways for mentors and mentees to track their progress and ensure they achieve their goals. 
+            You can view plans of actions for your mentees by viewing their profiles, which you can find on your <a href="/mentor/">Mentor dashboard</a>.
+            For Mentees, you can view your plans of action by viewing the corresponding mentor's profile. You can find your mentors profiles on your <a href="/mentee/">Mentee dashboard</a>.
+          </div>
+        </div>
+      </div>
+      <div class="accordion-item">
+        <h2 class="accordion-header" id="headingThree">
+          <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseSix" aria-expanded="false" aria-controls="collapseThree">
+            Question not found here?
+          </button>
+        </h2>
+        <div id="collapseSix" class="accordion-collapse collapse" aria-labelledby="headingThree" data-bs-parent="#accordionExample">
+          <div class="accordion-body">
+            Please feel free to contact us, or leave us feedback using the <a href="/feedback/">feedback form</a>.
+          </div>
+        </div>
+      </div>
+  </div>
+
+{% endblock %}

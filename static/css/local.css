@@ -115,3 +115,140 @@ blockquote {
     border-width: 2px;
     border-left-style: solid
 }
+
+label{
+    display:block;
+    font-size:20px;
+}
+
+::placeholder {
+    color: black;
+}
+
+:root {
+    --mentea-generic-bg: #439481;
+    --mentea-generic-sidenav-bg: #f5f9f0
+}
+
+/* NEW CONTENT FOR MENTEA */
+.bg-mentea {
+    background-color: var(--mentea-generic-bg) !important;
+}
+
+.bg-mentea-sidenav {
+    background-color: var(--mentea-generic-sidenav-bg) !important;
+}
+
+.bg-mentee-green {
+    background-color: #439481 !important;
+}
+
+.bg-mentee-sidenav {
+    background-color: #f5f9f0 !important;
+}
+
+.bg-mentor-blue {
+    background-color: #32357b !important;
+}
+
+.bg-mentor-sidenav {
+    background-color: #eaf2f7 !important;
+}
+
+.btn-rounded {
+    border-radius: 4rem !important;
+}
+
+.btn-mentea {
+    background-color: var(--mentea-generic-bg) !important;
+    border-color: var(--mentea-generic-bg) !important;
+}
+.btn-mentea:hover {
+    background-color: #439481 !important;
+}
+
+.color-mentea {
+    color: var(--mentea-generic-bg) !important;
+}
+
+.float-container {
+    padding: 10px;
+}
+
+.float-child {
+    width: 50%;
+    float: left;
+    padding: 10px;
+}  
+
+.select-mentor {
+    width: 30%;
+    padding: 16px 20px;
+    border: none;
+    border-radius: 20px;
+    background-color: #80BAE4;
+}
+
+.text-mentor {
+    width: 30%;
+    padding: 16px 20px;
+    border: none;
+    border-radius: 20px;
+    background-color: #80BAE4;
+}
+
+.bg-block-mentor {
+    width: 100%;
+    padding: 16px 20px;
+    border-radius: 20px;
+    color: white;
+    background-color: #32357b; 
+}
+
+.bg-block-main-green {
+    width: 100%;
+    height: auto;
+    position:absolute;
+    top:0;
+    left:0;
+    color: white;
+    background-color:var(--mentea-generic-bg); 
+    /* ADD493 */
+}
+
+.bg-block-main-brown {
+    width: 100%;
+    height: 1000px;
+    position:absolute;
+    top:800px;
+    left:0;
+    color: white;
+    background-color: #FFCC99; 
+}
+
+.bg-block-main-light {
+    width: 100%;
+    height: 1000px;
+    position:absolute;
+    top:1600px;
+    left:0;
+    color: white;
+    background-color: #D2F1A5; 
+}
+
+.bg-text-boxes-homepage {
+    width:40%; 
+    height:auto; 
+    padding: 30px; 
+    border: none; 
+    border-radius: 20px;
+    background-color:#AFD5C7;
+}
+
+.bg-text-boxes-homepage2 {
+    width:40%; 
+    height:auto; 
+    padding: 30px; 
+    border:10px solid #AFD5C7;
+    border-radius: 20px;
+}

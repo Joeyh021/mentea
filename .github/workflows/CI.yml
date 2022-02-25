@@ -4,6 +4,21 @@ on: [push]
 
 jobs:
   lint-and-test:
+    services:
+      postgres:
+        image: postgres:12
+        env:
+          POSTGRES_USER: softeng
+          POSTGRES_PASSWORD: password
+          POSTGRESS_DB: softeng
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
     runs-on: ubuntu-latest
     steps:
       # check out repo and set up python
@@ -34,6 +49,9 @@ jobs:
       - name: Install project
         run: poetry install --no-interaction
         if: steps.cached-poetry-dependencies.outputs.cache-hit != 'true'
+
+      - name: Run Postgres migrations
+        run: poetry run manage migrate
 
       # check code has been formatted correctly
       - name: Check formatting
