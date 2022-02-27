@@ -5,7 +5,7 @@
 {% block body %}
 <h1>Plans of Action</h1>
 <h2>Creating new...</h2>
-<form action="{% url 'new_plan' %}" method="post">
+<form action="" method="post">
     {% csrf_token %}
     <div class="p-2">
         {{ form.name.errors }}

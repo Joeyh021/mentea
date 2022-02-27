@@ -5,8 +5,8 @@
 
 {% block body %}
 <h1>Plans of Action</h1>
-{% if view == "mentor" %}
-    <p>Viewing plans of action for {{mentee.first_name}} {{mentee.last_name}} </p>
+{% if base == "mentor_base.html" %}
+    <p>Viewing plans of action for {{ mentee_name }} </p>
     <p>The below plans of action have been created to track the progress of your mentee.</p>
 {% else  %}
     <p>The below plans of action have been created for you to track your progress.</p>
@@ -57,6 +57,8 @@
         </div>
     {% endfor %}              
 </div>
-<a href="{% url 'new_plan' %}">
-<button type="button" class="btn btn-primary">Create New</button></a>
+
+<a href="./new/">
+    <button type="button" class="btn btn-primary">Create New</button>
+</a>
 {% endblock %}

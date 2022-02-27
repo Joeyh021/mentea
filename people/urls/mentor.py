@@ -14,7 +14,14 @@ urlpatterns = [
     ),
     path("mentees/<uuid:menteeid>/chat/", MentorMenteeChatPage.as_view(), name="chat"),
     path(
-        "mentees/<uuid:menteeid>/plans/", MentorMenteePlansPage.as_view(), name="plans"
+        "mentees/<uuid:menteeid>/plans/",
+        MentorMenteePlansPage.as_view(),
+        name="mentor_plans",
+    ),
+    path(
+        "mentees/<uuid:menteeid>/plans/new/",
+        MentorMenteeNewPlanPage.as_view(),
+        name="new_mentor_plan",
     ),
     path(
         "mentees/<uuid:menteeid>/meetings/",
