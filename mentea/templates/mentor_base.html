@@ -8,17 +8,17 @@
 {% block navbar %}
     {% load static %}
     {% spaceless %}
-    <nav class="navbar navbar-light bg-light bg-mentor-blue ">
+    <nav class="navbar navbar-light bg-light bg-mentor-light-green">
         <div class="container-fluid">
             <button class="navbar-toggler" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasNavbar" aria-controls="offcanvasNavbar" style="border:0 ; color: white">
                 <i class="fa-solid fa-bars fa-lg" style="width:"></i>
               </button>
 
           <a class="navbar-brand text-white fw-bolder fst-italic" href="{% url "main:index" %}">Mentea <i class="fa-solid fa-mug-hot" style="margin-left: .3rem;"></i></a>
-
+        </a>
+          <a href="{% url "profile" %}" class="nav-item">
             <i class="fa-solid fa-circle-user fa-2x" style="color: white;"></i>
-          </a>
-          
+        </a>
           
           <div class="offcanvas offcanvas-start bg-mentor-sidenav" tabindex="-1" id="offcanvasNavbar" aria-labelledby="offcanvasNavbarLabel">
             <div class="offcanvas-header">
@@ -94,11 +94,10 @@
 
 {% block body %}
 
-        {% endblock %}
+{% endblock %}
 
 {% block footer %}
     <div class="nav ml-auto mr-auto d-flex flex-row justify-content-around">
-
     </div>
 {% endblock %}
 
