@@ -43,10 +43,12 @@ class ProfileForm(forms.Form):
     mentee_topics = forms.ModelMultipleChoiceField(
         queryset=Topic.objects.all(),
         widget=forms.SelectMultiple(attrs={"class": "form-select"}),
+        required=False,
     )
     mentor_topics = forms.ModelMultipleChoiceField(
         queryset=Topic.objects.all(),
         widget=forms.SelectMultiple(attrs={"class": "form-select"}),
+        required=False,
     )
     usertype = forms.ChoiceField(
         choices=UserType.choices,
