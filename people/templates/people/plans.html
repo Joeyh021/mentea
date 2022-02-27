@@ -1,10 +1,16 @@
-{% extends "mentee_base.html" %}
+{% extends base %}
 
 {% block title %}Plans of Action{% endblock %}
 
+
 {% block body %}
 <h1>Plans of Action</h1>
-<p>The below plans of action have been created for you to track your progress</p>
+{% if view == "mentor" %}
+    <p>Viewing plans of action for {{mentee.first_name}} {{mentee.last_name}} </p>
+    <p>The below plans of action have been created to track the progress of your mentee.</p>
+{% else  %}
+    <p>The below plans of action have been created for you to track your progress.</p>
+{% endif %}
 <div class="accordion" id="accordionExample">
     {% for plan in plans_list %}
         <div class="accordion-item">
