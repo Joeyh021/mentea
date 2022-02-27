@@ -6,17 +6,17 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('people', '0009_alter_user_user_type_alter_usertopic_usertype'),
+        ("people", "0009_alter_user_user_type_alter_usertopic_usertype"),
     ]
 
     operations = [
         migrations.RemoveField(
-            model_name='planofactiontarget',
-            name='achieved_at',
+            model_name="planofactiontarget",
+            name="achieved_at",
         ),
         migrations.AddField(
-            model_name='planofactiontarget',
-            name='achieved',
+            model_name="planofactiontarget",
+            name="achieved",
             field=models.BooleanField(default=False),
         ),
     ]

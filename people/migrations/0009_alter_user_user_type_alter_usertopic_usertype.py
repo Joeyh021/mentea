@@ -6,18 +6,37 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('people', '0008_alter_user_user_type_alter_usertopic_usertype'),
+        ("people", "0008_alter_user_user_type_alter_usertopic_usertype"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='user',
-            name='user_type',
-            field=models.CharField(blank=True, choices=[('Mentor', 'Mentor'), ('Mentee', 'Mentee'), ('MentorMentee', 'Mentor & Mentee'), ('None', 'Neither')], default='None', max_length=50),
+            model_name="user",
+            name="user_type",
+            field=models.CharField(
+                blank=True,
+                choices=[
+                    ("Mentor", "Mentor"),
+                    ("Mentee", "Mentee"),
+                    ("MentorMentee", "Mentor & Mentee"),
+                    ("None", "Neither"),
+                ],
+                default="None",
+                max_length=50,
+            ),
         ),
         migrations.AlterField(
-            model_name='usertopic',
-            name='usertype',
-            field=models.CharField(choices=[('Mentor', 'Mentor'), ('Mentee', 'Mentee'), ('MentorMentee', 'Mentor & Mentee'), ('None', 'Neither')], max_length=50, null=True),
+            model_name="usertopic",
+            name="usertype",
+            field=models.CharField(
+                choices=[
+                    ("Mentor", "Mentor"),
+                    ("Mentee", "Mentee"),
+                    ("MentorMentee", "Mentor & Mentee"),
+                    ("None", "Neither"),
+                ],
+                max_length=50,
+                null=True,
+            ),
         ),
     ]
