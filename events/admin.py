@@ -8,9 +8,11 @@ django_stubs_ext.monkeypatch()
 from events.models import (
     Answer,
     DefaultFeedbackForms,
+    EventType,
     FeedbackForm,
     FeedbackSubmission,
     Questions,
+    Event,
 )
 
 # Register your models here.
@@ -39,4 +41,14 @@ class AdminAnswer(admin.ModelAdmin[Answer]):
 
 @admin.register(DefaultFeedbackForms)
 class AdminDefaultFeedbackForms(admin.ModelAdmin[DefaultFeedbackForms]):
+    pass
+
+
+@admin.register(EventType)
+class AdminEventType(admin.ModelAdmin[EventType]):
+    pass
+
+
+@admin.register(Event)
+class AdminEvent(admin.ModelAdmin[Event]):
     pass
