@@ -1,7 +1,7 @@
 from attr import attrs
 
 from people.models import Topic
-from .models import Event
+from .models import Event, EventRequest
 from django import forms
 from django.forms import TextInput
 
@@ -32,3 +32,15 @@ class WorkshopForm(forms.Form):
             "startTime",
             "duration",
         )
+
+
+class WorkshopRequestForm(forms.Form):
+
+    topic = forms.ModelChoiceField(
+        queryset=Topic.objects.all(),
+        widget=forms.Select(attrs={"class": "form-select"}),
+    )
+
+    class Meta:
+        model = EventRequest
+        fields = ("topic",)

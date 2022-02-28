@@ -1,0 +1,30 @@
+{% extends "main.html" %}
+
+{% block title %}Request Workshop{% endblock %}
+
+{% block body %}
+<small>
+    <a href="../">Back</a>
+</small>
+<h1>Request workshop</h1>
+
+<form name="form" method="post">
+    {% csrf_token %}
+
+    <div class="mb-3">
+        <label class="form-label" for="id_bio">Topic</label>
+        {{ form.topic }}
+        {% if form.topic.errors %}
+            {% for e in form.topic.errors %}
+                <p class="help is-danger">{{ e }}</p>
+            {% endfor %}
+        {% endif %}
+    </div>
+
+    <div>
+        <input type="submit" class="btn btn-primary" value="Request">
+    </div>
+</form>
+
+ 
+{% endblock %}

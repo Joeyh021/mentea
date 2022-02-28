@@ -126,3 +126,10 @@ class EventRequest(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     associated_topic = models.ForeignKey(Topic, on_delete=models.CASCADE)
+
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(
+                fields=["requested_by", "associated_topic"], name="unique_request"
+            )
+        ]

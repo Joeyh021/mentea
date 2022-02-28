@@ -3,6 +3,14 @@
 {% block title %}Workshops{% endblock %}
 
 {% block body %}
+{% if requested %}
+<div class="alert alert-success alert-dismissible fade show">
+    A workshop was successfully requested!
+    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close">
+
+      </button>
+</div>
+{% endif %}
 <div class="d-flex align-items-center">
     <h1 style="margin-bottom: 0px;">My Workshops </h1>
 
@@ -13,7 +21,7 @@
             <a href="create" class="btn btn-primary">Add Workshop</a>
         {% endif %}
         {% if user.user_type == "Mentee" or user.user_type == "MentorMentee"  %}
-            <a href="request" class="btn btn-primary">Request Workshop</a>
+            <a href="request" class="btn btn-primary position-relative">Request Workshop</a>
         {% endif %}
     </div>
 </div>

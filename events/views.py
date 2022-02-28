@@ -9,13 +9,20 @@ from typing import Any
 from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin
 
-from events.forms import WorkshopForm
-from people.models import Topic
+from events.forms import WorkshopForm, WorkshopRequestForm
+from people.models import Notification, Topic, UserTopic
 
-from .models import Event, EventAttendee, EventType, FeedbackForm, Questions
+from .models import (
+    Event,
+    EventAttendee,
+    EventRequest,
+    EventType,
+    FeedbackForm,
+    Questions,
+)
 
 from django.core.paginator import Paginator
-from django.db.models import F
+from django.db.models import F, Count, Q
 
 
 class EventsIndexPage(LoginRequiredMixin, TemplateView):
@@ -49,10 +56,21 @@ class EventsIndexPage(LoginRequiredMixin, TemplateView):
         page_number = request.GET.get("page")
         page_obj = paginator.get_page(page_number)
 
+        requested = False
+        try:
+            request.GET["requested"]
+            requested = True
+        except:
+            pass
+
         return render(
             request,
             self.template_name,
-            {"page_obj": page_obj, "my_events": my_events.union(my_running_events)},
+            {
+                "page_obj": page_obj,
+                "my_events": my_events.union(my_running_events),
+                "requested": requested,
+            },
         )
 
 
@@ -91,9 +109,66 @@ class EventRequestPage(TemplateView):
     """
 
     template_name = "workshops/request.html"
+    form_class: Any = WorkshopRequestForm
 
     def get(self, request: HttpRequest, *args: Any, **kwarsgs: Any) -> HttpResponse:
-        return render(request, self.template_name, {})
+        form = self.form_class()
+        return render(request, self.template_name, {"form": form})
+
+    def post(self, request: HttpRequest):
+        form = self.form_class(request.POST)
+        if form.is_valid():
+            # Get current user (a mentor)
+
+            formData = form.cleaned_data
+
+            etype = EventType.objects.get(name="WORKSHOP")
+
+            eventRequest = EventRequest(
+                requested_by=request.user,
+                type=etype,
+                associated_topic=formData["topic"],
+            )
+            try:
+                eventRequest.save()
+            except:
+                pass  # We don't care if the unique constraint fails, as far as the user is aware they have requested a session
+
+            # Check if multiple requests for the same topic exist, if so suggest to mentors that they run an event
+            dups = (
+                EventRequest.objects.values("associated_topic")
+                .annotate(count=Count("associated_topic"))
+                .values("associated_topic")
+                .order_by()
+                .filter(count__gte=2)
+            )
+
+            interested = Topic.objects.filter(
+                id__in=dups
+            )  # Contains a list of topics with atleast 3 requests
+
+            for topic in interested:
+                # First gather all mentors that are interested in mentoring the topic, and then send them a notification
+
+                mentors = UserTopic.objects.filter(
+                    Q(usertype="Mentor") | Q(usertype="MentorMentee"), topic=topic
+                )
+                for m in mentors:
+                    mentor = m.user
+                    notif = Notification(
+                        user=mentor,
+                        content="Multiple mentees are interested in a topic area you teach: "
+                        + topic.topic,
+                    )
+                    notif.save()
+
+                # return HttpResponse(mentors)
+
+            return redirect("/workshops/?requested")
+
+        else:
+            messages.error(request, "Error creating workshop!")
+            return render(request, self.template_name, {"form": form})
 
 
 class EventCreatePage(TemplateView):
@@ -199,7 +274,7 @@ class EventEditPage(TemplateView):
                 "desc": event.description,
             }
         )
-        return render(request, self.template_name, {"form": form})
+        return render(request, self.template_name, {"form": form, "eId": eventId})
 
     def post(self, request: HttpRequest, eventId=None) -> HttpResponse:
         form = self.form_class(request.POST)
