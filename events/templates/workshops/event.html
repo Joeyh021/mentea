@@ -77,6 +77,7 @@
         <div class="alert alert-info">
             You cannot provide feedback for a workshop that you ran!
         </div>
+        <custom-form-result-viewer form-id="{{ event.feedback_form.id }}">Loading form...</custom-form-result-viewer>
     {% else %}
         <div class="alert alert-info">
             The feedback form for this workshop will be available after <strong>{{ event.calc_end_date|date:"h:iA"|lower }} on the {{ event.calc_end_date|date:"jS F, Y" }}</strong>

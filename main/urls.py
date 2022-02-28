@@ -45,4 +45,5 @@ urlpatterns = [
         name="ff-submission",
     ),
     path("feedback-api/builder/", FeedbackFormBuilder.as_view(), name="ff-builder"),
+    path("feedback-api/<uuid:formId>/submissions/", FeedbackFormSubmissions.as_view(), name="ff-submissions"),
 ]

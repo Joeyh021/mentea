@@ -4,15 +4,16 @@ import { FC } from "react";
 import ReactDOM from "react-dom";
 import { FieldValues, useForm, UseFormRegister } from "react-hook-form";
 import FormBuilder from "./form-builder";
+import ResultViewer from "./result-viewer";
 axios.defaults.xsrfHeaderName = "X-CSRFTOKEN";
 axios.defaults.xsrfCookieName = "csrftoken";
 
 
-interface IFeedbackFormProps {
+export interface IFeedbackFormProps {
   id: string
 }
 
-interface IFeedbackForm {
+export interface IFeedbackForm {
   id: string
   name: string
   desc: string
@@ -176,21 +177,21 @@ interface IAnswerableQuestion extends IQuestion {
 
 }
 
-interface ISubmission {
+export interface ISubmission {
   formId: string
   answers: IAnswer[]
 }
 
-interface IStoredSubmission {
+export interface IStoredSubmission {
   id: string
 }
 
-interface IAnswer {
+export interface IAnswer {
   q: string
   a: any
 }
 
-enum EFormState {
+export enum EFormState {
   SUBMITTED, LOADING, READY
 }
 
@@ -647,6 +648,8 @@ const forms: HTMLCollectionOf<Element> = document.getElementsByTagName('custom-f
 
 const formBuilders: HTMLCollectionOf<Element> = document.getElementsByTagName('custom-form-builder')
 
+const formRVs: HTMLCollectionOf<Element> = document.getElementsByTagName('custom-form-result-viewer')
+
 
 for (let i = 0; i < forms.length; i++) {
   let form = forms.item(i)
@@ -656,4 +659,9 @@ for (let i = 0; i < forms.length; i++) {
 for (let i = 0; i < formBuilders.length; i++) {
   let form = formBuilders.item(i)
   ReactDOM.render(<FormBuilder />, form);
+}
+
+for (let i = 0; i < formRVs.length; i++) {
+  let form = formRVs.item(i)
+  ReactDOM.render(<ResultViewer id={form?.getAttribute('form-id') || 'no-id'} />, form);
 }
