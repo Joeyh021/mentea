@@ -70,7 +70,7 @@ const ResultViewer: FC<IFeedbackFormProps> = ({ id }) => {
 
             gatherSubmissions(formId)
 
-          setState(EFormState.READY)
+          
 
           
         }).catch(e => {
@@ -83,6 +83,7 @@ const ResultViewer: FC<IFeedbackFormProps> = ({ id }) => {
       const gatherSubmissions = (formId: string) => {
           axios.get(`/feedback-api/${formId}/submissions/`).then(res => {
               setSubmissions(res.data.submissions)
+              setState(EFormState.READY)
           })
       }
 

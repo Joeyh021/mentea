@@ -298,8 +298,8 @@ class FeedbackFormBuilder(TemplateView):
 
     def get(self, request: HttpRequest, *args: Any, **kwarsgs: Any) -> HttpResponse:
         return render(request, self.template_name, {})
-    
-    
+
+
 class FeedbackFormSubmissions(TemplateView):
     def get(self, request: HttpRequest, formId=None) -> HttpResponse:
         submissions = FeedbackSubmission.objects.filter(form=formId).all().values("id")

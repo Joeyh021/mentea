@@ -6,13 +6,13 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('people', '0009_notification_title_alter_notification_content'),
+        ("people", "0009_notification_title_alter_notification_content"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='notification',
-            name='link',
+            model_name="notification",
+            name="link",
             field=models.TextField(blank=True),
         ),
     ]

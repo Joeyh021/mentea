@@ -104,10 +104,9 @@ class User(AbstractBaseUser):
 
     def notifs(self):
         return Notification.objects.filter(user=self, read=False)
-    
+
     def has_notifs(self):
         return self.notifs().count() > 0
-    
 
     @property
     def is_staff(self):
