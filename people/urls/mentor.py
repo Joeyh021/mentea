@@ -8,11 +8,24 @@ urlpatterns = [
     path("mentees/", MentorMenteesPage.as_view(), name="mentees"),
     path("mentees/<uuid:menteeid>/", MentorMenteePage.as_view(), name="mentee"),
     path(
-        "mentees/<uuid:menteeid>/feedback/", MentorMenteePage.as_view(), name="feedback"
+        "mentees/<uuid:menteeid>/feedback/",
+        MentorMenteeFeedbackPage.as_view(),
+        name="feedback",
     ),
-    path("mentees/<uuid:menteeid>/chat/", MentorMenteePage.as_view(), name="chat"),
-    path("mentees/<uuid:menteeid>/plans/", MentorMenteePage.as_view(), name="plans"),
+    path("mentees/<uuid:menteeid>/chat/", MentorMenteeChatPage.as_view(), name="chat"),
     path(
-        "mentees/<uuid:menteeid>/meetings/", MentorMenteePage.as_view(), name="meetings"
+        "mentees/<uuid:menteeid>/plans/",
+        MentorMenteePlansPage.as_view(),
+        name="mentor_plans",
+    ),
+    path(
+        "mentees/<uuid:menteeid>/plans/new/",
+        MentorMenteeNewPlanPage.as_view(),
+        name="new_mentor_plan",
+    ),
+    path(
+        "mentees/<uuid:menteeid>/meetings/",
+        MentorMenteeMeetingsPage.as_view(),
+        name="meetings",
     ),
 ]

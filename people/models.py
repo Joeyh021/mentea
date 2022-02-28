@@ -1,7 +1,6 @@
 import uuid
 
 from django.db import models
-
 from django.contrib.auth.models import BaseUserManager, AbstractBaseUser
 
 # Changing this to override the default model!
@@ -11,6 +10,7 @@ class UserType(models.TextChoices):
     Mentor = "Mentor"
     Mentee = "Mentee"
     MentorMentee = "MentorMentee", "Mentor & Mentee"
+    Nothing = "None", "Neither"
 
 
 class UserManager(BaseUserManager):
@@ -66,7 +66,7 @@ class User(AbstractBaseUser):
     )
     bio = models.TextField(blank=True)
     user_type = models.CharField(
-        choices=UserType.choices, max_length=50, blank=True, null=True
+        choices=UserType.choices, max_length=50, blank=True, default="None"
     )
     updated_at = models.DateTimeField(auto_now=True)
     created_at = models.DateTimeField(auto_now_add=True)
@@ -209,12 +209,18 @@ class PlanOfAction(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
     created_at = models.DateTimeField(auto_now_add=True)
 
+    @property
+    def progress(self) -> int:
+        targets = PlanOfActionTarget.objects.filter(associated_poa=self)
+        completed_targets = targets.filter(achieved=True)
+        return int((len(completed_targets) / len(targets)) * 100)
+
 
 class PlanOfActionTarget(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     name = models.CharField(max_length=50)
     description = models.CharField(max_length=200)
-    achieved_at = models.DateTimeField(auto_now=True, blank=True, null=True)
+    achieved = models.BooleanField(default=False)
     associated_poa = models.ForeignKey(
         PlanOfAction, on_delete=models.CASCADE, db_index=True
     )
