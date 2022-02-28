@@ -111,8 +111,11 @@ class EventRequestPage(TemplateView):
     template_name = "workshops/request.html"
     form_class: Any = WorkshopRequestForm
 
-    def get(self, request: HttpRequest, *args: Any, **kwarsgs: Any) -> HttpResponse:
+    def get(self, request: HttpRequest) -> HttpResponse:
         form = self.form_class()
+        
+  
+        
         return render(request, self.template_name, {"form": form})
 
     def post(self, request: HttpRequest):
@@ -157,8 +160,10 @@ class EventRequestPage(TemplateView):
                     mentor = m.user
                     notif = Notification(
                         user=mentor,
+                        title="Event Request",
                         content="Multiple mentees are interested in a topic area you teach: "
                         + topic.topic,
+                        link = "/workshops/create?topic=" + str(topic.id)
                     )
                     notif.save()
 
@@ -182,6 +187,16 @@ class EventCreatePage(TemplateView):
 
     def get(self, request: HttpRequest, *args: Any, **kwarsgs: Any) -> HttpResponse:
         form = self.form_class()
+        
+        try:
+            id = request.GET['topic']
+            form = self.form_class(initial={
+                "topic": id
+            })
+            form.fields['topic'].widget.attrs['style'] = "background-color: rgba(0,0,0,0.2); pointer-events: none"
+        except:
+            pass
+        
         return render(request, self.template_name, {"form": form})
 
     def post(self, request: HttpRequest, *args: Any, **kwargs: Any) -> HttpResponse:
@@ -244,6 +259,20 @@ class EventCreatePage(TemplateView):
 
             event.feedback_form = ff
             event.save()
+            
+            # Clear all event requests for this topic, and notify the users
+            
+            topic = Topic.objects.get(topic=formData['topic'])
+            eventReq = EventRequest.objects.filter(associated_topic=topic)
+            for er in eventReq:
+                notif = Notification(
+                        user=er.requested_by,
+                        title="Event Available",
+                        content="A workshop on " + topic.topic + " that you requested is now available!",
+                        link = "/workshops/" + str(event.id)
+                    )
+                notif.save()
+                er.delete()
 
             return redirect("/workshops/" + str(event.id) + "/")
 

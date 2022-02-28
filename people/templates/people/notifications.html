@@ -11,13 +11,20 @@ crossorigin="anonymous"
     <form method="POST" class="d-flex flex-column" style="width: 100%">
         {% csrf_token %}
         <input type="text" name="notifId" value="{{ notif.id }}" hidden>
-        <h5>{{ notif.title|capfirst }}</h5>
-        <p style="margin-bottom: 0px !important;">{{ notif.content }}</p>
+        <div class="position-relative" style="overflow: hidden;">
+            <h5>{{ notif.title|capfirst }}</h5>
+            <p style="margin-bottom: 0px !important;">{{ notif.content }}</p>
+            {% if notif.link != "" %}
+                <a href="{{ notif.link }}" target="_parent" style="position: absolute; top:0; left:0; width:100%; height: 100%;"></a>
+            {% endif %}
+        </div>
         <button class="btn ms-auto text-right">Mark as read</button>
+        
     </form>
     {% empty %}
     <p class="text-center" style="width:  100%;">No notifications <a href="">Refresh</a></p>
     {% endfor %}
+    
 
 </div>
 </body>
