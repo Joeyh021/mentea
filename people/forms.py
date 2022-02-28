@@ -1,7 +1,7 @@
 from django import forms
 from django.contrib.auth.forms import UserCreationForm
 
-from .models import User
+from .models import User, BusinessArea, Topic, UserType
 
 
 class RegistrationForm(UserCreationForm):
@@ -24,12 +24,10 @@ class RegistrationForm(UserCreationForm):
         user.email = self.cleaned_data["email"]
         user.firstname = self.cleaned_data["first_name"]
         user.last_name = self.cleaned_data["last_name"]
+        user.user_type = "None"
         if commit:
             user.save()
         return user
-
-
-from .models import BusinessArea, Topic, UserType
 
 
 class ProfileForm(forms.Form):
@@ -64,3 +62,19 @@ class BusinessAreaForm(forms.Form):
 
 class TopicForm(forms.Form):
     topic_new = forms.CharField(widget=forms.TextInput(attrs={"class": "form-control"}))
+
+
+class PlanOfActionForm(forms.Form):
+    name = forms.CharField(label="Plan Name", max_length=100)
+    #
+    target_1 = forms.CharField(label="Target", max_length=100)
+    target_2 = forms.CharField(label="Target", max_length=100, required=False)
+    target_3 = forms.CharField(label="Target", max_length=100, required=False)
+    target_4 = forms.CharField(label="Target", max_length=100, required=False)
+    target_5 = forms.CharField(label="Target", max_length=100, required=False)
+
+    description_1 = forms.CharField(label="Description", max_length=100, required=False)
+    description_2 = forms.CharField(label="Description", max_length=100, required=False)
+    description_3 = forms.CharField(label="Description", max_length=100, required=False)
+    description_4 = forms.CharField(label="Description", max_length=100, required=False)
+    description_5 = forms.CharField(label="Description", max_length=100, required=False)
