@@ -10,10 +10,10 @@
 
     <div class="ms-auto g-2">
         {% if user.user_type == "Mentor" or user.user_type == "MentorMentee" %}
-            <a href="create" class="btn btn-primary">Create Event</a>
+            <a href="create" class="btn btn-primary">Add Workshop</a>
         {% endif %}
         {% if user.user_type == "Mentee" or user.user_type == "MentorMentee"  %}
-            <a href="request" class="btn btn-primary">Request Event</a>
+            <a href="request" class="btn btn-primary">Request Workshop</a>
         {% endif %}
     </div>
 </div>
@@ -36,9 +36,7 @@
                     <div class="card-footer d-flex">
                         <small class="text-muted">{{ event.startTime|date:"d m, Y @ h:iA" }}</small>
                         <div class="ms-auto">
-                            {% if event.mentor == user %}
-                                <a href="edit/{{ event.id }}" class="stretched-link mt-auto me-2">Edit</a>
-                            {% endif %}
+                     
                             <a href="{{ event.id }}" class="stretched-link mt-auto">View</a></div>
                     </div>
                 </div>

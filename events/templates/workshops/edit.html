@@ -1,0 +1,63 @@
+{% extends "main.html" %}
+
+{% block title %}Edit Workshop{% endblock %}
+
+{% block body %}
+<h1>Edit workshop</h1>
+
+<form name="form" method="post">
+    {% csrf_token %}
+    <div class="mb-3">
+        <label class="form-label" for="id_bio">Name</label>
+        {{ form.name }}
+        {% if form.name.errors %}
+            {% for e in form.name.errors %}
+                <p class="invalid-feedback is-invalid">{{ e }}</p>
+            {% endfor %}
+        {% endif %}
+    </div>
+    
+    <div class="mb-3 is-invalid">
+        <label class="form-label" for="id_bio">Start Time</label>
+        {{ form.startTime }}
+        {% if form.startTime.errors %}
+            {% for e in form.startTime.errors %}
+                <div class="help text-danger">{{ e }}</div>
+            {% endfor %}
+        {% endif %}
+    </div>
+    
+    <div class="mb-3">
+        <label class="form-label" for="id_bio">Duration (m)</label>
+        {{ form.duration }}
+        {% if form.duration.errors %}
+            {% for e in form.duration.errors %}
+                <p class="help is-danger">{{ e }}</p>
+            {% endfor %}
+        {% endif %}
+    </div>
+    <div class="mb-3">
+        <label class="form-label" for="id_bio">Topic</label>
+        {{ form.topic }}
+        {% if form.topic.errors %}
+            {% for e in form.topic.errors %}
+                <p class="help is-danger">{{ e }}</p>
+            {% endfor %}
+        {% endif %}
+    </div>
+    <div class="mb-3">
+        <label class="form-label" for="id_bio">Description</label>
+        {{ form.desc }}
+        {% if form.desc.errors %}
+            {% for e in form.desc.errors %}
+                <p class="help is-danger">{{ e }}</p>
+            {% endfor %}
+        {% endif %}
+    </div>
+    <div>
+        <input type="submit" class="btn btn-primary" value="Save">
+    </div>
+</form>
+
+ 
+{% endblock %}

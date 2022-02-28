@@ -1,7 +1,7 @@
 from datetime import datetime, timedelta, timezone
 import json
 from typing_extensions import Required
-from django.shortcuts import redirect, render
+from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse
 from django.views.generic import TemplateView
 from django.http import HttpRequest, HttpResponse
@@ -177,6 +177,57 @@ class EventCreatePage(TemplateView):
             return render(request, self.template_name, {"form": form})
 
 
+class EventEditPage(TemplateView):
+    """
+    Mentors should be able to see what topics are frequently requested and schedule new workshops here.
+    """
+
+    template_name = "workshops/edit.html"
+
+    form_class: Any = WorkshopForm
+
+    def get(self, request: HttpRequest, eventId=None) -> HttpResponse:
+
+        event = get_object_or_404(Event, id=eventId)
+
+        form = self.form_class(
+            initial={
+                "name": event.name,
+                "startTime": event.startTime.replace(tzinfo=None).isoformat(),
+                "duration": event.duration,
+                "topic": event.topic,
+                "desc": event.description,
+            }
+        )
+        return render(request, self.template_name, {"form": form})
+
+    def post(self, request: HttpRequest, eventId=None) -> HttpResponse:
+        form = self.form_class(request.POST)
+        if form.is_valid():
+            # Get current user (a mentor)
+
+            formData = form.cleaned_data
+
+            startTime = formData["startTime"]
+            endTime = startTime + timedelta(minutes=formData["duration"])
+
+            event = get_object_or_404(Event, id=eventId)
+            event.name = formData["name"]
+            event.duration = formData["duration"]
+            event.startTime = startTime
+            event.endTime = endTime
+            event.description = formData["desc"]
+            event.save()
+
+            # Build form here
+
+            return redirect("/workshops/" + str(event.id) + "/?edited")
+
+        else:
+            messages.error(request, "Error creating workshop!")
+            return render(request, self.template_name, {"form": form})
+
+
 class EventPage(TemplateView):
     """
     A page for each event, containing info about the event, whos running it, attendees, and anything else.
@@ -191,6 +242,13 @@ class EventPage(TemplateView):
 
         userHasJoined = event.current_user_is_part_of_event(request.user)
 
+        edited = False
+        try:
+            request.GET["edited"]
+            edited = True
+        except:
+            pass
+
         return render(
             request,
             self.template_name,
@@ -198,6 +256,7 @@ class EventPage(TemplateView):
                 "event": event,
                 "registeredToEvent": userHasJoined,
                 "isMentor": event.current_user_is_mentor(request.user),
+                "edited": edited,
             },
         )
 

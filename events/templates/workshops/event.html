@@ -3,6 +3,14 @@
 {% block title %}Events Index{% endblock %}
 
 {% block body %}
+{% if edited %}
+<div class="alert alert-success alert-dismissible fade show">
+    This event was successfully updated!
+    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close">
+
+      </button>
+</div>
+{% endif %}
 <small>
     <a href="../">Back to all workshops</a>
 </small>
@@ -17,6 +25,9 @@
             <button class="ms-auto btn btn-primary">Join Workshop</button>
             {% elif not isMentor and not event.has_finished %}
             <button class="ms-auto btn btn-danger">Leave Workshop</button>
+            {% endif %}
+            {% if isMentor and not event.has_finished %}
+            <a href="edit" class="ms-auto btn btn-info text-light">Edit</a>
             {% endif %}
         </form>
         

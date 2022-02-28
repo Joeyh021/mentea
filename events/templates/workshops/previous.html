@@ -27,10 +27,8 @@
                     <div class="card-footer d-flex">
                         <small class="text-muted">{{ event.startTime|date:"d m, Y @ h:iA" }}</small>
                         <div class="ms-auto">
-                            {% if event.mentor == user %}
-                                <a href="../edit/{{ event.id }}" class="stretched-link mt-auto me-2">Edit</a>
-                            {% endif %}
-                            <a href="../{{ event.id }}" class="stretched-link mt-auto">View</a></div>
+                     
+                            <a href="../{{ event.id }}" class="stretched-link mt-auto" style="z-index: 40 !important;">View</a></div>
                     </div>
                 </div>
             </div>
