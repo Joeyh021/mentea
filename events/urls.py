@@ -17,4 +17,9 @@ urlpatterns = [
         EventToggleAttendance.as_view(),
         name="workshop-toggleattendance",
     ),
+    path(
+        "<uuid:eventId>/delete",
+        EventDelete.as_view(),
+        name="workshop-delete",
+    ),
 ]

@@ -342,7 +342,7 @@ class EventPage(TemplateView):
 
     def get(self, request: HttpRequest, eventId=None) -> HttpResponse:
 
-        event = Event.objects.get(id=eventId)
+        event = get_object_or_404(Event, id=eventId)
 
         userHasJoined = event.current_user_is_part_of_event(request.user)
 
@@ -377,3 +377,13 @@ class EventToggleAttendance(TemplateView):
             event.attendees.remove(request.user)
 
         return redirect("/workshops/" + str(event.id))
+    
+class EventDelete(TemplateView):
+
+    def post(self, request, eventId=None) -> HttpResponse:
+
+        event = Event.objects.get(id=eventId)
+
+        event.delete()
+
+        return redirect("/workshops")
