@@ -1,38 +1,52 @@
-{% extends "base.html" %}
+{% extends "main.html" %}
 
 {% block body %}
 
-{% if form.errors %}
-<p>Your username and password didn't match. Please try again.</p>
-{% endif %}
+    <h1>Login</h1>
 
-{% if next %}
-    {% if user.is_authenticated %}
-    <p>Your account doesn't have access to this page. To proceed,
-    please login with an account that has access.</p>
-    {% else %}
-    <p>Please login to see this page.</p>
+    {% if form.errors %}
+        <p>Your username and password didn't match. Please try again.</p>
     {% endif %}
-{% endif %}
 
-<form method="post" action="{% url 'login' %}">
-{% csrf_token %}
-<table>
-<tr>
-    <td>{{ form.username.label_tag }}</td>
-    <td>{{ form.username }}</td>
-</tr>
-<tr>
-    <td>{{ form.password.label_tag }}</td>
-    <td>{{ form.password }}</td>
-</tr>
-</table>
+    {% if next %}
+        {% if user.is_authenticated %}
+            <p>Your account doesn't have access to this page. To proceed, please login with an account that has
+                access.</p>
+        {% else %}
+            <p>Please login to see this page.</p>
+        {% endif %}
+    {% endif %}
 
-<input type="submit" value="login">
-<input type="hidden" name="next" value="{{ next }}">
-</form>
+    <form method="post">
+        {% csrf_token %}
+        <div class="mb-3">
+            <label class="form-label" for="id_username">Email:</label>
+            <input class="form-control" type="text" name="username" autofocus autocapitalize="none" autocomplete="username" maxlength="254" required id="id_username">
+            {% if form.username.errors %}
+                {% for e in form.username.errors %}
+                    <p class="help is-danger">{{ e }}</p>
+                {% endfor %}
+            {% endif %}
+        </div>
 
-{# Assumes you set up the password_reset view in your URLconf #}
-<p><a href="{% url 'password_reset' %}">Lost password?</a></p>
+        <div class="mb-3">
+            <label class="form-label" for="id_password">Password:</label>
+            <input class="form-control" type="password" name="password" autocomplete="current-password" required id="id_password">
+            {% if form.password.errors %}
+                {% for e in form.password.errors %}
+                    <p class="help is-danger">{{ e }}</p>
+                {% endfor %}
+            {% endif %}
+        </div>
+
+        <input class="btn btn-primary" type="submit" value="Login">
+        <input type="hidden" name="next" value="{{ next }}">
+    </form>
+
+    <br />
+
+    {# Assumes you set up the password_reset view in your URLconf #}
+    <a class="btn btn-danger" href="{% url 'password_reset' %}">Lost password?</a>
+    <a class="btn btn-success" href="{% url 'register' %}">Create an account</a>
 
 {% endblock %}
