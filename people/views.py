@@ -10,12 +10,15 @@ from django.contrib import messages
 from .forms import RegistrationForm
 
 
-
-
-from .forms import PlanOfActionForm, ProfileForm, BusinessAreaForm, TopicForm, RegistrationForm
+from .forms import (
+    PlanOfActionForm,
+    ProfileForm,
+    BusinessAreaForm,
+    TopicForm,
+    RegistrationForm,
+)
 from .models import *
 from .util import get_mentor
-
 
 
 class IsUserMenteeMixin(UserPassesTestMixin):

@@ -6,9 +6,8 @@ from django.db import migrations
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('people', '0010_notification_link'),
-        ('people', '0010_remove_planofactiontarget_achieved_at_and_more'),
+        ("people", "0010_notification_link"),
+        ("people", "0010_remove_planofactiontarget_achieved_at_and_more"),
     ]
 
-    operations = [
-    ]
+    operations = []
