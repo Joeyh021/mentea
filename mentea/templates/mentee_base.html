@@ -37,7 +37,7 @@
                             <li class="nav-item">
                                 <a class="nav-link {% if request.resolver_match.url_name == 'index' %}active{% endif %}"
                                    aria-current="page"
-                                   href="{% url "main:index" %}">Dashboard</a>
+                                   href="{% url "main:index" %}">Home</a>
                             </li>
                             {% if user.user_type == "Mentee" or user.user_type == "MentorMentee" %}
                             <li class="nav-item">
