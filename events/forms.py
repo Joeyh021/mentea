@@ -33,6 +33,7 @@ class WorkshopForm(forms.Form):
             "duration",
         )
 
+
 class CreateMeetingForm(forms.Form):
     name = forms.CharField(widget=forms.Textarea)
     start_time = forms.DateTimeField()

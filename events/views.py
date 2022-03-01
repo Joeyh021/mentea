@@ -218,7 +218,7 @@ class EventToggleAttendance(TemplateView):
 
 
 class MeetingRequestPage(TemplateView):
-    """ A mentee should be able to request a meeting with their mentor. """
+    """A mentee should be able to request a meeting with their mentor."""
 
     template_name = "meetings/request.html"
     form_class: Any = CreateMeetingForm
@@ -248,8 +248,13 @@ class MeetingRequestPage(TemplateView):
             # feedback_form = ?
 
             # Add event to database:
-            meeting = Event(name=event_name, startTime=start_time, duration=duration,
-                            location=location, mentor=mentor)
+            meeting = Event(
+                name=event_name,
+                startTime=start_time,
+                duration=duration,
+                location=location,
+                mentor=mentor,
+            )
             meeting.save()
 
             # Add event mentee to database:
