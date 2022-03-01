@@ -238,7 +238,6 @@ label{
     border-radius: 20px;
     border-style:solid;
     border-width:5px;
-    /* color: #6e6464; */
     border-color: #54aaa7; 
 }
 
@@ -263,6 +262,11 @@ label{
 
 .bg-child-block {
     height:100%;
+    width: 100%; 
+}
+
+.bg-child-block2 {
+    height:auto;
     width: 100%; 
 }
 
