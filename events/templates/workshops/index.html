@@ -3,6 +3,14 @@
 {% block title %}Workshops{% endblock %}
 
 {% block body %}
+{% if requested %}
+<div class="alert alert-success alert-dismissible fade show">
+    A workshop was successfully requested!
+    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close">
+
+      </button>
+</div>
+{% endif %}
 <div class="d-flex align-items-center">
     <h1 style="margin-bottom: 0px;">My Workshops </h1>
 
@@ -10,10 +18,10 @@
 
     <div class="ms-auto g-2">
         {% if user.user_type == "Mentor" or user.user_type == "MentorMentee" %}
-            <a href="create" class="btn btn-primary">Create Event</a>
+            <a href="create" class="btn btn-primary">Add Workshop</a>
         {% endif %}
         {% if user.user_type == "Mentee" or user.user_type == "MentorMentee"  %}
-            <a href="request" class="btn btn-primary">Request Event</a>
+            <a href="request" class="btn btn-primary position-relative">Request Workshop</a>
         {% endif %}
     </div>
 </div>
@@ -36,9 +44,7 @@
                     <div class="card-footer d-flex">
                         <small class="text-muted">{{ event.startTime|date:"d m, Y @ h:iA" }}</small>
                         <div class="ms-auto">
-                            {% if event.mentor == user %}
-                                <a href="edit/{{ event.id }}" class="stretched-link mt-auto me-2">Edit</a>
-                            {% endif %}
+                     
                             <a href="{{ event.id }}" class="stretched-link mt-auto">View</a></div>
                     </div>
                 </div>

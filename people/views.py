@@ -9,7 +9,14 @@ from django.contrib.auth import login, authenticate
 from django.contrib import messages
 from .forms import RegistrationForm
 
-from .forms import PlanOfActionForm, ProfileForm, BusinessAreaForm, TopicForm
+
+from .forms import (
+    PlanOfActionForm,
+    ProfileForm,
+    BusinessAreaForm,
+    TopicForm,
+    RegistrationForm,
+)
 from .models import *
 from .util import get_mentor
 
@@ -241,7 +248,28 @@ class UserNotificationsPage(LoginRequiredMixin, TemplateView):
     template_name: str = "people/notifications.html"
 
     def get(self, request: HttpRequest, *args: Any, **kwarsgs: Any) -> HttpResponse:
-        return render(request, self.template_name, {})
+        resp = render(request, self.template_name, {})
+        resp[
+            "Content-Security-Policy"
+        ] = "frame-ancestors 'self' https://localhost:8000"
+        return resp
+
+    def post(self, request: HttpRequest) -> HttpResponse:
+        try:
+            notifId = request.POST["notifId"]
+
+            notification = Notification.objects.get(id=notifId)
+            notification.read = True
+            notification.save()
+
+        except:
+            pass
+
+        resp = render(request, self.template_name, {})
+        resp[
+            "Content-Security-Policy"
+        ] = "frame-ancestors 'self' https://localhost:8000"
+        return resp
 
 
 class MenteeDashboardPage(IsUserMenteeMixin, TemplateView):

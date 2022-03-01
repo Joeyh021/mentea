@@ -18,9 +18,17 @@
                 </button>
                 <a class="navbar-brand text-white fw-bolder fst-italic" href="{% url "main:index" %}">Mentea <i class="fa-solid fa-mug-hot"
                                                                                            style="margin-left: .3rem;"></i></a>
-                <a href="{% url "profile" %}" class="nav-item">
-                    <i class="fa-solid fa-circle-user fa-2x" style="color: white;"></i>
-                </a>
+                <div class="d-flex align-items-center justify-items-center">
+                    <button class="navbar-toggler" type="button" data-bs-toggle="offcanvas"
+                    data-bs-target="#offcanvasNavbar2"
+                    aria-controls="offcanvasNavbar2" style="border:0 ; color: white">
+                    <i class="fa-solid fa-bell fa-lg" style="width:"></i>
+                    </button>
+                    <a href="{% url "profile" %}" class="nav-item">
+                        <i class="fa-solid fa-circle-user fa-2x" style="color: white;"></i>
+                    </a>
+                
+                </div>
 
 
                 <div class="offcanvas offcanvas-start bg-mentee-sidenav" tabindex="-1" id="offcanvasNavbar"
@@ -89,6 +97,22 @@
 
                     </div>
                 </div>
+                 <!-- Notification Panel -->
+                 <div class="offcanvas offcanvas-end bg-mentea-sidenav" tabindex="-1" id="offcanvasNavbar2"
+                 aria-labelledby="offcanvasNavbarLabe2">
+                <div class="offcanvas-header">
+                    <h5 class="offcanvas-title" id="offcanvasNavbarLabe2">Notifications</h5>
+                    <button type="button" class="navbar-toggler" style="border:0 ; " data-bs-dismiss="offcanvas"
+                            aria-label="Close">
+                        <i class="fa-solid fa-close fa-lg" style="width:"></i>
+                    </button>
+                </div>
+                <div class="offcanvas-body">
+                    <iframe src="/user/notifications" style="background-color: transparent; width: 100%" frameborder="0"></iframe>
+
+
+                </div>
+            </div>
 
             </div>
         </nav>

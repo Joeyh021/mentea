@@ -1,12 +1,12 @@
 {% extends "main.html" %}
 
-{% block title %}Create Workshop{% endblock %}
+{% block title %}Edit Workshop{% endblock %}
 
 {% block body %}
 <small>
-    <a href="../">Back</a>
+    <a href="../{{ eId }}">Back</a>
 </small>
-<h1>Create workshop</h1>
+<h1>Edit workshop</h1>
 
 <form name="form" method="post">
     {% csrf_token %}
@@ -58,9 +58,12 @@
         {% endif %}
     </div>
     <div>
-        <input type="submit" class="btn btn-primary" value="Submit">
+        <input type="submit" class="btn btn-primary" value="Save">
+        
     </div>
 </form>
+
+
 
  
 {% endblock %}
