@@ -1,6 +1,6 @@
 from attr import attrs
 
-from people.models import Topic
+from people.models import Topic, User
 from .models import Event
 from django import forms
 from django.forms import TextInput
