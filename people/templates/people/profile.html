@@ -1,12 +1,16 @@
 {% extends "main.html" %}
 
-{% block title %}Profile{% endblock %}
+{% block title %}{% if not my_profile %}
+{{ user.get_full_name }}'s
+{% endif %}Profile{% endblock %}
 
 {% block body %}
 <div class="row">
     <div class="col-4 text-center d-flex flex-column  align-items-center ">
         <i class="fa-solid fa-circle-user color-mentea" style="width: 16rem; height: 16rem"></i>
+        {% if my_profile %}
         <a href="{% url "profile_edit" %}" class="btn btn-primary btn-rounded btn-mentea mt-4 px-4">Edit Profile</a>
+        {% endif %}
     </div>
     <div class="col-8">
         <h1 class="mt-2 mb-0" style="font-size: 6rem;">

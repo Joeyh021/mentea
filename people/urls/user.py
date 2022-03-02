@@ -11,4 +11,5 @@ urlpatterns = [
     path("profile/", UserProfilePage.as_view(), name="profile"),
     path("profile/edit/", UserProfileEditPage.as_view(), name="profile_edit"),
     path("notifications/", UserNotificationsPage.as_view(), name="notifications"),
+    path("<uuid:userId>/", ViewUserProfilePage.as_view(), name="userview_any"),
 ]
