@@ -1,6 +1,6 @@
 from attr import attrs
 
-from people.models import Topic
+from people.models import Topic, User, UserTopic
 from .models import Event, EventRequest
 from django import forms
 from django.forms import TextInput
@@ -24,6 +24,10 @@ class WorkshopForm(forms.Form):
         queryset=Topic.objects.all(),
         widget=forms.Select(attrs={"class": "form-select"}),
     )
+    
+    def updateQSToUser(self, user: User):
+        topicList = UserTopic.objects.filter(user=user, usertype="Mentor").all().values('topic')
+        self.fields['topic'].queryset = Topic.objects.filter(id__in=topicList).all()
 
     class Meta:
         model = Event
@@ -40,6 +44,11 @@ class WorkshopRequestForm(forms.Form):
         queryset=Topic.objects.all(),
         widget=forms.Select(attrs={"class": "form-select"}),
     )
+    
+    def updateQSToUser(self, user: User):
+        topicList = UserTopic.objects.filter(user=user, usertype="Mentee").all().values('topic')
+        self.fields['topic'].queryset = Topic.objects.filter(id__in=topicList).all()
+        #self.topic.queryset = topicList
 
     class Meta:
         model = EventRequest

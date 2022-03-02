@@ -30,7 +30,7 @@
             <a href="edit" class="ms-auto btn btn-info text-light">Edit</a>
             {% endif %}
             {% if isMentor %}
-            <button class="btn btn-danger ms-2" type="button" data-bs-toggle="modal" data-bs-target="#exampleModal">
+            <button class="btn btn-danger {% if not event.has_finished %}ms-2{% else %}ms-auto{% endif %}" type="button" data-bs-toggle="modal" data-bs-target="#exampleModal">
                 Delete
               </button>
               {% endif %}
@@ -61,6 +61,7 @@
 
 <p>
     {{ event.description }}
+    </p>
 
 
 
@@ -74,9 +75,6 @@
             <custom-form form-id="{{ event.feedback_form.id }}">Loading form...</custom-form>
         </div>
     {% elif event.has_event_finished and isMentor %}
-        <div class="alert alert-info">
-            You cannot provide feedback for a workshop that you ran!
-        </div>
         <custom-form-result-viewer form-id="{{ event.feedback_form.id }}">Loading form...</custom-form-result-viewer>
     {% else %}
         <div class="alert alert-info">
@@ -86,9 +84,13 @@
 {% endif %}
 
 <div>
-    <h2>Attendees</h2>
+    <h2>Attendees ({{ event.attendees.all|length }})</h2>
     {% for user in event.attendees.all %}
-    <p style="margin-bottom: 0px !important;">{{ user.get_full_name }}</p>
+    <div class="d-flex align-items-center">
+        <i class="fa-solid fa-circle-user fa-2x me-2"></i>
+        <p style="margin-bottom: 0px !important;">{{ user.get_full_name }}</p>
+
+    </div>
     {% empty %}
     No one has signed upto this workshop yet!
     {% endfor %}

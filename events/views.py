@@ -112,7 +112,10 @@ class EventRequestPage(TemplateView):
     form_class: Any = WorkshopRequestForm
 
     def get(self, request: HttpRequest) -> HttpResponse:
+        
         form = self.form_class()
+        form.updateQSToUser(request.user) # Makes request topics match those the user is interested in only
+        
 
         return render(request, self.template_name, {"form": form})
 
@@ -185,6 +188,7 @@ class EventCreatePage(TemplateView):
 
     def get(self, request: HttpRequest, *args: Any, **kwarsgs: Any) -> HttpResponse:
         form = self.form_class()
+        form.updateQSToUser(request.user) # Makes create topics match those the user is teaching only
 
         try:
             id = request.GET["topic"]
@@ -303,7 +307,8 @@ class EventEditPage(TemplateView):
                 "desc": event.description,
             }
         )
-        return render(request, self.template_name, {"form": form, "eId": eventId})
+        form.updateQSToUser(request.user) # Makes create topics match those the user is teaching only
+        return render(request, self.template_name, {"form": form, "eId": eventId, "fId": event.feedback_form.id})
 
     def post(self, request: HttpRequest, eventId=None) -> HttpResponse:
         form = self.form_class(request.POST)
