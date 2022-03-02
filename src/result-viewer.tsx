@@ -93,14 +93,16 @@ const ResultViewer: FC<IFeedbackFormProps> = ({ id }) => {
           )
       }
 
+      if (state !== EFormState.READY || submissions.length === 0) {
+        return "Loading results..."
+      }
+
     return (
         <>
   
 
         <div className="position-relative">
-          {loading && <div className="position-absolute top-0 start-0 w-100 h-100 bg-light opacity-50 rounded ">
-  
-            </div>}
+
         <h1>{ formData.name || 'Loading form...' } - Results</h1>
         <p>{ formData.desc || "Loading description..." }</p>
         <h2>Submission: { submissions[current]?.id || "No submissions" }</h2>

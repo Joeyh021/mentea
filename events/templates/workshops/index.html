@@ -49,6 +49,9 @@
                     </div>
                 </div>
             </div>
+        {% empty %}
+
+        <div class="alert alert-danger w-100" style="margin-top: 40px;">You haven't joined any workshops!</div>
         {% endfor %}
     </div>
 </div>
@@ -74,16 +77,18 @@
                     <div class="card-footer d-flex">
                         <small class="text-muted">{{ event.startTime|date:"d m, Y @ h:iA" }}</small>
                         <div class="ms-auto">
-                            {% if event.mentor == user %}
-                                <a href="edit/{{ event.id }}" class="stretched-link mt-auto me-2">Edit</a>
-                            {% endif %}
+    
                             <a href="{{ event.id }}" class="stretched-link mt-auto">View</a></div>
                     </div>
                 </div>
             </div>
+            {% empty %}
+
+        <div class="alert alert-danger w-100" style="margin-top: 40px;">There are not currently any workshops available! <a class="alert-link" href="request">Request one</a></div>
         {% endfor %}
     </div>
 
+   
     <nav aria-label="Page navigation example">
         <ul class="pagination justify-content-center">
         {% if page_obj.has_previous %}

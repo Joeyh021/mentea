@@ -17,10 +17,15 @@
           <a class="navbar-brand text-white fw-bolder fst-italic" href="{% url "main:index" %}">Mentea <i class="fa-solid fa-mug-hot" style="margin-left: .3rem;"></i></a>
 
           <div class="d-flex align-items-center justify-items-center">
-            <button class="navbar-toggler" type="button" data-bs-toggle="offcanvas"
+            <button class="navbar-toggler position-relative" type="button" data-bs-toggle="offcanvas"
             data-bs-target="#offcanvasNavbar2"
             aria-controls="offcanvasNavbar2" style="border:0 ; color: white">
             <i class="fa-solid fa-bell fa-lg" style="width:"></i>
+            {% if user.has_notifs %}
+            <span class="position-absolute top-25 start-75 translate-middle bg-danger  rounded-circle" style="padding: 6px;">
+                <span class="visually-hidden">New alerts</span>
+              </span>
+            {% endif %}
         </button>
             <a href="{% url "profile" %}" class="nav-item">
                 <i class="fa-solid fa-circle-user fa-2x" style="color: white;"></i>
@@ -39,7 +44,7 @@
             <div class="offcanvas-body" >
               <ul class="navbar-nav justify-content-end flex-grow-1 pe-3 fs-5" style="height: 100%">
                 <li class="nav-item">
-                  <a class="nav-link" aria-current="page" href="{% url "main:index" %}">Dashboard</a>
+                  <a class="nav-link" aria-current="page" href="{% url "main:index" %}">Homepage</a>
                 </li>
                 {% if user.user_type == "Mentee" or user.user_type == "MentorMentee" %}
                 <li class="nav-item">
@@ -97,7 +102,7 @@
              </button>
          </div>
          <div class="offcanvas-body">
-             <iframe src="/user/notifications" style="background-color: transparent; width: 100%" frameborder="0"></iframe>
+             <iframe src="/user/notifications" style="background-color: transparent; width: 100%;  height: 100%; overflow: auto !important;" frameborder="0"></iframe>
 
 
          </div>

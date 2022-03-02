@@ -658,7 +658,7 @@ for (let i = 0; i < forms.length; i++) {
 
 for (let i = 0; i < formBuilders.length; i++) {
   let form = formBuilders.item(i)
-  ReactDOM.render(<FormBuilder />, form);
+  ReactDOM.render(<FormBuilder id={form?.getAttribute('form-id') || ''} />, form);
 }
 
 for (let i = 0; i < formRVs.length; i++) {
