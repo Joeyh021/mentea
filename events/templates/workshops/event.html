@@ -60,7 +60,7 @@
 </p>
 
 <p>
-    {{ event.description }}
+    {% autoescape off %}{{ event.description }}{% endautoescape %} 
     </p>
 
 
