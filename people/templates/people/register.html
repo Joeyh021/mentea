@@ -56,6 +56,16 @@
             {% endif %}
         </div>
 
+        <div class="mb-3">
+            <label for="id_tos" class="col">I accept the <a href="/terms-of-service">privacy policy</a> and <a href="/privacy">terms of service</a>:</label>
+            <input type="checkbox" id="id_tos" name="tos" required>
+            {% if form.accept_tos.errors %}
+                {% for e in form.accept_tos.errors %}
+                    <p class="help is-danger">{{ e }}</p>
+                {% endfor %}
+            {% endif %}
+        </div>
+
 		<input class="btn btn-primary" type="submit" value="Register" />
 	</form>
 	<p>If you already have an account, click here to login instead: <a class="btn btn-primary" href="{% url 'login' %}">Login</a></p>

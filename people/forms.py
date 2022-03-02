@@ -8,6 +8,7 @@ class RegistrationForm(UserCreationForm):
     email = forms.EmailField(required=True)
     first_name = forms.CharField(label="First name", max_length=100)
     last_name = forms.CharField(label="Last name", max_length=100)
+    accept_tos = forms.BooleanField()
 
     class Meta:
         model = User
