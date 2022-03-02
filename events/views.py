@@ -113,10 +113,11 @@ class EventRequestPage(TemplateView):
     form_class: Any = WorkshopRequestForm
 
     def get(self, request: HttpRequest) -> HttpResponse:
-        
+
         form = self.form_class()
-        form.updateQSToUser(request.user) # Makes request topics match those the user is interested in only
-        
+        form.updateQSToUser(
+            request.user
+        )  # Makes request topics match those the user is interested in only
 
         return render(request, self.template_name, {"form": form})
 
@@ -189,7 +190,9 @@ class EventCreatePage(TemplateView):
 
     def get(self, request: HttpRequest, *args: Any, **kwarsgs: Any) -> HttpResponse:
         form = self.form_class()
-        form.updateQSToUser(request.user) # Makes create topics match those the user is teaching only
+        form.updateQSToUser(
+            request.user
+        )  # Makes create topics match those the user is teaching only
 
         try:
             id = request.GET["topic"]
@@ -308,8 +311,14 @@ class EventEditPage(TemplateView):
                 "desc": event.description,
             }
         )
-        form.updateQSToUser(request.user) # Makes create topics match those the user is teaching only
-        return render(request, self.template_name, {"form": form, "eId": eventId, "fId": event.feedback_form.id})
+        form.updateQSToUser(
+            request.user
+        )  # Makes create topics match those the user is teaching only
+        return render(
+            request,
+            self.template_name,
+            {"form": form, "eId": eventId, "fId": event.feedback_form.id},
+        )
 
     def post(self, request: HttpRequest, eventId=None) -> HttpResponse:
         form = self.form_class(request.POST)
@@ -378,7 +387,14 @@ class EventToggleAttendance(TemplateView):
 
         if not event.current_user_is_part_of_event(request.user):
             event.attendees.add(request.user)
-            NotificationManager.send("New Workshop Attendee", request.user.get_full_name() + " has joined your workshop on: " + event.topic.topic, to=event.mentor, link="/workshops/"+str(event.id)+"/")
+            NotificationManager.send(
+                "New Workshop Attendee",
+                request.user.get_full_name()
+                + " has joined your workshop on: "
+                + event.topic.topic,
+                to=event.mentor,
+                link="/workshops/" + str(event.id) + "/",
+            )
 
         else:
             event.attendees.remove(request.user)

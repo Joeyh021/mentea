@@ -85,7 +85,7 @@ class Event(models.Model):
         return self.startTime + timedelta(minutes=self.duration)
 
     def has_event_finished(self):
- 
+
         return self.calc_end_date() < timezone.now()
 
     def get_pattern(self):
@@ -94,9 +94,8 @@ class Event(models.Model):
             if d.isdigit():
                 numb = int(d)
                 break
-        
-      
-        return "bg-pattern-" + str((numb % 3)+1)
+
+        return "bg-pattern-" + str((numb % 3) + 1)
 
     def in_progress(self):
         return self.startTime < timezone.now() and self.endTime > timezone.now()
