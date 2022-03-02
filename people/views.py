@@ -1,7 +1,7 @@
 from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.http import HttpRequest, HttpResponse, HttpResponseRedirect
-from django.shortcuts import redirect, render
+from django.shortcuts import get_object_or_404, redirect, render
 from django.views.generic import TemplateView
 from django.contrib.auth.mixins import LoginRequiredMixin
 from typing import Any
@@ -93,7 +93,33 @@ class UserProfilePage(LoginRequiredMixin, TemplateView):
         return render(
             request,
             self.template_name,
-            {"mentee_topics": mentee_topics, "mentor_topics": mentor_topics},
+            {
+                "mentee_topics": mentee_topics,
+                "mentor_topics": mentor_topics,
+                "my_profile": True,
+            },
+        )
+
+
+class ViewUserProfilePage(LoginRequiredMixin, TemplateView):
+    template_name: str = "people/profile.html"
+
+    def get(self, request: HttpRequest, userId=None) -> HttpResponse:
+
+        user = get_object_or_404(User, id=userId)
+
+        mentee_topics = UserTopic.objects.filter(user=user, usertype=UserType.Mentee)
+        mentor_topics = UserTopic.objects.filter(user=user, usertype=UserType.Mentor)
+
+        return render(
+            request,
+            self.template_name,
+            {
+                "user": user,
+                "mentee_topics": mentee_topics,
+                "mentor_topics": mentor_topics,
+                "my_profile": False,
+            },
         )
 
 

@@ -11,7 +11,7 @@
 <small><a href="{% url 'events:workshop-index' %}">View current</a></small>
 
 <div>
-    <div class="row row-cols-1 row-cols-md-3 g-4 mb-4">
+    <div class="row row-cols-1 row-cols-md-3 g-4 mb-4 mt-1">
         {% for event in page_obj %}
             <div class="col">
                 <div class="card h-100">
@@ -20,7 +20,7 @@
                         <h5 class="card-title d-flex">{{ event.name }} {% if event.in_progress %}<span class="ms-auto badge rounded-pill bg-success text-light">Running</span>{% endif %}</h5>
                         <small><strong>Mentor:</strong> {{ event.mentor.get_full_name }}</small>
                         <small class="ms-2"><strong>Topic:</strong> {{ event.topic }}</small>
-                        <p class="card-text">{{ event.description }}</p>
+                        <p class="card-text">{{ event.description|striptags|slice:":50" }}...</p>
 
                         
                     </div>
