@@ -56,9 +56,12 @@
             {% endif %}
         </div>
 
-        <div class="mb-3">
-            <label for="id_tos" class="col">I accept the <a href="/terms-of-service">privacy policy</a> and <a href="/privacy">terms of service</a>:</label>
-            <input type="checkbox" id="id_tos" name="tos" required>
+        <div class="form-check d-flex mb-3" style="padding-left: 0">
+            <label class="form-check-label" for="id_accept_tos">
+                I accept the <a href="/terms-of-service">privacy policy</a> and <a href="/privacy">terms of service</a>:
+            </label>
+            <input class="form-check-input" style="margin-left: .5em;" type="checkbox" value="" id="id_accept_tos" name="accept_tos" required>
+            <small class="form-text">{{ form.accept_tos.help_text }}</small>
             {% if form.accept_tos.errors %}
                 {% for e in form.accept_tos.errors %}
                     <p class="help is-danger">{{ e }}</p>
