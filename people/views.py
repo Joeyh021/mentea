@@ -93,30 +93,35 @@ class UserProfilePage(LoginRequiredMixin, TemplateView):
         return render(
             request,
             self.template_name,
-            {"mentee_topics": mentee_topics, "mentor_topics": mentor_topics, "my_profile": True},
+            {
+                "mentee_topics": mentee_topics,
+                "mentor_topics": mentor_topics,
+                "my_profile": True,
+            },
         )
+
 
 class ViewUserProfilePage(LoginRequiredMixin, TemplateView):
     template_name: str = "people/profile.html"
-    
+
     def get(self, request: HttpRequest, userId=None) -> HttpResponse:
-        
+
         user = get_object_or_404(User, id=userId)
-        
-        mentee_topics = UserTopic.objects.filter(
-            user=user, usertype=UserType.Mentee
-        )
-        mentor_topics = UserTopic.objects.filter(
-            user=user, usertype=UserType.Mentor
-        )
+
+        mentee_topics = UserTopic.objects.filter(user=user, usertype=UserType.Mentee)
+        mentor_topics = UserTopic.objects.filter(user=user, usertype=UserType.Mentor)
 
         return render(
             request,
             self.template_name,
-            {"user": user, "mentee_topics": mentee_topics, "mentor_topics": mentor_topics, "my_profile": False},
+            {
+                "user": user,
+                "mentee_topics": mentee_topics,
+                "mentor_topics": mentor_topics,
+                "my_profile": False,
+            },
         )
 
-    
 
 class UserProfileEditPage(LoginRequiredMixin, TemplateView):
     """Allows a user to edit their profile"""
