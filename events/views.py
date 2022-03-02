@@ -10,6 +10,7 @@ from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin
 
 from events.forms import WorkshopForm, WorkshopRequestForm
+from events.notification import NotificationManager
 from people.models import Notification, Topic, UserTopic
 
 from .models import (
@@ -377,6 +378,7 @@ class EventToggleAttendance(TemplateView):
 
         if not event.current_user_is_part_of_event(request.user):
             event.attendees.add(request.user)
+            NotificationManager.send("New Workshop Attendee", request.user.get_full_name() + " has joined your workshop on: " + event.topic.topic, to=event.mentor, link="/workshops/"+str(event.id)+"/")
 
         else:
             event.attendees.remove(request.user)
