@@ -1,0 +1,45 @@
+{% extends base %}
+
+{% block body %}
+
+{% if user != mentor and user != mentee %}
+<p> You have no permission to acces this page </p>
+{% else %}
+
+{% for chatMessage in chatMessages %}
+
+{% if  chatMessage.sender  == mentor %}
+  {% if  chatMessage.sender  == user %}
+    <p style="text-align:left;background-color:rgb(127, 108, 238);">{{ chatMessage.content }}</p>
+  {% else %}
+    <p style="text-align:right;background-color:rgb(127, 108, 238);">{{ chatMessage.content }}</p>
+  {% endif %}
+{% else %}
+  {% if  chatMessage.sender  == user %}
+  <p style="text-align:left;background-color:cyan;">{{ chatMessage.content }}</p>
+  {% else %}
+  <p style="text-align:right;background-color:cyan;">{{ chatMessage.content }}</p>
+  {% endif %}
+{% endif %}
+{% if  chatMessage.sender  != user %}
+<p style="text-align:right"><small>
+  {{ chatMessage.sender.first_name }}
+  {{ chatMessage.sender.last_name }}
+  {{ chatMessage.created_at }}
+</small></p>
+{% else %}
+<p><small>
+  {{ chatMessage.sender.first_name }}
+  {{ chatMessage.sender.last_name }}
+  {{ chatMessage.created_at }}
+</small></p>
+{% endif %}
+{% endfor %}
+
+<form method="post">{%csrf_token%}
+  {{form.as_p}}
+  <input type="submit" value="Send" />
+</form>
+{% endif %}
+
+{% endblock %}

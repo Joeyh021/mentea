@@ -131,3 +131,6 @@ class PlanOfActionForm(forms.Form):
         required=False,
         widget=forms.Textarea(attrs={"rows": 4, "cols": 40, "class": "form-control"}),
     )
+
+class SendMessageForm(forms.Form):
+    content = forms.CharField(widget=forms.TextInput(attrs={"class": "form-control"}))
