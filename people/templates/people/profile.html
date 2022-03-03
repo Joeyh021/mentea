@@ -26,17 +26,10 @@
         {% if user.user_type == "Mentee" %}
             <span class="badge rounded-pill bg-mentee-blue p-2 px-3 " style="font-size: 0.9rem;">Mentee</span>
         {% elif user.user_type == "Mentor" %}
-<<<<<<< HEAD
-            <span class="badge rounded-pill bg-mentor-light-green p-2 px-3 " style="font-size: 0.9rem;">Mentor</span>
-        {% else %}
-            <span class="badge rounded-pill bg-mentee-blue p-2 px-3 " style="font-size: 0.9rem;">Mentee</span>
-            <span class="badge rounded-pill bg-mentor-light-green ms-2 p-2 px-3 " style="font-size: 0.9rem;">Mentor</span>
-=======
             <span class="badge rounded-pill bg-mentor-blue p-2 px-3 " style="font-size: 0.9rem;">Mentor</span>
         {% elif user.user_type == "MentorMentee" %}
             <span class="badge rounded-pill bg-mentee-green p-2 px-3 " style="font-size: 0.9rem;">Mentee</span>
             <span class="badge rounded-pill bg-mentor-blue ms-2 p-2 px-3 " style="font-size: 0.9rem;">Mentor</span>
->>>>>>> main
         {% endif %}
     </div>
     

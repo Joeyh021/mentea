@@ -15,12 +15,6 @@
               </button>
 
           <a class="navbar-brand text-white fw-bolder fst-italic" href="{% url "main:index" %}">Mentea <i class="fa-solid fa-mug-hot" style="margin-left: .3rem;"></i></a>
-<<<<<<< HEAD
-        </a>
-          <a href="{% url "profile" %}" class="nav-item">
-            <i class="fa-solid fa-circle-user fa-2x" style="color: white;"></i>
-        </a>
-=======
 
           <div class="d-flex align-items-center justify-items-center">
             <button class="navbar-toggler position-relative" type="button" data-bs-toggle="offcanvas"
@@ -39,7 +33,6 @@
       
         </div>
           
->>>>>>> main
           
           <div class="offcanvas offcanvas-start bg-mentor-sidenav" tabindex="-1" id="offcanvasNavbar" aria-labelledby="offcanvasNavbarLabel">
             <div class="offcanvas-header">
@@ -51,11 +44,7 @@
             <div class="offcanvas-body" >
               <ul class="navbar-nav justify-content-end flex-grow-1 pe-3 fs-5" style="height: 100%">
                 <li class="nav-item">
-<<<<<<< HEAD
-                  <a class="nav-link" aria-current="page" href="{% url "main:index" %}">Home</a>
-=======
                   <a class="nav-link" aria-current="page" href="{% url "main:index" %}">Homepage</a>
->>>>>>> main
                 </li>
                 {% if user.user_type == "Mentee" or user.user_type == "MentorMentee" %}
                 <li class="nav-item">
