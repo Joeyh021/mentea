@@ -1,8 +1,19 @@
 from uuid import uuid4
 from people.models import *
 
+# data used for all tests
+def create_default_data():
+    # create superuser
+    # should be user for testing that requires authentication
+    admin = User.objects.create_superuser(
+        email="admin@mentea.me", password="adminpassword"
+    )
+    admin.user_type = "MentorMentee"
+    admin.save()
 
-def create_data() -> None:
+
+# data used only for matching tests
+def create_matching_data() -> None:
 
     # create user types
     mentee_type = UserType.Mentee
