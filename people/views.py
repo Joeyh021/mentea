@@ -1,19 +1,24 @@
 from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
-from django.http import HttpRequest, HttpResponse
-from django.shortcuts import redirect, render
-from django.views.generic import FormView, TemplateView
+from django.http import HttpRequest, HttpResponse, HttpResponseRedirect
+from django.shortcuts import get_object_or_404, redirect, render
+from django.views.generic import TemplateView
 from django.contrib.auth.mixins import LoginRequiredMixin
 from typing import Any
-from django.http import HttpResponseRedirect
-from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth import login, authenticate
 from django.contrib import messages
-
 from .forms import RegistrationForm
 
-from .forms import ProfileForm, BusinessAreaForm, TopicForm
-from .models import UserTopic, BusinessArea, Topic, UserType
+
+from .forms import (
+    PlanOfActionForm,
+    ProfileForm,
+    BusinessAreaForm,
+    TopicForm,
+    RegistrationForm,
+)
+from .models import *
+from .util import get_mentor
 
 
 class IsUserMenteeMixin(UserPassesTestMixin):
@@ -57,8 +62,18 @@ class UserSignupPage(TemplateView):
         form = self.form_class(request.POST)
         if form.is_valid():
             form.save()
-            messages.success(request, "Account created successfully!")
-            return redirect("login")
+            messages.success(
+                request,
+                "Account created successfully! Please now complete your profile before continuing.",
+            )
+            login(
+                request,
+                authenticate(
+                    username=form.cleaned_data["email"],
+                    password=form.cleaned_data["password1"],
+                ),
+            )
+            return redirect("profile_edit")
         return render(request, self.template_name, {"form": form})
 
 
@@ -78,7 +93,33 @@ class UserProfilePage(LoginRequiredMixin, TemplateView):
         return render(
             request,
             self.template_name,
-            {"mentee_topics": mentee_topics, "mentor_topics": mentor_topics},
+            {
+                "mentee_topics": mentee_topics,
+                "mentor_topics": mentor_topics,
+                "my_profile": True,
+            },
+        )
+
+
+class ViewUserProfilePage(LoginRequiredMixin, TemplateView):
+    template_name: str = "people/profile.html"
+
+    def get(self, request: HttpRequest, userId=None) -> HttpResponse:
+
+        user = get_object_or_404(User, id=userId)
+
+        mentee_topics = UserTopic.objects.filter(user=user, usertype=UserType.Mentee)
+        mentor_topics = UserTopic.objects.filter(user=user, usertype=UserType.Mentor)
+
+        return render(
+            request,
+            self.template_name,
+            {
+                "user": user,
+                "mentee_topics": mentee_topics,
+                "mentor_topics": mentor_topics,
+                "my_profile": False,
+            },
         )
 
 
@@ -233,7 +274,28 @@ class UserNotificationsPage(LoginRequiredMixin, TemplateView):
     template_name: str = "people/notifications.html"
 
     def get(self, request: HttpRequest, *args: Any, **kwarsgs: Any) -> HttpResponse:
-        return render(request, self.template_name, {})
+        resp = render(request, self.template_name, {})
+        resp[
+            "Content-Security-Policy"
+        ] = "frame-ancestors 'self' https://localhost:8000"
+        return resp
+
+    def post(self, request: HttpRequest) -> HttpResponse:
+        try:
+            notifId = request.POST["notifId"]
+
+            notification = Notification.objects.get(id=notifId)
+            notification.read = True
+            notification.save()
+
+        except:
+            pass
+
+        resp = render(request, self.template_name, {})
+        resp[
+            "Content-Security-Policy"
+        ] = "frame-ancestors 'self' https://localhost:8000"
+        return resp
 
 
 class MenteeDashboardPage(IsUserMenteeMixin, TemplateView):
@@ -257,10 +319,91 @@ class MenteeFeedbackPage(IsUserMenteeMixin, TemplateView):
 class MenteePlansPage(IsUserMenteeMixin, TemplateView):
     """A mentee's plans of action page"""
 
-    template_name: str = "people/mentee_plans.html"
+    template_name: str = "people/plans.html"
 
     def get(self, request: HttpRequest, *args: Any, **kwarsgs: Any) -> HttpResponse:
-        return render(request, self.template_name, {})
+        user_plans = PlanOfAction.objects.all().filter(
+            associated_mentee=request.user.id
+        )
+
+        return render(
+            request,
+            self.template_name,
+            {
+                "base": "mentee_base.html",
+                "plans_list": self.__parse_plans(user_plans),
+            },
+        )
+
+    def post(self, request: HttpRequest, *args, **kwargs) -> HttpResponse:
+        print(request.POST)
+        if "completed" in request.POST:
+            target = PlanOfActionTarget.objects.get(name=request.POST["completed"])
+            target.achieved = True
+            target.save()
+        return HttpResponseRedirect("")
+
+    def __parse_plans(self, plans):
+        plans_list = []
+        for p in plans:
+            plan_targets = PlanOfActionTarget.objects.filter(associated_poa=p)
+            plans_list.append(
+                {
+                    "name": p.name,
+                    "targets": list(plan_targets),
+                    "progress": str(p.progress),
+                }
+            )
+        return plans_list
+
+
+class MenteeNewPlanPage(IsUserMenteeMixin, TemplateView):
+    """allows a mentee to create a new plan of action for themselves"""
+
+    template_name: str = "people/new_plan.html"
+
+    def get(self, request: HttpRequest, *args, **kwargs) -> HttpResponse:
+        form = PlanOfActionForm()
+        return render(
+            request,
+            self.template_name,
+            {"form": form, "base": "mentee_base.html"},
+        )
+
+    def post(self, request: HttpRequest, *args, **kwargs) -> HttpResponse:
+        current_user = request.user
+        form = PlanOfActionForm(request.POST)
+        print(request.POST)
+
+        if form.is_valid():
+            plan_name = form.cleaned_data["name"]
+            plan = PlanOfAction.objects.create(
+                name=plan_name,
+                associated_mentee=current_user,
+                associated_mentor=get_mentor(current_user),
+            )
+
+            for i in range(1, 6):
+                target = form.cleaned_data[f"target_{i}"]
+                description = form.cleaned_data[f"description_{i}"]
+                if target != "":
+                    PlanOfActionTarget.objects.create(
+                        name=target,
+                        description=description,
+                        associated_poa=plan,
+                        set_by=request.user,
+                    )
+
+            return HttpResponseRedirect("/mentee/plans")
+        else:
+            messages.error(request, "Error creating plan")
+            return render(
+                request,
+                self.template_name,
+                {
+                    "form": PlanOfActionForm(),
+                },
+            )
 
 
 class MenteeChatPage(IsUserMenteeMixin, TemplateView):
@@ -330,10 +473,97 @@ class MentorMenteeChatPage(IsUserMentorMixin, TemplateView):
 class MentorMenteePlansPage(IsUserMentorMixin, TemplateView):
     """Allows a mentor to view and manage plans of action for a specific mentee"""
 
-    template_name: str = "people/mentor_plans.html"
+    template_name: str = "people/plans.html"
 
-    def get(self, request: HttpRequest, *args: Any, **kwarsgs: Any) -> HttpResponse:
-        return render(request, self.template_name, {})
+    def get(self, request: HttpRequest, *args: Any, **kwargs: Any) -> HttpResponse:
+        current_mentee = User.objects.get(id=kwargs["menteeid"])
+        user_plans = PlanOfAction.objects.all().filter(associated_mentee=current_mentee)
+
+        return render(
+            request,
+            self.template_name,
+            {
+                "base": "mentor_base.html",
+                "plans_list": self.__parse_plans(user_plans),
+                "mentee_name": f"{current_mentee.first_name} {current_mentee.last_name}",
+            },
+        )
+
+    def post(self, request: HttpRequest, *args, **kwargs) -> HttpResponse:
+        print(request.POST)
+        if "completed" in request.POST:
+            target = PlanOfActionTarget.objects.get(name=request.POST["completed"])
+            target.achieved = True
+            target.save()
+        return HttpResponseRedirect("")
+
+    def __parse_plans(self, plans):
+        plans_list = []
+        for p in plans:
+            plan_targets = PlanOfActionTarget.objects.filter(associated_poa=p)
+            plans_list.append(
+                {
+                    "name": p.name,
+                    "targets": list(plan_targets),
+                    "progress": str(p.progress),
+                }
+            )
+        return plans_list
+
+
+class MentorMenteeNewPlanPage(IsUserMentorMixin, TemplateView):
+    """Allows a mentor to create a new plan of action for their mentee"""
+
+    template_name: str = "people/new_plan.html"
+
+    def get(self, request: HttpRequest, *args, **kwargs) -> HttpResponse:
+        form = PlanOfActionForm()
+        current_mentee = User.objects.get(id=kwargs["menteeid"])
+        print(current_mentee)
+        return render(
+            request,
+            self.template_name,
+            {
+                "form": form,
+                "base": "mentor_base.html",
+            },
+        )
+
+    def post(self, request: HttpRequest, *args, **kwargs) -> HttpResponse:
+        current_user = request.user
+        form = PlanOfActionForm(request.POST)
+        current_mentee = User.objects.get(id=kwargs["menteeid"])
+        print(request.POST)
+
+        if form.is_valid():
+            plan_name = form.cleaned_data["name"]
+            plan = PlanOfAction.objects.create(
+                name=plan_name,
+                associated_mentor=current_user,
+                associated_mentee=current_mentee,
+            )
+
+            for i in range(1, 6):
+                target = form.cleaned_data[f"target_{i}"]
+                description = form.cleaned_data[f"description_{i}"]
+                if target != "":
+                    PlanOfActionTarget.objects.create(
+                        name=target,
+                        description=description,
+                        associated_poa=plan,
+                        set_by=request.user,
+                    )
+
+            return HttpResponseRedirect("..")
+        else:
+            messages.error(request, "Error creating plan")
+            return render(
+                request,
+                self.template_name,
+                {
+                    "form": PlanOfActionForm(),
+                },
+            )
 
 
 class MentorMenteeMeetingsPage(IsUserMentorMixin, TemplateView):

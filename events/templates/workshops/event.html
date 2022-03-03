@@ -1,0 +1,122 @@
+{% extends "main.html" %}
+
+{% block title %}Events Index{% endblock %}
+
+{% block body %}
+{% if edited %}
+<div class="alert alert-success alert-dismissible fade show">
+    This workshop was successfully updated!
+    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close">
+
+      </button>
+</div>
+{% endif %}
+<small>
+    <a href="../">Back to all workshops</a>
+</small>
+<div class="row">
+    <div class="col">
+        <h1>{{ event.name }}</h1>
+    </div>
+    <div class="col">
+        <form class="d-flex align-items-center " action="toggleAttendance" method="get">
+            {% csrf_token %}
+            {% if not registeredToEvent and not event.has_finished %}
+            <button class="ms-auto btn btn-primary">Join Workshop</button>
+            {% elif not isMentor and not event.has_finished %}
+            <button class="ms-auto btn btn-danger">Leave Workshop</button>
+            {% endif %}
+            {% if isMentor and not event.has_finished %}
+            <a href="edit" class="ms-auto btn btn-info text-light">Edit</a>
+            {% endif %}
+            {% if isMentor %}
+            <button class="btn btn-danger {% if not event.has_finished %}ms-2{% else %}ms-auto{% endif %}" type="button" data-bs-toggle="modal" data-bs-target="#exampleModal">
+                Delete
+              </button>
+              {% endif %}
+        </form>
+
+        
+        
+    </div>
+</div>
+<small>{{ event.startTime|date:'M d, Y @ h:iA' }} - {{ event.calc_end_date|date:"M d, Y @ h:iA" }}</small>
+
+<p class="mt-2">
+    <strong>Type:</strong>
+    {{ event.type.name|lower|capfirst }}
+    <br>
+    <strong>Topic:</strong>
+    {{ event.topic }}
+    <br>
+    <strong>Where</strong>
+    {{ event.location }}
+    
+</p>
+
+<p>
+    <strong>Mentor:</strong>
+    <a href="/user/{{ event.mentor.id }}">{{ event.mentor.get_full_name|capfirst }}</a>
+</p>
+
+<p>
+    {% autoescape off %}{{ event.description }}{% endautoescape %} 
+    </p>
+
+
+
+{% if not registeredToEvent %}
+    <div class="alert alert-danger">
+        To view this content, you must be part of this workshop! <strong>{% if not event.has_finished %}(Please use the 'Join' button above!){% else %}(This workshop has already run!){% endif %}</strong>
+        </div>
+{% else %}
+    {% if event.has_event_finished and not isMentor %}
+        <div class="pt-4">
+            <custom-form form-id="{{ event.feedback_form.id }}">Loading form...</custom-form>
+        </div>
+    {% elif event.has_event_finished and isMentor %}
+        <custom-form-result-viewer form-id="{{ event.feedback_form.id }}">Loading form...</custom-form-result-viewer>
+    {% else %}
+        <div class="alert alert-info">
+            The feedback form for this workshop will be available after <strong>{{ event.calc_end_date|date:"h:iA"|lower }} on the {{ event.calc_end_date|date:"jS F, Y" }}</strong>
+        </div>
+    {% endif %}
+{% endif %}
+
+<div>
+    <h2>Attendees ({{ event.attendees.all|length }})</h2>
+    {% for user in event.attendees.all %}
+    <div class="d-flex align-items-center">
+        <i class="fa-solid fa-circle-user fa-2x me-2"></i>
+        <p style="margin-bottom: 0px !important;">{{ user.get_full_name }}</p>
+
+    </div>
+    {% empty %}
+    No one has signed upto this workshop yet!
+    {% endfor %}
+</div>
+
+<!-- Modal -->
+<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel">Confirm Delete</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          Are you sure you want to delete this workshop?
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+          <form action="delete" method="post">
+              {% csrf_token %}
+            <button type="submit" class="btn btn-danger">Delete</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+{% endblock %}

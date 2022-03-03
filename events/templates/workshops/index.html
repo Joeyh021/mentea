@@ -1,0 +1,139 @@
+{% extends "main.html" %}
+
+{% block title %}Workshops{% endblock %}
+
+{% block body %}
+{% if requested %}
+<div class="alert alert-success alert-dismissible fade show">
+    A workshop was successfully requested!
+    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close">
+
+      </button>
+</div>
+{% endif %}
+<div class="d-flex align-items-center">
+    <h1 style="margin-bottom: 0px;">My Workshops </h1>
+
+    
+
+    <div class="ms-auto g-2">
+        {% if user.user_type == "Mentor" or user.user_type == "MentorMentee" %}
+            <a href="create" class="btn btn-primary">Add Workshop</a>
+        {% endif %}
+        {% if user.user_type == "Mentee" or user.user_type == "MentorMentee"  %}
+            <a href="request" class="btn btn-primary position-relative">Request Workshop</a>
+        {% endif %}
+    </div>
+</div>
+<small><a href="{% url 'events:workshop-prev' %}">View previous</a></small>
+
+<div>
+    <div class="row row-cols-1 row-cols-md-3 g-4 mb-4 mt-1">
+        {% for event in my_events %}
+            <div class="col">
+                <div class="card h-100">
+                    <div src="..." class="w-100 {{ event.get_pattern }}" style="height: 150px" alt="..." ></div>
+                    <div class="card-body">
+                        <h5 class="card-title d-flex">{{ event.name }} {% if event.in_progress %}<span class="ms-auto badge rounded-pill bg-success text-light">Running</span>{% endif %}</h5>
+                        <small><strong>Mentor:</strong> {{ event.mentor.get_full_name }}</small>
+                        <small class="ms-2"><strong>Topic:</strong> {{ event.topic }}</small>
+                        <p class="card-text">{{ event.description|striptags|slice:":50" }}...</p>
+
+                        
+                    </div>
+                    <div class="card-footer d-flex">
+                        <small class="text-muted">{{ event.startTime|date:"d m, Y @ h:iA" }}</small>
+                        <div class="ms-auto">
+                     
+                            <a href="{{ event.id }}" class="stretched-link mt-auto">View</a></div>
+                    </div>
+                </div>
+            </div>
+        {% empty %}
+
+        <div class="alert alert-danger w-100" style="margin-top: 40px;">You haven't joined any workshops!</div>
+        {% endfor %}
+    </div>
+</div>
+<br>
+<hr>
+<br>
+<h1>All available workshops:</h1>
+
+<div>
+    <div class="row row-cols-1 row-cols-md-3 g-4 mb-4">
+        {% for event in page_obj %}
+            <div class="col">
+                <div class="card h-100">
+                    <div src="..." class="w-100 {{ event.get_pattern }}" style="height: 150px" alt="..." ></div>
+                    <div class="card-body">
+                        <h5 class="card-title d-flex">{{ event.name }} {% if event.in_progress %}<span class="ms-auto badge rounded-pill bg-success text-light">Running</span>{% endif %}</h5>
+                        <small><strong>Mentor:</strong> {{ event.mentor.get_full_name }}</small>
+                        <small class="ms-2"><strong>Topic:</strong> {{ event.topic }}</small>
+                        <p class="card-text">{{ event.description|striptags|slice:":50" }}...</p>
+
+                        
+                    </div>
+                    <div class="card-footer d-flex">
+                        <small class="text-muted">{{ event.startTime|date:"d m, Y @ h:iA" }}</small>
+                        <div class="ms-auto">
+    
+                            <a href="{{ event.id }}" class="stretched-link mt-auto">View</a></div>
+                    </div>
+                </div>
+            </div>
+            {% empty %}
+
+        <div class="alert alert-danger w-100" style="margin-top: 40px;">There are not currently any workshops available! <a class="alert-link" href="request">Request one</a></div>
+        {% endfor %}
+    </div>
+
+   
+    <nav aria-label="Page navigation example">
+        <ul class="pagination justify-content-center">
+        {% if page_obj.has_previous %}
+            <li class="page-item">
+            <a class="page-link" href="?page={{ page_obj.previous_page_number }}" aria-label="Previous"><span aria-hidden="true">&laquo;</span></a>
+          </li>
+        {% else %}
+            <li class="page-item disabled">
+            <a class="page-link" href="#" tabindex="-1" aria-disabled="True" aria-label="Previous"><span aria-hidden="true">&laquo;</span></a>
+          </li>
+        {% endif %}
+
+        {% if movies.number|add:'-4' > 1 %}
+            <li class="page-item"><a class="page-link" href="?page={{ page_obj.number|add:'-5' }}">&hellip;</a></li>
+        {% endif %}
+
+        {% for i in page_obj.paginator.page_range %}
+            {% if movies.number == i %}
+                <li class="page-item active" aria-current="page">
+              <span class="page-link">
+                {{ i }}
+                <span class="sr-only">(current)</span>
+              </span>
+            </li>
+            {% elif i > page_obj.number|add:'-5' and i < page_obj.number|add:'5' %}
+                 <li class="page-item"><a class="page-link" href="?page={{ i }}">{{ i }}</a></li>
+            {% endif %}
+        {% endfor %}
+
+        {% if page_obj.paginator.num_pages > page_obj.number|add:'4' %}
+           <li class="page-item"><a class="page-link" href="?page={{ movies.number|add:'5' }}">&hellip;</a></li>
+        {% endif %}
+
+        {% if page_obj.has_next %}
+            <li class="page-item">
+            <a class="page-link" href="?page={{ page_obj.next_page_number }}" aria-label="Next"><span aria-hidden="true">&raquo;</span></a>
+          </li>
+        {% else %}
+            <li class="page-item disabled">
+            <a class="page-link" href="#" tabindex="-1" aria-disabled="True" aria-label="Next"><span aria-hidden="true">&raquo;</span></a>
+          </li>
+        {% endif %}
+      </ul>
+    </nav>
+</div>
+
+
+{% endblock %}

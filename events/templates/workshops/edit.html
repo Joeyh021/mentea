@@ -1,0 +1,93 @@
+{% extends "main.html" %}
+
+{% block title %}Edit Workshop{% endblock %}
+
+{% block body %}
+<script src="https://cdn.tiny.cloud/1/v6qkw64b6pebv7ro9w1g0xes5g6vr1tb60by4zrjh941ca2m/tinymce/5/tinymce.min.js" referrerpolicy="origin"></script>
+<small>
+    <a href="../{{ eId }}">Back</a>
+</small>
+<h1>Edit workshop</h1>
+
+<form name="form" method="post">
+    {% csrf_token %}
+    <div class="mb-3">
+        <label class="form-label" for="id_bio">Name</label>
+        {{ form.name }}
+        {% if form.name.errors %}
+            {% for e in form.name.errors %}
+                <p class="invalid-feedback is-invalid">{{ e }}</p>
+            {% endfor %}
+        {% endif %}
+    </div>
+    
+    <div class="mb-3 is-invalid">
+        <label class="form-label" for="id_bio">Start Time</label>
+        {{ form.startTime }}
+        {% if form.startTime.errors %}
+            {% for e in form.startTime.errors %}
+                <div class="help text-danger">{{ e }}</div>
+            {% endfor %}
+        {% endif %}
+    </div>
+    
+    <div class="mb-3">
+        <label class="form-label" for="id_bio">Duration (m)</label>
+        {{ form.duration }}
+        {% if form.duration.errors %}
+            {% for e in form.duration.errors %}
+                <p class="help is-danger">{{ e }}</p>
+            {% endfor %}
+        {% endif %}
+    </div>
+    <div class="mb-3">
+        <label class="form-label" for="id_bio">Topic</label>
+        {{ form.topic }}
+        {% if form.topic.errors %}
+            {% for e in form.topic.errors %}
+                <p class="help is-danger">{{ e }}</p>
+            {% endfor %}
+        {% endif %}
+    </div>
+    <div class="mb-3">
+        <label class="form-label" for="id_bio">Description</label>
+        {{ form.desc }}
+        {% if form.desc.errors %}
+            {% for e in form.desc.errors %}
+                <p class="help is-danger">{{ e }}</p>
+            {% endfor %}
+        {% endif %}
+    </div>
+    <div>
+        <input type="submit" class="btn btn-primary" value="Save">
+        
+    </div>
+</form>
+<br>
+<div class="accordion" id="accordionExample">
+    <div class="accordion-item">
+      <h2 class="accordion-header" id="headingOne">
+        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="false" aria-controls="collapseOne">
+          Optional: Edit Feedback Form
+        </button>
+      </h2>
+      <div id="collapseOne" class="accordion-collapse collapse" aria-labelledby="headingOne" data-bs-parent="#accordionExample">
+        <div class="accordion-body">
+            <custom-form-builder form-id="{{ fId }}">Loading form...</custom-form-builder>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+
+  <script>
+    tinymce.init({
+      selector: 'textarea',
+      plugins: 'advlist autolink lists link image charmap print preview hr anchor pagebreak',
+      toolbar_mode: 'floating',
+    });
+  </script>
+
+ 
+{% endblock %}
