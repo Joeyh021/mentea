@@ -9,7 +9,7 @@ from django.contrib.auth import login, authenticate
 from django.contrib import messages
 from .forms import RegistrationForm
 
-from .forms import PlanOfActionForm, ProfileForm, BusinessAreaForm, TopicForm
+from .forms import PlanOfActionForm, ProfileForm, BusinessAreaForm, TopicForm, CreateMeetingForm
 from .models import *
 from .util import get_mentor
 

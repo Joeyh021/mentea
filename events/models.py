@@ -127,10 +127,11 @@ class EventRequest(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
     associated_topic = models.ForeignKey(Topic, on_delete=models.CASCADE)
 
+
 class MeetingRequest(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
-    mentee = models.ForeignKey(User, on_delete=models.CASCADE, db_index=True)
-    mentor = models.ForeignKey(User, on_delete=models.CASCADE, db_index=True)
+    mentee = models.ForeignKey(User, on_delete=models.CASCADE, related_name="mentee_meeting_request")
+    mentor = models.ForeignKey(User, on_delete=models.CASCADE, related_name="mentor_meeting_request")
     startTime = models.DateTimeField()
     endTime = models.DateTimeField()
     location = models.TextField()

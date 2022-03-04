@@ -10,7 +10,6 @@ from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin
 
 from events.forms import WorkshopForm
-from events.forms import CreateMeetingForm
 from people.models import Topic
 
 from .models import Event, EventAttendee, EventType, FeedbackForm, Questions
