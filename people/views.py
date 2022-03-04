@@ -13,6 +13,8 @@ from .forms import PlanOfActionForm, ProfileForm, BusinessAreaForm, TopicForm
 from .models import *
 from .util import get_mentor
 
+from events.models import Event, EventAttendee
+
 
 class IsUserMenteeMixin(UserPassesTestMixin):
     def test_func(self):
@@ -519,3 +521,57 @@ class MentorMenteeMeetingsPage(IsUserMentorMixin, TemplateView):
 
     def get(self, request: HttpRequest, *args: Any, **kwarsgs: Any) -> HttpResponse:
         return render(request, self.template_name, {})
+
+class MeetingRequestPage(TemplateView):
+    """A mentee should be able to request a meeting with their mentor."""
+
+    template_name = "meetings/request.html"
+    form_class: Any = CreateMeetingForm
+
+    def get(self, request: HttpRequest, *args: Any, **kwarsgs: Any) -> HttpResponse:
+        form = self.form_class()
+        return render(request, self.template_name, {})
+
+    def post(self, request: HttpRequest, *args: Any, **kwarsgs: Any) -> HttpResponse:
+        form = self.form_class(request.POST)
+        if form.is_valid():
+
+            # Get the current user object
+            current_user = request.user
+
+            # Get the event information from the form
+            event_name = form.cleaned_data["name"]
+            start_time = form.cleaned_data["start_time"]
+            duration = form.cleaned_data["duration"]
+            location = form.cleaned_data["location"]
+            mentor = form.cleaned_data["mentor"]
+
+            # Need to decide what the eventID is.
+            # eventID = ?
+
+            # Need to decide what to do about the feedback form.
+            # feedback_form = ?
+
+            # Add event to database:
+            meeting = Event(
+                name=event_name,
+                startTime=start_time,
+                duration=duration,
+                location=location,
+                mentor=mentor,
+            )
+            meeting.save()
+
+            # Add event mentee to database:
+            event_attendee = EventAttendee(meeting, current_user)
+            event_name.save()
+
+            # Show a message saying "Meeting request sent" and redirect to ?
+            messages.success(request, "Meeting request sent")
+            return redirect("")
+
+        else:
+
+            # Show error messages and go back to ?
+            messages.error(request, "Error sending meeting request")
+            return render(request, self.template_name, {})

@@ -78,3 +78,13 @@ class PlanOfActionForm(forms.Form):
     description_3 = forms.CharField(label="Description", max_length=100, required=False)
     description_4 = forms.CharField(label="Description", max_length=100, required=False)
     description_5 = forms.CharField(label="Description", max_length=100, required=False)
+
+
+class CreateMeetingForm(forms.Form):
+    name = forms.CharField(widget=forms.Textarea)
+    start_time = forms.DateTimeField()
+    location = forms.CharField(widget=forms.Textarea)
+    duration = forms.IntegerField()
+
+    # Change this to be all mentors with a relationship to the mentee.
+    mentor = forms.ModelChoiceField(queryset=User.objects.all())
