@@ -13,7 +13,7 @@ from .forms import PlanOfActionForm, ProfileForm, BusinessAreaForm, TopicForm, C
 from .models import *
 from .util import get_mentor
 
-from events.models import Event, EventAttendee
+from events.models import Event, MeetingRequest
 
 
 class IsUserMenteeMixin(UserPassesTestMixin):
@@ -522,6 +522,7 @@ class MentorMenteeMeetingsPage(IsUserMentorMixin, TemplateView):
     def get(self, request: HttpRequest, *args: Any, **kwarsgs: Any) -> HttpResponse:
         return render(request, self.template_name, {})
 
+
 class MeetingRequestPage(TemplateView):
     """A mentee should be able to request a meeting with their mentor."""
 
@@ -562,9 +563,9 @@ class MeetingRequestPage(TemplateView):
             )
             meeting.save()
 
-            # Add event mentee to database:
-            event_attendee = EventAttendee(meeting, current_user)
-            event_name.save()
+            # Add event request to database:
+            meeting_request = MeetingRequest(meeting, current_user, False, True)
+            meeting_request.save()
 
             # Show a message saying "Meeting request sent" and redirect to ?
             messages.success(request, "Meeting request sent")
