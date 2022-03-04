@@ -49,7 +49,7 @@
                             <li class="nav-item">
                                 <a class="nav-link {% if request.resolver_match.url_name == 'index' %}active{% endif %}"
                                    aria-current="page"
-                                   href="{% url "main:index" %}">Dashboard</a>
+                                   href="{% url "main:index" %}">Homepage</a>
                             </li>
                             {% if user.user_type == "Mentee" or user.user_type == "MentorMentee" %}
                             <li class="nav-item">
@@ -113,7 +113,7 @@
                         </button>
                     </div>
                     <div class="offcanvas-body">
-                        <iframe src="/user/notifications" style="background-color: transparent; width: 100%" frameborder="0"></iframe>
+                        <iframe src="/user/notifications" style="background-color: transparent; width: 100%; height: 100%; overflow: auto !important;" frameborder="0"></iframe>
 
 
                     </div>

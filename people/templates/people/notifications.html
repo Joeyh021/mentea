@@ -6,7 +6,7 @@ rel="stylesheet"
 integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3"
 crossorigin="anonymous"
 />
-<div class="d-flex bg-transparent">
+<div class="d-flex flex-column bg-transparent">
     {% for notif in user.notifs %}
     <form method="POST" class="d-flex flex-column" style="width: 100%">
         {% csrf_token %}
@@ -27,4 +27,10 @@ crossorigin="anonymous"
     
 
 </div>
+
+<script>
+    setTimeout(() => {
+        window.location.reload()
+    }, 5000)
+</script>
 </body>

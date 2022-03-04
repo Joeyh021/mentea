@@ -56,6 +56,19 @@
             {% endif %}
         </div>
 
+        <div class="form-check d-flex mb-3" style="padding-left: 0">
+            <label class="form-check-label" for="id_accept_tos">
+                I accept the <a href="/terms-of-service">privacy policy</a> and <a href="/privacy">terms of service</a>:
+            </label>
+            <input class="form-check-input" style="margin-left: .5em;" type="checkbox" value="" id="id_accept_tos" name="accept_tos" required>
+            <small class="form-text">{{ form.accept_tos.help_text }}</small>
+            {% if form.accept_tos.errors %}
+                {% for e in form.accept_tos.errors %}
+                    <p class="help is-danger">{{ e }}</p>
+                {% endfor %}
+            {% endif %}
+        </div>
+
 		<input class="btn btn-primary" type="submit" value="Register" />
 	</form>
 	<p>If you already have an account, click here to login instead: <a class="btn btn-primary" href="{% url 'login' %}">Login</a></p>
