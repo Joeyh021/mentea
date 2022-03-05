@@ -12,7 +12,7 @@ urlpatterns = [
         MentorMenteeFeedbackPage.as_view(),
         name="feedback",
     ),
-    path("mentees/<uuid:menteeid>/chat/", MentorMenteeChatPage.as_view(), name="chat"),
+    path("mentees/<uuid:menteeid>/chat/", ChatPage.as_view(), name="chat"),
     path(
         "mentees/<uuid:menteeid>/plans/",
         MentorMenteePlansPage.as_view(),

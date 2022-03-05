@@ -7,7 +7,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from typing import Any
 from django.contrib.auth import login, authenticate
 from django.contrib import messages
-from .forms import RegistrationForm
+from .forms import RegistrationForm, SendMessageForm
 
 
 from .forms import (
@@ -406,13 +406,75 @@ class MenteeNewPlanPage(IsUserMenteeMixin, TemplateView):
             )
 
 
-class MenteeChatPage(IsUserMenteeMixin, TemplateView):
+class ChatPage(LoginRequiredMixin, TemplateView):
     """Chat between a mentee and their mentor"""
 
-    template_name: str = "people/mentee_chat.html"
+    template_name: str = "people/chat.html"
 
-    def get(self, request: HttpRequest, *args: Any, **kwarsgs: Any) -> HttpResponse:
-        return render(request, self.template_name, {})
+    def get(self, request: HttpRequest, *args: Any, **kwargs: Any) -> HttpResponse:
+
+        if "menteeid" in kwargs:
+            current_mentee = User.objects.get(id=kwargs["menteeid"])
+            templateBase = "mentor_base.html"
+        else:
+            current_mentee = request.user
+            templateBase = "mentee_base.html"
+
+        current_mentor = get_mentor(current_mentee)
+        form = SendMessageForm()
+        chatMessages = ChatMessage.objects.all().filter(
+            chat=Chat.objects.get(mentee=current_mentee, mentor=current_mentor)
+        )
+
+        return render(
+            request,
+            self.template_name,
+            {
+                "form": form,
+                "base": templateBase,
+                "chatMessages": chatMessages,
+                "mentee": current_mentee,
+                "mentor": current_mentor,
+            },
+        )
+
+    def post(self, request: HttpRequest, *args: Any, **kwargs: Any) -> HttpResponse:
+
+        if "menteeid" in kwargs:
+            current_mentee = User.objects.get(id=kwargs["menteeid"])
+            templateBase = "mentor_base.html"
+        else:
+            current_mentee = request.user
+            templateBase = "mentee_base.html"
+
+        current_mentor = get_mentor(current_mentee)
+        form = SendMessageForm(request.POST)
+        print(request.POST)
+
+        if form.is_valid():
+            text = form.cleaned_data["content"]
+            ChatMessage.objects.create(
+                chat=Chat.objects.get(mentee=current_mentee, mentor=current_mentor),
+                content=text,
+                sender=request.user,
+            )
+        else:
+            messages.error(request, "Error sending a message")
+
+        chatMessages = ChatMessage.objects.all().filter(
+            chat=Chat.objects.get(mentee=current_mentee, mentor=current_mentor)
+        )
+        return render(
+            request,
+            self.template_name,
+            {
+                "form": form,
+                "base": templateBase,
+                "chatMessages": chatMessages,
+                "mentee": current_mentee,
+                "mentor": current_mentor,
+            },
+        )
 
 
 class MenteeMeetingsPage(IsUserMenteeMixin, TemplateView):
@@ -456,15 +518,6 @@ class MentorMenteeFeedbackPage(IsUserMentorMixin, TemplateView):
     """Feedback between the mentor and specific mentee"""
 
     template_name: str = "people/mentor_feedback.html"
-
-    def get(self, request: HttpRequest, *args: Any, **kwarsgs: Any) -> HttpResponse:
-        return render(request, self.template_name, {})
-
-
-class MentorMenteeChatPage(IsUserMentorMixin, TemplateView):
-    """Allows a mentor to send and view chats to a specific mentee"""
-
-    template_name: str = "people/mentor_chat.html"
 
     def get(self, request: HttpRequest, *args: Any, **kwarsgs: Any) -> HttpResponse:
         return render(request, self.template_name, {})
