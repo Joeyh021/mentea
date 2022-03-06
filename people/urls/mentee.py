@@ -10,4 +10,5 @@ urlpatterns = [
     path("plans/new/", MenteeNewPlanPage.as_view(), name="new_plan"),
     path("chat/", ChatPage.as_view(), name="chat"),
     path("meetings/", MenteeMeetingsPage.as_view(), name="meetings"),
+    path("rate_mentor/", RateMentorPage.as_view(), name="rate_mentor"),
 ]

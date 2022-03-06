@@ -16,6 +16,7 @@ from .forms import (
     BusinessAreaForm,
     TopicForm,
     RegistrationForm,
+    RatingMentorForm,
 )
 from .models import *
 from .util import get_mentor
@@ -626,3 +627,25 @@ class MentorMenteeMeetingsPage(IsUserMentorMixin, TemplateView):
 
     def get(self, request: HttpRequest, *args: Any, **kwarsgs: Any) -> HttpResponse:
         return render(request, self.template_name, {})
+
+class RateMentorPage(IsUserMenteeMixin, TemplateView):
+    """Allows a mentee to rate their mentor"""
+
+    template_name = "people/rate_mentor.html"
+    
+    form_class: Any = RatingMentorForm
+
+    def get(self, request: HttpRequest, *args: Any, **kwarsgs: Any) -> HttpResponse:
+        form = self.form_class()
+        return render(request, self.template_name, {"form": form})
+
+    def post(self, request: HttpRequest, *args: Any, **kwargs: Any) -> HttpResponse:
+        form = self.form_class(request.POST)
+        if form.is_valid():
+            form.save()
+            messages.success(
+                request,
+                "Rating successfully submitted",
+            )
+            return redirect("dashboard")
+        return render(request, self.template_name, {"form": form})

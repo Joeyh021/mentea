@@ -1,7 +1,7 @@
 from django import forms
 from django.contrib.auth.forms import UserCreationForm
 
-from .models import User, BusinessArea, Topic, UserType
+from .models import User, BusinessArea, Topic, UserType, Rating
 
 
 class RegistrationForm(UserCreationForm):
@@ -135,3 +135,18 @@ class PlanOfActionForm(forms.Form):
 
 class SendMessageForm(forms.Form):
     content = forms.CharField(widget=forms.TextInput(attrs={"class": "form-control"}))
+
+class RatingMentorForm(forms.Form):
+    rating = forms.IntegerField()
+    class Meta:
+        model = Rating
+        fields = (
+            "rating",
+        )
+
+    def save(self, commit=True):
+        feedback = super(RatingMentorForm, self).save(commit=False)
+        feedback.rating = self.cleaned_data["rating"]
+        if commit:
+            feedback.save()
+        return feedback

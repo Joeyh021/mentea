@@ -1,0 +1,21 @@
+{% extends "mentee_base.html" %}
+
+{% block title %}Rate your mentor{% endblock %}
+
+{% block body %}
+<h1>Rate your mentor</h1>
+	<form method="POST">
+		{% csrf_token %}
+        <div class="mb-3">
+            <label for="rating">Rate your mentor from 1 to 5:</label>
+            <input type="text" class="form-control" id="rating" name="rating" required>
+            {% if form.rating.errors %}
+                {% for e in form.rating.errors %}
+                    <p class="help is-danger">{{ e }}</p>
+                {% endfor %}
+            {% endif %}
+        </div>
+        
+        <input class="btn btn-primary" type="submit" value="Submit rating">
+	</form>
+{% endblock %}
