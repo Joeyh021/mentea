@@ -3,14 +3,6 @@
 {% block title %}Workshops{% endblock %}
 
 {% block body %}
-{% if requested %}
-<div class="alert alert-success alert-dismissible fade show">
-    A workshop was successfully requested!
-    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close">
-
-      </button>
-</div>
-{% endif %}
 <div class="d-flex align-items-center">
     <h1 style="margin-bottom: 0px;">My Workshops </h1>
 
@@ -18,17 +10,17 @@
 
     <div class="ms-auto g-2">
         {% if user.user_type == "Mentor" or user.user_type == "MentorMentee" %}
-            <a href="create" class="btn btn-primary">Add Workshop</a>
+            <a href="create" class="btn btn-primary">Create Event</a>
         {% endif %}
         {% if user.user_type == "Mentee" or user.user_type == "MentorMentee"  %}
-            <a href="request" class="btn btn-primary position-relative">Request Workshop</a>
+            <a href="request" class="btn btn-primary">Request Event</a>
         {% endif %}
     </div>
 </div>
 <small><a href="{% url 'events:workshop-prev' %}">View previous</a></small>
 
 <div>
-    <div class="row row-cols-1 row-cols-md-3 g-4 mb-4 mt-1">
+    <div class="row row-cols-1 row-cols-md-3 g-4 mb-4">
         {% for event in my_events %}
             <div class="col">
                 <div class="card h-100">
@@ -37,21 +29,20 @@
                         <h5 class="card-title d-flex">{{ event.name }} {% if event.in_progress %}<span class="ms-auto badge rounded-pill bg-success text-light">Running</span>{% endif %}</h5>
                         <small><strong>Mentor:</strong> {{ event.mentor.get_full_name }}</small>
                         <small class="ms-2"><strong>Topic:</strong> {{ event.topic }}</small>
-                        <p class="card-text">{{ event.description|striptags|slice:":50" }}...</p>
+                        <p class="card-text">{{ event.description }}</p>
 
                         
                     </div>
                     <div class="card-footer d-flex">
                         <small class="text-muted">{{ event.startTime|date:"d m, Y @ h:iA" }}</small>
                         <div class="ms-auto">
-                     
+                            {% if event.mentor == user %}
+                                <a href="edit/{{ event.id }}" class="stretched-link mt-auto me-2">Edit</a>
+                            {% endif %}
                             <a href="{{ event.id }}" class="stretched-link mt-auto">View</a></div>
                     </div>
                 </div>
             </div>
-        {% empty %}
-
-        <div class="alert alert-danger w-100" style="margin-top: 40px;">You haven't joined any workshops!</div>
         {% endfor %}
     </div>
 </div>
@@ -70,25 +61,23 @@
                         <h5 class="card-title d-flex">{{ event.name }} {% if event.in_progress %}<span class="ms-auto badge rounded-pill bg-success text-light">Running</span>{% endif %}</h5>
                         <small><strong>Mentor:</strong> {{ event.mentor.get_full_name }}</small>
                         <small class="ms-2"><strong>Topic:</strong> {{ event.topic }}</small>
-                        <p class="card-text">{{ event.description|striptags|slice:":50" }}...</p>
+                        <p class="card-text">{{ event.description }}</p>
 
                         
                     </div>
                     <div class="card-footer d-flex">
                         <small class="text-muted">{{ event.startTime|date:"d m, Y @ h:iA" }}</small>
                         <div class="ms-auto">
-    
+                            {% if event.mentor == user %}
+                                <a href="edit/{{ event.id }}" class="stretched-link mt-auto me-2">Edit</a>
+                            {% endif %}
                             <a href="{{ event.id }}" class="stretched-link mt-auto">View</a></div>
                     </div>
                 </div>
             </div>
-            {% empty %}
-
-        <div class="alert alert-danger w-100" style="margin-top: 40px;">There are not currently any workshops available! <a class="alert-link" href="request">Request one</a></div>
         {% endfor %}
     </div>
 
-   
     <nav aria-label="Page navigation example">
         <ul class="pagination justify-content-center">
         {% if page_obj.has_previous %}

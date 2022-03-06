@@ -102,12 +102,6 @@ class User(AbstractBaseUser):
         return self.admin
         # Simplest possible
 
-    def notifs(self):
-        return Notification.objects.filter(user=self, read=False)
-
-    def has_notifs(self):
-        return self.notifs().count() > 0
-
     @property
     def is_staff(self):
         "Is the user a member of staff?"
@@ -148,10 +142,8 @@ class MentorMentee(models.Model):
 class Notification(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
-    title = models.CharField(max_length=100)
-    content = models.CharField(max_length=500)
+    content = models.CharField(max_length=200)
     read = models.BooleanField(default=False)
-    link = models.TextField(blank=True)
     updated_at = models.DateTimeField(auto_now=True)
     created_at = models.DateTimeField(auto_now_add=True)
 

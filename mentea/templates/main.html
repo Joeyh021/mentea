@@ -17,22 +17,9 @@
                 </button>
                 <a class="navbar-brand text-white fw-bolder fst-italic" href="{% url "main:index" %}">Mentea <i class="fa-solid fa-mug-hot"
                                                                                            style="margin-left: .3rem;"></i></a>
-                <div class="d-flex align-items-center justify-items-center">
-                    <button class="navbar-toggler position-relative" type="button" data-bs-toggle="offcanvas"
-                    data-bs-target="#offcanvasNavbar2"
-                    aria-controls="offcanvasNavbar2" style="border:0 ; color: white">
-                    <i class="fa-solid fa-bell fa-lg" style="width:"></i>
-                    {% if user.has_notifs %}
-                    <span class="position-absolute top-25 start-75 translate-middle bg-danger  rounded-circle" style="padding: 6px;">
-                        <span class="visually-hidden">New alerts</span>
-                      </span>
-                    {% endif %}
-                </button>
-                    <a href="{% url "profile" %}" class="nav-item">
-                        <i class="fa-solid fa-circle-user fa-2x" style="color: white;"></i>
-                    </a>
-               
-                </div>
+                <a href="{% url "profile" %}" class="nav-item">
+                    <i class="fa-solid fa-circle-user fa-2x" style="color: white;"></i>
+                </a>
 
 
                 <div class="offcanvas offcanvas-start bg-mentea-sidenav" tabindex="-1" id="offcanvasNavbar"
@@ -49,7 +36,7 @@
                             <li class="nav-item">
                                 <a class="nav-link {% if request.resolver_match.url_name == 'index' %}active{% endif %}"
                                    aria-current="page"
-                                   href="{% url "main:index" %}">Homepage</a>
+                                   href="{% url "main:index" %}">Dashboard</a>
                             </li>
                             {% if user.user_type == "Mentee" or user.user_type == "MentorMentee" %}
                             <li class="nav-item">
@@ -97,23 +84,6 @@
                                 </li>
                             {% endwith %}
                         </ul>
-
-
-                    </div>
-                </div>
-
-                <!-- Notification Panel -->
-                <div class="offcanvas offcanvas-end bg-mentea-sidenav" tabindex="-1" id="offcanvasNavbar2"
-                     aria-labelledby="offcanvasNavbarLabe2">
-                    <div class="offcanvas-header">
-                        <h5 class="offcanvas-title" id="offcanvasNavbarLabe2">Notifications</h5>
-                        <button type="button" class="navbar-toggler" style="border:0 ; " data-bs-dismiss="offcanvas"
-                                aria-label="Close">
-                            <i class="fa-solid fa-close fa-lg" style="width:"></i>
-                        </button>
-                    </div>
-                    <div class="offcanvas-body">
-                        <iframe src="/user/notifications" style="background-color: transparent; width: 100%; height: 100%; overflow: auto !important;" frameborder="0"></iframe>
 
 
                     </div>

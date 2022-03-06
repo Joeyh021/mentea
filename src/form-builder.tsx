@@ -1,5 +1,5 @@
 import { randomUUID } from "crypto"
-import React, { useEffect, useState } from "react"
+import React, { useState } from "react"
 import { FC } from "react"
 import { IQuestion, IQuestionTypeData, Question } from "."
 import { v4 as uuidv4 } from 'uuid';
@@ -66,18 +66,15 @@ interface IJSONFormBuilder {
 
 interface IFormBuilder {
     defaultMode?: EFormBuilderMode
-    id?: string
 }
 
 enum EFormBuilderMode {
     CREATE, EDIT
 }
 
-const FormBuilder: FC<IFormBuilder> = ({ defaultMode, id=''  }) => {
+const FormBuilder: FC<IFormBuilder> = ({ defaultMode  }) => {
 
     const [mode, setMode] = useState<EFormBuilderMode>(defaultMode || EFormBuilderMode.CREATE)
-
-
 
     const [formData, setFormData] = useState<IFormEditorData>({
         id: "new-form",
@@ -191,34 +188,25 @@ const FormBuilder: FC<IFormBuilder> = ({ defaultMode, id=''  }) => {
 
                     setQuestions(updatedQuestions)
                     setMode(EFormBuilderMode.EDIT)
-                    alert("Form created")
                 } else {
                     alert(res.data || res.data.data)
                 }
 
             })
         } else {
-            axios.post('/feedback-api/editor-edit/', fd).then(() => alert("Form updated"))
+            axios.post('/feedback-api/editor-edit/', fd).then(r => console.log(r.data))
         }
 
     }
 
-    const loadFormFromId = (id: string) => {
+    const loadFormFromId = () => {
 
-        let formId: string = id
+        let formId: string = prompt("Form ID") || ""
 
         axios.get(`/feedback-api/${formId}/`).then(res => convertResponseToForm(res.data, formId))
 
         
     }
-
-    useEffect(() => {
-
-        if (id !== '' && id !== undefined) {
-            setMode(EFormBuilderMode.EDIT)
-            loadFormFromId(id)
-        }
-    }, [id])
     
 
     return (
@@ -435,7 +423,7 @@ const FormBuilder: FC<IFormBuilder> = ({ defaultMode, id=''  }) => {
             }
             <button className="btn btn-primary me-2" type="button" onClick={addQuestion}>Add Question</button>
             <button className="btn btn-primary me-2" type="button" onClick={saveForm}>{ mode === EFormBuilderMode.CREATE ? "Save Form" : "Update Form"}</button>
-
+            <button className="btn btn-info " type="button" onClick={loadFormFromId}>Load custom form</button>
         </div>
     )
 }

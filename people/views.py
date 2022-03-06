@@ -1,7 +1,7 @@
 from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.http import HttpRequest, HttpResponse, HttpResponseRedirect
-from django.shortcuts import get_object_or_404, redirect, render
+from django.shortcuts import redirect, render
 from django.views.generic import TemplateView
 from django.contrib.auth.mixins import LoginRequiredMixin
 from typing import Any
@@ -9,14 +9,7 @@ from django.contrib.auth import login, authenticate
 from django.contrib import messages
 from .forms import RegistrationForm
 
-
-from .forms import (
-    PlanOfActionForm,
-    ProfileForm,
-    BusinessAreaForm,
-    TopicForm,
-    RegistrationForm,
-)
+from .forms import PlanOfActionForm, ProfileForm, BusinessAreaForm, TopicForm
 from .models import *
 from .util import get_mentor
 
@@ -93,33 +86,7 @@ class UserProfilePage(LoginRequiredMixin, TemplateView):
         return render(
             request,
             self.template_name,
-            {
-                "mentee_topics": mentee_topics,
-                "mentor_topics": mentor_topics,
-                "my_profile": True,
-            },
-        )
-
-
-class ViewUserProfilePage(LoginRequiredMixin, TemplateView):
-    template_name: str = "people/profile.html"
-
-    def get(self, request: HttpRequest, userId=None) -> HttpResponse:
-
-        user = get_object_or_404(User, id=userId)
-
-        mentee_topics = UserTopic.objects.filter(user=user, usertype=UserType.Mentee)
-        mentor_topics = UserTopic.objects.filter(user=user, usertype=UserType.Mentor)
-
-        return render(
-            request,
-            self.template_name,
-            {
-                "user": user,
-                "mentee_topics": mentee_topics,
-                "mentor_topics": mentor_topics,
-                "my_profile": False,
-            },
+            {"mentee_topics": mentee_topics, "mentor_topics": mentor_topics},
         )
 
 
@@ -274,28 +241,7 @@ class UserNotificationsPage(LoginRequiredMixin, TemplateView):
     template_name: str = "people/notifications.html"
 
     def get(self, request: HttpRequest, *args: Any, **kwarsgs: Any) -> HttpResponse:
-        resp = render(request, self.template_name, {})
-        resp[
-            "Content-Security-Policy"
-        ] = "frame-ancestors 'self' https://localhost:8000"
-        return resp
-
-    def post(self, request: HttpRequest) -> HttpResponse:
-        try:
-            notifId = request.POST["notifId"]
-
-            notification = Notification.objects.get(id=notifId)
-            notification.read = True
-            notification.save()
-
-        except:
-            pass
-
-        resp = render(request, self.template_name, {})
-        resp[
-            "Content-Security-Policy"
-        ] = "frame-ancestors 'self' https://localhost:8000"
-        return resp
+        return render(request, self.template_name, {})
 
 
 class MenteeDashboardPage(IsUserMenteeMixin, TemplateView):

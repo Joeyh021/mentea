@@ -8,7 +8,6 @@ django_stubs_ext.monkeypatch()
 from events.models import (
     Answer,
     DefaultFeedbackForms,
-    EventRequest,
     EventType,
     FeedbackForm,
     FeedbackSubmission,
@@ -53,6 +52,3 @@ class AdminEventType(admin.ModelAdmin[EventType]):
 @admin.register(Event)
 class AdminEvent(admin.ModelAdmin[Event]):
     pass
-
-
-admin.site.register(EventRequest)
