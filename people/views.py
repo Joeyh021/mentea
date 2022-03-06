@@ -547,9 +547,6 @@ class MeetingRequestPage(TemplateView):
             location = form.cleaned_data["location"]
             mentor = form.cleaned_data["mentor"]
 
-            # Need to decide what the eventID is.
-            # eventID = ?
-
             # Need to decide what to do about the feedback form.
             # feedback_form = ?
 
@@ -564,7 +561,12 @@ class MeetingRequestPage(TemplateView):
             meeting.save()
 
             # Add event request to database:
-            meeting_request = MeetingRequest(meeting, current_user, False, True)
+            meeting_request = MeetingRequest(
+                event=meeting,
+                mentee=current_user,
+                mentor_approved=False,
+                mentee_approved=True
+            )
             meeting_request.save()
 
             # Show a message saying "Meeting request sent" and redirect to ?
