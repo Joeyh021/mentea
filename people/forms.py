@@ -134,9 +134,11 @@ class PlanOfActionForm(forms.Form):
         widget=forms.Textarea(attrs={"rows": 4, "cols": 40, "class": "form-control"}),
     )
 
-
 class CreateMeetingForm(forms.Form):
     name = forms.CharField(widget=forms.Textarea)
     start_time = forms.DateTimeField()
     location = forms.CharField(widget=forms.Textarea)
     duration = forms.IntegerField()
+
+    # Change this to be all mentors with a relationship to the mentee.
+    mentor = forms.ModelChoiceField(queryset=User.objects.all())

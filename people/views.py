@@ -16,6 +16,7 @@ from .forms import (
     BusinessAreaForm,
     TopicForm,
     RegistrationForm,
+    CreateMeetingForm,
 )
 from .models import *
 from .util import get_mentor
