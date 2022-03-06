@@ -134,6 +134,13 @@ class EventRequest(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
     associated_topic = models.ForeignKey(Topic, on_delete=models.CASCADE)
 
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(
+                fields=["requested_by", "associated_topic"], name="unique_request"
+            )
+        ]
+
 
 class MeetingRequest(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
@@ -141,10 +148,3 @@ class MeetingRequest(models.Model):
     mentee = models.ForeignKey(User, on_delete=models.CASCADE, db_index=True)
     mentor_approved = models.BooleanField()
     mentee_approved = models.BooleanField()
-
-    class Meta:
-        constraints = [
-            models.UniqueConstraint(
-                fields=["requested_by", "associated_topic"], name="unique_request"
-            )
-        ]
