@@ -136,13 +136,13 @@ class PlanOfActionForm(forms.Form):
 class SendMessageForm(forms.Form):
     content = forms.CharField(widget=forms.TextInput(attrs={"class": "form-control"}))
 
+
 class RatingMentorForm(forms.Form):
     rating = forms.IntegerField()
+
     class Meta:
         model = Rating
-        fields = (
-            "rating",
-        )
+        fields = ("rating",)
 
     def save(self, commit=True):
         feedback = super(RatingMentorForm, self).save(commit=False)

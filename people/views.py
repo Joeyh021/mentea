@@ -628,11 +628,12 @@ class MentorMenteeMeetingsPage(IsUserMentorMixin, TemplateView):
     def get(self, request: HttpRequest, *args: Any, **kwarsgs: Any) -> HttpResponse:
         return render(request, self.template_name, {})
 
+
 class RateMentorPage(IsUserMenteeMixin, TemplateView):
     """Allows a mentee to rate their mentor"""
 
     template_name = "people/rate_mentor.html"
-    
+
     form_class: Any = RatingMentorForm
 
     def get(self, request: HttpRequest, *args: Any, **kwarsgs: Any) -> HttpResponse:
