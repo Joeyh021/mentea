@@ -38,6 +38,7 @@ class WorkshopForm(forms.Form):
             "duration",
         )
 
+
 class WorkshopRequestForm(forms.Form):
 
     topic = forms.ModelChoiceField(

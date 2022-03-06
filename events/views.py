@@ -403,6 +403,7 @@ class EventToggleAttendance(TemplateView):
 
         return redirect("/workshops/" + str(event.id))
 
+
 class EventDelete(TemplateView):
     def post(self, request, eventId=None) -> HttpResponse:
 
