@@ -65,26 +65,77 @@ class TopicForm(forms.Form):
 
 
 class PlanOfActionForm(forms.Form):
-    name = forms.CharField(label="Plan Name", max_length=100)
+    name = forms.CharField(
+        label="Plan Name",
+        max_length=100,
+        widget=forms.TextInput(attrs={"class": "form-control"}),
+    )
     #
-    target_1 = forms.CharField(label="Target", max_length=100)
-    target_2 = forms.CharField(label="Target", max_length=100, required=False)
-    target_3 = forms.CharField(label="Target", max_length=100, required=False)
-    target_4 = forms.CharField(label="Target", max_length=100, required=False)
-    target_5 = forms.CharField(label="Target", max_length=100, required=False)
+    target_1 = forms.CharField(
+        label="Target",
+        max_length=100,
+        widget=forms.TextInput(attrs={"class": "form-control"}),
+    )
+    target_2 = forms.CharField(
+        label="Target",
+        max_length=100,
+        required=False,
+        widget=forms.TextInput(attrs={"class": "form-control"}),
+    )
+    target_3 = forms.CharField(
+        label="Target",
+        max_length=100,
+        required=False,
+        widget=forms.TextInput(attrs={"class": "form-control"}),
+    )
+    target_4 = forms.CharField(
+        label="Target",
+        max_length=100,
+        required=False,
+        widget=forms.TextInput(attrs={"class": "form-control"}),
+    )
+    target_5 = forms.CharField(
+        label="Target",
+        max_length=100,
+        required=False,
+        widget=forms.TextInput(attrs={"class": "form-control"}),
+    )
 
-    description_1 = forms.CharField(label="Description", max_length=100, required=False)
-    description_2 = forms.CharField(label="Description", max_length=100, required=False)
-    description_3 = forms.CharField(label="Description", max_length=100, required=False)
-    description_4 = forms.CharField(label="Description", max_length=100, required=False)
-    description_5 = forms.CharField(label="Description", max_length=100, required=False)
-
+    # Change this to be all mentors with a relationship to the mentee.
+    mentor = forms.ModelChoiceField(queryset=User.objects.all())
+    description_1 = forms.CharField(
+        label="Description",
+        max_length=100,
+        required=False,
+        widget=forms.Textarea(attrs={"rows": 4, "cols": 40, "class": "form-control"}),
+    )
+    description_2 = forms.CharField(
+        label="Description",
+        max_length=100,
+        required=False,
+        widget=forms.Textarea(attrs={"rows": 4, "cols": 40, "class": "form-control"}),
+    )
+    description_3 = forms.CharField(
+        label="Description",
+        max_length=100,
+        required=False,
+        widget=forms.Textarea(attrs={"rows": 4, "cols": 40, "class": "form-control"}),
+    )
+    description_4 = forms.CharField(
+        label="Description",
+        max_length=100,
+        required=False,
+        widget=forms.Textarea(attrs={"rows": 4, "cols": 40, "class": "form-control"}),
+    )
+    description_5 = forms.CharField(
+        label="Description",
+        max_length=100,
+        required=False,
+        widget=forms.Textarea(attrs={"rows": 4, "cols": 40, "class": "form-control"}),
+    )
 
 class CreateMeetingForm(forms.Form):
     name = forms.CharField(widget=forms.Textarea)
     start_time = forms.DateTimeField()
     location = forms.CharField(widget=forms.Textarea)
     duration = forms.IntegerField()
-
-    # Change this to be all mentors with a relationship to the mentee.
-    mentor = forms.ModelChoiceField(queryset=User.objects.all())

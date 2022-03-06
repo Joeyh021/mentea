@@ -85,10 +85,17 @@ class Event(models.Model):
         return self.startTime + timedelta(minutes=self.duration)
 
     def has_event_finished(self):
+
         return self.calc_end_date() < timezone.now()
 
     def get_pattern(self):
-        return "bg-pattern-" + str(randint(1, 3))
+        numb = 0
+        for d in str(self.id):
+            if d.isdigit():
+                numb = int(d)
+                break
+
+        return "bg-pattern-" + str((numb % 3) + 1)
 
     def in_progress(self):
         return self.startTime < timezone.now() and self.endTime > timezone.now()
@@ -134,3 +141,9 @@ class MeetingRequest(models.Model):
     mentee = models.ForeignKey(User, on_delete=models.CASCADE, db_index=True)
     mentor_approved = models.BooleanField()
     mentee_approved = models.BooleanField()
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(
+                fields=["requested_by", "associated_topic"], name="unique_request"
+            )
+        ]
