@@ -619,7 +619,7 @@ class MeetingRequestPage(TemplateView):
                 event=meeting,
                 mentee=current_user,
                 mentor_approved=False,
-                mentee_approved=True
+                mentee_approved=True,
             )
             meeting_request.save()
 

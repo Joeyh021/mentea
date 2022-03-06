@@ -457,6 +457,8 @@ class MeetingRequestPage(TemplateView):
             # Show error messages and go back to ?
             messages.error(request, "Error sending meeting request")
             return render(request, self.template_name, {})
+
+
 class EventDelete(TemplateView):
     def post(self, request, eventId=None) -> HttpResponse:
 

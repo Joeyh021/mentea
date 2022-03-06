@@ -141,6 +141,7 @@ class MeetingRequest(models.Model):
     mentee = models.ForeignKey(User, on_delete=models.CASCADE, db_index=True)
     mentor_approved = models.BooleanField()
     mentee_approved = models.BooleanField()
+
     class Meta:
         constraints = [
             models.UniqueConstraint(
