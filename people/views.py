@@ -667,3 +667,42 @@ class MenteePastMeetingsPage(IsUserMenteeMixin, TemplateView):
                 "past_meetings": past_meetings
             },
         )
+
+class MenteePendingMeetingsPage(IsUserMenteeMixin, TemplateView):
+    """Allows mentee to view and approve pending meetings"""
+    template_name = "people/mentee_pending.html"
+
+    def get(self, request: HttpRequest, *args: Any, **kwarsgs: Any) -> HttpResponse:
+        past_meetings = MeetingRequest.objects.filter(
+            mentee=request.user,
+            mentee_approved = False, mentor_approved = True 
+        )
+        
+        return render(
+            request,
+            self.template_name,
+            {
+                "past_meetings": past_meetings
+            },
+        )
+    
+    def post(self, request: HttpRequest, *args: Any, **kwargs: Any) -> HttpResponse:
+        #change mentee_approved to True for the given meeting
+        messages.success(
+            request,
+            "Meeting successfully approved",
+        )
+        return redirect("dashboard")
+
+class MenteeRescheduleMeetingPage(IsUserMenteeMixin, TemplateView):
+    """Allows mentee to reschedule a meeting"""
+
+    template_name = "people/mentee_reschedule"
+
+    #form_class = MenteeRescheduleForm
+    
+    def get(self, request: HttpRequest, *args: Any, **kwarsgs: Any) -> HttpResponse:
+        return render(request, self.template_name, {})
+
+
+       

@@ -1,0 +1,13 @@
+{% extends "mentee_base.html" %}
+
+{% block title %}Mentee Pending Meetings{% endblock %}
+
+{% block body %}
+<!--Show all pending meetings-->
+<!--for each meeting-->
+<form method="POST">
+{% csrf_token %}
+    <input class="btn btn-primary" type="submit" value="Approve Meeting">
+</form>
+<a href="mentee_reschedule"> Reschedule Meeting </a>
+{% endblock %}
