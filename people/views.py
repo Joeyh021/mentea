@@ -421,10 +421,9 @@ class ChatPage(LoginRequiredMixin, TemplateView):
             templateBase = "mentee_base.html"
 
         current_mentor = get_mentor(current_mentee)
+        chat = get_object_or_404(Chat, mentee=current_mentee, mentor=current_mentor)
         form = SendMessageForm()
-        chatMessages = ChatMessage.objects.all().filter(
-            chat=Chat.objects.get(mentee=current_mentee, mentor=current_mentor)
-        )
+        chatMessages = ChatMessage.objects.all().filter(chat=chat)
 
         return render(
             request,
