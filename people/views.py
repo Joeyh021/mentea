@@ -23,6 +23,8 @@ from .util import get_mentor
 
 from events.models import Event, MeetingRequest
 
+from datetime import datetime
+
 
 class IsUserMenteeMixin(UserPassesTestMixin):
     def test_func(self):
@@ -307,7 +309,19 @@ class MenteeDashboardPage(IsUserMenteeMixin, TemplateView):
     template_name: str = "people/mentee_dashboard.html"
 
     def get(self, request: HttpRequest, *args: Any, **kwarsgs: Any) -> HttpResponse:
-        return render(request, self.template_name, {})
+        # need to check if date is after today    
+        upcoming_meetings = MeetingRequest.objects.filter(
+            mentee=request.user,
+            mentee_approved = True, mentor_approved = True 
+        )
+        
+        return render(
+            request,
+            self.template_name,
+            {
+                "upcoming_meetings": upcoming_meetings
+            },
+        )
 
 
 class MenteeFeedbackPage(IsUserMenteeMixin, TemplateView):

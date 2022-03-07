@@ -40,13 +40,15 @@
 <div style="text-align:center; border:5px;">
     <span class="btn btn-primary btn-rounded mt-4 px-4 " style="font-size: 2rem; background-color: #6e6464;">Request New Mentor</span>
 </div>
-
 <br>
 <div class="bg-block-mentee-light">
-   <h4> Upcoming Meetings </h3>
-   <p> Insert upcoming meetings here </p>
-   <span class="btn btn-rounded btn-mentee" style="font-size: 0.9rem;"> View Past Meetings </span>
-   <span class="btn btn-rounded btn-mentee" style="font-size: 0.9rem;"> View Pending Meetings </span>
+    <h4> Upcoming Meetings: </h4>
+   <!-- {% for meeting in upcoming_meetings %} 
+    <p> Name: {{meeting.event,name}}  </p> -->
+    {% endfor %}
+    <span class="btn btn-rounded btn-mentee" style="font-size: 0.9rem;"> View Past Meetings </span>
+    <span class="btn btn-rounded btn-mentee" style="font-size: 0.9rem;"> View Pending Meetings </span>
+    <span class="btn btn-rounded btn-mentee" style="font-size: 0.9rem;"> Edit Upcoming Meetings </span>
 </div>
 
 {% endblock %}
