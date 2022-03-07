@@ -592,7 +592,7 @@ class MentorMenteeMeetingsPage(IsUserMentorMixin, TemplateView):
 class MeetingRequestPage(TemplateView):
     """A mentee should be able to request a meeting with their mentor."""
 
-    template_name = "meetings/request.html"
+    template_name = "people/request.html"
     form_class: Any = CreateMeetingForm
 
     def get(self, request: HttpRequest, *args: Any, **kwarsgs: Any) -> HttpResponse:
