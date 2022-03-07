@@ -141,6 +141,7 @@ class CreateMeetingForm(forms.Form):
     location = forms.CharField(widget=forms.Textarea)
     duration = forms.IntegerField()
 
+
 class MenteeRescheduleForm(forms.Form):
     start_time = forms.DateTimeField()
     location = forms.CharField(widget=forms.Textarea)
