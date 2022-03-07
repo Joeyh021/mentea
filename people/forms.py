@@ -140,6 +140,3 @@ class CreateMeetingForm(forms.Form):
     start_time = forms.DateTimeField()
     location = forms.CharField(widget=forms.Textarea)
     duration = forms.IntegerField()
-
-    # Change this to be all mentors with a relationship to the mentee.
-    mentor = forms.ModelChoiceField(queryset=User.objects.all())
