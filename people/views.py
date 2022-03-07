@@ -309,18 +309,15 @@ class MenteeDashboardPage(IsUserMenteeMixin, TemplateView):
     template_name: str = "people/mentee_dashboard.html"
 
     def get(self, request: HttpRequest, *args: Any, **kwarsgs: Any) -> HttpResponse:
-        # need to check if date is after today    
+        # need to check if date is after today
         upcoming_meetings = MeetingRequest.objects.filter(
-            mentee=request.user,
-            mentee_approved = True, mentor_approved = True 
+            mentee=request.user, mentee_approved=True, mentor_approved=True
         )
-        
+
         return render(
             request,
             self.template_name,
-            {
-                "upcoming_meetings": upcoming_meetings
-            },
+            {"upcoming_meetings": upcoming_meetings},
         )
 
 
@@ -647,62 +644,57 @@ class MeetingRequestPage(TemplateView):
             # Show error messages and go back to ?
             messages.error(request, "Error sending meeting request")
             return render(request, self.template_name, {})
-    
+
+
 class MenteePastMeetingsPage(IsUserMenteeMixin, TemplateView):
     """Allows mentee to view past meetings and provide feedback for them"""
 
     template_name = "people/mentee_past.html"
 
     def get(self, request: HttpRequest, *args: Any, **kwarsgs: Any) -> HttpResponse:
-        #check if date is before today
+        # check if date is before today
         past_meetings = MeetingRequest.objects.filter(
-            mentee=request.user,
-            mentee_approved = True, mentor_approved = True 
+            mentee=request.user, mentee_approved=True, mentor_approved=True
         )
-        
+
         return render(
             request,
             self.template_name,
-            {
-                "past_meetings": past_meetings
-            },
+            {"past_meetings": past_meetings},
         )
+
 
 class MenteePendingMeetingsPage(IsUserMenteeMixin, TemplateView):
     """Allows mentee to view and approve pending meetings"""
+
     template_name = "people/mentee_pending.html"
 
     def get(self, request: HttpRequest, *args: Any, **kwarsgs: Any) -> HttpResponse:
         past_meetings = MeetingRequest.objects.filter(
-            mentee=request.user,
-            mentee_approved = False, mentor_approved = True 
+            mentee=request.user, mentee_approved=False, mentor_approved=True
         )
-        
+
         return render(
             request,
             self.template_name,
-            {
-                "past_meetings": past_meetings
-            },
+            {"past_meetings": past_meetings},
         )
-    
+
     def post(self, request: HttpRequest, *args: Any, **kwargs: Any) -> HttpResponse:
-        #change mentee_approved to True for the given meeting
+        # change mentee_approved to True for the given meeting
         messages.success(
             request,
             "Meeting successfully approved",
         )
         return redirect("dashboard")
 
+
 class MenteeRescheduleMeetingPage(IsUserMenteeMixin, TemplateView):
     """Allows mentee to reschedule a meeting"""
 
     template_name = "people/mentee_reschedule"
 
-    #form_class = MenteeRescheduleForm
-    
+    # form_class = MenteeRescheduleForm
+
     def get(self, request: HttpRequest, *args: Any, **kwarsgs: Any) -> HttpResponse:
         return render(request, self.template_name, {})
-
-
-       

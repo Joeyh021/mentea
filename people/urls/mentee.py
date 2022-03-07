@@ -12,5 +12,9 @@ urlpatterns = [
     path("meetings/", MenteeMeetingsPage.as_view(), name="meetings"),
     path("mentee_past/", MenteePastMeetingsPage.as_view(), name="mentee_past"),
     path("mentee_pending/", MenteePendingMeetingsPage.as_view(), name="mentee_pending"),
-    path("mentee_reschedule/", MenteeRescheduleMeetingPage.as_view(), name="mentee_reschedule"),
+    path(
+        "mentee_reschedule/",
+        MenteeRescheduleMeetingPage.as_view(),
+        name="mentee_reschedule",
+    ),
 ]
