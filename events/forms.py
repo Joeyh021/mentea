@@ -1,9 +1,6 @@
-from attr import attrs
-
 from people.models import Topic, User, UserTopic
 from .models import Event, EventRequest
 from django import forms
-from django.forms import TextInput
 
 
 class WorkshopForm(forms.Form):

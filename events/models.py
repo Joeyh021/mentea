@@ -1,9 +1,6 @@
-from datetime import datetime, timedelta
-from random import randint
+from datetime import timedelta
 from django.utils import timezone
-import uuid
 
-from django.db import models
 from people.models import *
 
 

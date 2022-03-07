@@ -1,8 +1,6 @@
-from datetime import datetime, timedelta, timezone
+from datetime import datetime, timedelta
 import json
-from typing_extensions import Required
 from django.shortcuts import get_object_or_404, redirect, render
-from django.urls import reverse
 from django.views.generic import TemplateView
 from django.http import HttpRequest, HttpResponse
 from typing import Any
@@ -15,7 +13,6 @@ from people.models import Notification, Topic, UserTopic
 
 from .models import (
     Event,
-    EventAttendee,
     EventRequest,
     EventType,
     FeedbackForm,
