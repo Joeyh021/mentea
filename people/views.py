@@ -17,6 +17,7 @@ from .forms import (
     TopicForm,
     RegistrationForm,
     CreateMeetingForm,
+    MenteeRescheduleForm,
 )
 
 from .models import *
@@ -716,7 +717,7 @@ class MenteeRescheduleMeetingPage(IsUserMenteeMixin, TemplateView):
 
     template_name = "people/mentee_reschedule"
 
-    # form_class = MenteeRescheduleForm
+    form_class = MenteeRescheduleForm
 
     def get(self, request: HttpRequest, *args: Any, **kwarsgs: Any) -> HttpResponse:
         return render(request, self.template_name, {})
