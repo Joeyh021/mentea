@@ -647,3 +647,23 @@ class MeetingRequestPage(TemplateView):
             # Show error messages and go back to ?
             messages.error(request, "Error sending meeting request")
             return render(request, self.template_name, {})
+    
+class MenteePastMeetingsPage(IsUserMenteeMixin, TemplateView):
+    """Allows mentee to view past meetings and provide feedback for them"""
+
+    template_name = "people/mentee_past.html"
+
+    def get(self, request: HttpRequest, *args: Any, **kwarsgs: Any) -> HttpResponse:
+        #check if date is before today
+        past_meetings = MeetingRequest.objects.filter(
+            mentee=request.user,
+            mentee_approved = True, mentor_approved = True 
+        )
+        
+        return render(
+            request,
+            self.template_name,
+            {
+                "past_meetings": past_meetings
+            },
+        )
