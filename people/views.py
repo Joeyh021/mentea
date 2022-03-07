@@ -614,20 +614,6 @@ class MeetingRequestPage(TemplateView):
             location = form.cleaned_data["location"]
             user = request.user
             mentor = get_mentor(user)
-            # mentor = form.cleaned_data["mentor"]
-
-            # Need to decide what to do about the feedback form.
-            # feedback_form = ?
-
-            # Add event to database:
-            meeting = Event(
-                name=event_name,
-                startTime=start_time,
-                duration=duration,
-                location=location,
-                mentor=mentor,
-            )
-            meeting.save()
 
             # Create feedback form
             ff = FeedbackForm(
@@ -649,6 +635,17 @@ class MeetingRequestPage(TemplateView):
             q1.save()
 
             meeting.feedback_form = ff
+            meeting.save()
+
+            # Add event to database:
+            meeting = Event(
+                name=event_name,
+                startTime=start_time,
+                duration=duration,
+                location=location,
+                mentor=mentor,
+                feedback_form=ff,
+            )
             meeting.save()
 
             # Add event request to database:
