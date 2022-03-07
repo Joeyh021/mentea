@@ -19,7 +19,7 @@ class WorkshopForm(forms.Form):
     )
     desc = forms.CharField(
         widget=forms.Textarea(attrs={"rows": 20, "cols": 40, "class": "form-control"}),
-        required=False
+        required=False,
     )
     topic = forms.ModelChoiceField(
         queryset=Topic.objects.all(),
