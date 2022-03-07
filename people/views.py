@@ -18,10 +18,11 @@ from .forms import (
     RegistrationForm,
     CreateMeetingForm,
 )
+
 from .models import *
 from .util import get_mentor
 
-from events.models import Event, MeetingRequest
+from events.models import Event, MeetingRequest, FeedbackForm, Questions
 
 from datetime import datetime
 
@@ -626,6 +627,28 @@ class MeetingRequestPage(TemplateView):
                 location=location,
                 mentor=mentor,
             )
+            meeting.save()
+
+            # Create feedback form
+            ff = FeedbackForm(
+                name="Feedback for " + meeting.name,
+                desc="Please fill out this form honestly! It can only be submitted once!",
+                allowsMultipleSubmissions=False,
+                allowsEditingSubmissions=False,
+            )
+            ff.save()
+
+            q1 = Questions(
+                name="General Feedback",
+                form=ff,
+                required=False,
+                order=1,
+                type="textarea",
+                type_data="",
+            )
+            q1.save()
+
+            meeting.feedback_form = ff
             meeting.save()
 
             # Add event request to database:
