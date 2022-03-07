@@ -611,7 +611,9 @@ class MeetingRequestPage(TemplateView):
             start_time = form.cleaned_data["start_time"]
             duration = form.cleaned_data["duration"]
             location = form.cleaned_data["location"]
-            mentor = form.cleaned_data["mentor"]
+            user = request.user
+            mentor = get_mentor(user)
+            # mentor = form.cleaned_data["mentor"]
 
             # Need to decide what to do about the feedback form.
             # feedback_form = ?
@@ -637,7 +639,7 @@ class MeetingRequestPage(TemplateView):
 
             # Show a message saying "Meeting request sent" and redirect to ?
             messages.success(request, "Meeting request sent")
-            return redirect("")
+            return redirect("dashboard")
 
         else:
 
