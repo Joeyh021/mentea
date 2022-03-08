@@ -717,7 +717,29 @@ class MenteeRescheduleMeetingPage(IsUserMenteeMixin, TemplateView):
 
     template_name = "people/mentee_reschedule"
 
-    form_class = MenteeRescheduleForm
+    form_class: Any = MenteeRescheduleForm
 
     def get(self, request: HttpRequest, *args: Any, **kwarsgs: Any) -> HttpResponse:
         return render(request, self.template_name, {})
+
+    def post(self, request: HttpRequest, *args: Any, **kwarsgs: Any) -> HttpResponse:
+        form = self.form_class(request.POST)
+        if form.is_valid():
+
+            # Get the event object for the current meeting
+
+            # Update the time and location
+
+            # Get the meeting request object for the event
+
+            # Update the approval (mentee approved mentor not approved)
+
+            # Show a message saying "Meeting request updated" and redirect to dashboard
+            messages.success(request, "Meeting request updated")
+            return redirect("dashboard")
+
+        else:
+
+            # Show error messages and go back to ?
+            messages.error(request, "Error updatinh meeting request")
+            return render(request, self.template_name, {})
