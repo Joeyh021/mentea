@@ -45,11 +45,6 @@ class AdminDefaultFeedbackForms(admin.ModelAdmin[DefaultFeedbackForms]):
     pass
 
 
-@admin.register(EventType)
-class AdminEventType(admin.ModelAdmin[EventType]):
-    pass
-
-
 @admin.register(Event)
 class AdminEvent(admin.ModelAdmin[Event]):
     pass

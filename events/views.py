@@ -125,7 +125,7 @@ class EventRequestPage(TemplateView):
 
             formData = form.cleaned_data
 
-            etype = EventType.objects.get(name="WORKSHOP")
+            etype = EventType.Workshop
 
             eventRequest = EventRequest(
                 requested_by=request.user,
@@ -209,7 +209,7 @@ class EventCreatePage(TemplateView):
 
             formData = form.cleaned_data
 
-            etype = EventType.objects.get(name="WORKSHOP")
+            etype = EventType.Workshop
 
             startTime = formData["startTime"]
             endTime = startTime + timedelta(minutes=formData["duration"])

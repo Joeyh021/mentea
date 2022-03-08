@@ -4,6 +4,11 @@ from django.utils import timezone
 from people.models import *
 
 
+class EventType(models.TextChoices):
+    Workshop = "Workshops"
+    OneToOne = "OneToOne", "One to One"
+
+
 class FeedbackForm(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     name = models.CharField(max_length=50)
@@ -53,13 +58,6 @@ class DefaultFeedbackForms(models.Model):
         return super().save(*args, **kwargs)
 
 
-class EventType(models.Model):
-    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
-    name = models.CharField(max_length=50)
-    max_members = models.IntegerField()
-    min_members = models.IntegerField()
-
-
 class Event(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     name = models.CharField(max_length=50)
@@ -69,7 +67,7 @@ class Event(models.Model):
     duration = models.IntegerField()
     description = models.TextField(blank=True)
     mentor = models.ForeignKey(User, on_delete=models.CASCADE)
-    type = models.ForeignKey(EventType, on_delete=models.CASCADE)
+    type = models.CharField(max_length=50, choices=EventType.choices)
     updated_at = models.DateTimeField(auto_now=True)
     created_at = models.DateTimeField(auto_now_add=True)
     feedback_form = models.ForeignKey(
@@ -125,7 +123,7 @@ class EventAttendee(models.Model):
 
 class EventRequest(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
-    type = models.ForeignKey(EventType, on_delete=models.CASCADE)
+    type = models.CharField(max_length=50, choices=EventType.choices)
     requested_by = models.ForeignKey(User, on_delete=models.CASCADE)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
