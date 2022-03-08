@@ -6,30 +6,18 @@
 <p> You have no permission to acces this page </p>
 {% else %}
 
-{% for chatMessage in chatMessages %}
-
-{% if chatMessage.sender == user %}
-<p style="text-align:left">{{ chatMessage.content }}</p>
-<p style="text-align:left"><small>
-    {{ chatMessage.sender.first_name }}
-    {{ chatMessage.sender.last_name }}
-    {{ chatMessage.created_at }}
-  </small></p>
-{% else %}
-<p style="text-align:right">{{ chatMessage.content }}</p>
-<p style="text-align:right"><small>
-    {{ chatMessage.sender.first_name }}
-    {{ chatMessage.sender.last_name }}
-    {{ chatMessage.created_at }}
-  </small></p>
-{% endif %}
-
-{% endfor %}
+<iframe src="messages" frameborder="0" style="width: 100%; max-height: 75vh" onload="this.style.height=(this.contentWindow.document.body.scrollHeight)+'px';"></iframe>
 
 <form method="post">{%csrf_token%}
   {{form.as_p}}
   <input class="btn btn-primary" type="submit" value="Send" />
 </form>
 {% endif %}
+
+<script>
+  window.onload = () => {
+    document.getElementById('id_content').focus()
+  }
+</script>
 
 {% endblock %}
