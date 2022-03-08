@@ -14,12 +14,12 @@
 <div class="accordion" id="accordionExample">
     {% for plan in plans_list %}
         <div class="accordion-item">
-            <h2 class="accordion-header" id="heading{{plan}}">
-                <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapse{{plan.name}}" aria-expanded="true" aria-controls="collapse{{plan}}">
+            <h2 class="accordion-header" id="heading{{plan.id}}">
+                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse{{plan.id}}" aria-expanded="true" aria-controls="collapse{{plan.id}}">
                     {{plan.name}}
                 </button>
             </h2>
-                <div id="collapse{{plan.name}}" class="accordion-collapse collapse show" aria-labelledby="headingOne" data-bs-parent="#accordionExample">
+                <div id="collapse{{plan.id}}" class="accordion-collapse collapse " aria-labelledby="headingOne" data-bs-parent="#accordionExample">
                     <div class="progress">
                         <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" aria-valuenow="{{ plan.progress }}" aria-valuemin="0" aria-valuemax="100" style="width: {{ plan.progress }}%"></div>
                     </div>        
@@ -58,7 +58,18 @@
     {% endfor %}              
 </div>
 
-<a href="./plans/new">
+<a href="new">
     <button type="button" class="btn btn-primary mt-2">Create New</button>
 </a>
+
+<script>
+    window.onload = () => {
+        q = new URLSearchParams(window.location.search)
+        collapse = document.getElementById(`collapse${q.get('p')}`)
+        new bootstrap.Collapse(collapse, {
+            toggle: true
+        })
+    }
+</script>
+
 {% endblock %}

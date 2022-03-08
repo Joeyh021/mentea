@@ -426,12 +426,12 @@ class MentorMenteePage(IsUserMentorMixin, TemplateView):
         
         mentee = get_object_or_404(User, id=menteeId)
         
-
+        hasRelation, relation = mentor_mentors_mentee(request.user, mentee)
         
-        if not mentor_mentors_mentee(request.user, mentee):
+        if not hasRelation:
             return render(request,"mentor_mentee/no_relationship.html", {})
         else:
-            return render(request, self.template_name, {"mentor": request.user, "mentee": mentee})
+            return render(request, self.template_name, {"mentor": relation.mentor, "mentee": relation.mentee, "relation": relation})
 
 
 class MentorMenteeFeedbackPage(IsUserMentorMixin, TemplateView):
@@ -488,6 +488,7 @@ class MentorMenteePlansPage(IsUserMentorMixin, TemplateView):
                     "name": p.name,
                     "targets": list(plan_targets),
                     "progress": str(p.progress),
+                    "id": p.id,
                 }
             )
         return plans_list

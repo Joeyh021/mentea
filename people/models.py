@@ -142,6 +142,9 @@ class MentorMentee(models.Model):
     approved = models.BooleanField(default=False)
     updated_at = models.DateTimeField(auto_now=True)
     created_at = models.DateTimeField(auto_now_add=True)
+    
+    def get_plans_of_action(self):
+        return PlanOfAction.objects.filter(associated_mentor=self.mentor, associated_mentee=self.mentee).all()
 
     class Meta:
         indexes = [models.Index(fields=["mentee", "mentor"])]

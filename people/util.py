@@ -1,3 +1,4 @@
+from typing import Tuple
 from .models import User, MentorMentee
 
 
@@ -6,5 +7,9 @@ def get_mentor(mentee: User) -> User:
     return User.objects.get(id=relationship.mentor.id)
 
 
-def mentor_mentors_mentee(mentor: User, mentee: User) -> bool:
-    return MentorMentee.objects.filter(mentee=mentee, mentor=mentor, approved=True).exists()
+def mentor_mentors_mentee(mentor: User, mentee: User) -> Tuple[bool, MentorMentee]:
+    try:
+        return (True, MentorMentee.objects.get(mentee=mentee, mentor=mentor, approved=True))
+    except:
+        return (False, None)
+    
