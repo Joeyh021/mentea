@@ -1,8 +1,43 @@
 from uuid import uuid4
 from people.models import *
 
+# data used for all tests
+def create_default_data():
+    # create a mentee
+    mentee = User.objects.create_user(
+        email="mentee@mentea.me", password="menteepassword"
+    )
+    mentee.user_type = "Mentee"
+    mentee.save()
 
-def create_data() -> None:
+    # create a mentor
+    mentor = User.objects.create_user(
+        email="mentor@mentea.me", password="mentorpassword"
+    )
+    mentor.user_type = "Mentee"
+    mentor.save()
+
+    MentorMentee.objects.create(mentor=mentor, mentee=mentee, approved=True)
+
+    plan = PlanOfAction.objects.create(
+        name="test plan", associated_mentor=mentor, associated_mentee=mentee
+    )
+    PlanOfActionTarget.objects.create(
+        name="write some tests",
+        description="sit and write tests all day",
+        achieved=True,
+        associated_poa=plan,
+    )
+    PlanOfActionTarget.objects.create(
+        name="run the tests",
+        description="press run and watch your terminal window fill with red text",
+        achieved=False,
+        associated_poa=plan,
+    )
+
+
+# data used only for matching tests
+def create_matching_data() -> None:
 
     # create user types
     mentee_type = UserType.Mentee

@@ -135,6 +135,7 @@ class PlanOfActionForm(forms.Form):
     )
 
 
+
 class CreateMeetingForm(forms.Form):
     name = forms.CharField(widget=forms.Textarea)
     start_time = forms.DateTimeField()
@@ -146,3 +147,7 @@ class MenteeRescheduleForm(forms.Form):
     start_time = forms.DateTimeField()
     location = forms.CharField(widget=forms.Textarea)
     duration = forms.IntegerField()
+
+class SendMessageForm(forms.Form):
+    content = forms.CharField(widget=forms.TextInput(attrs={"class": "form-control"}))
+
