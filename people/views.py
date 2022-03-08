@@ -311,9 +311,11 @@ class MenteeDashboardPage(IsUserMenteeMixin, TemplateView):
     template_name: str = "people/mentee_dashboard.html"
 
     def get(self, request: HttpRequest, *args: Any, **kwarsgs: Any) -> HttpResponse:
-        # need to check if date is after today
         upcoming_meetings = MeetingRequest.objects.filter(
-            mentee=request.user, mentee_approved=True, mentor_approved=True
+            mentee=request.user,
+            mentee_approved=True,
+            mentor_approved=True,
+            endTime__gte=datetime.now(),
         )
 
         return render(
@@ -675,9 +677,11 @@ class MenteePastMeetingsPage(IsUserMenteeMixin, TemplateView):
     template_name = "people/mentee_past.html"
 
     def get(self, request: HttpRequest, *args: Any, **kwarsgs: Any) -> HttpResponse:
-        # check if date is before today
         past_meetings = MeetingRequest.objects.filter(
-            mentee=request.user, mentee_approved=True, mentor_approved=True
+            mentee=request.user,
+            mentee_approved=True,
+            mentor_approved=True,
+            endTime__lt=datetime.now(),
         )
 
         return render(
