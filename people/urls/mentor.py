@@ -43,4 +43,7 @@ urlpatterns = [
         MentorEditMeetingPage.as_view(),
         name="mentor_edit_meeting",
     ),
+    path("view_notes/", MentorViewMeetingNotesPage.as_view(), name="view_notes"),
+    path("add_notes/", MentorAddMeetingNotesPage.as_view(), name="add_notes"),
+    path("edit_notes/", MentorEditMeetingNotesPage.as_view(), name="edit_notes"),
 ]

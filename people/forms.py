@@ -152,3 +152,8 @@ class MentorRescheduleForm(forms.Form):
     start_time = forms.DateTimeField()
     location = forms.CharField(widget=forms.Textarea)
     duration = forms.IntegerField()
+
+class CreateMeetingNotesForm(forms.Form):
+    content = forms.CharField(max_length=500)
+
+

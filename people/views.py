@@ -19,12 +19,13 @@ from .forms import (
     CreateMeetingForm,
     MenteeRescheduleForm,
     MentorRescheduleForm,
+    CreateMeetingNotesForm,
 )
 
 from .models import *
 from .util import get_mentor
 
-from events.models import Event, MeetingRequest, FeedbackForm, Questions
+from events.models import Event, MeetingRequest, FeedbackForm, Questions, MeetingNotes
 
 from datetime import datetime
 
@@ -948,3 +949,167 @@ class MentorEditMeetingPage(IsUserMentorMixin, TemplateView):
             # Show error messages and go back to ?
             messages.error(request, "Error updating meeting")
             return render(request, self.template_name, {})
+
+class MenteeViewMeetingNotesPage(IsUserMenteeMixin, TemplateView):
+    """Allows the mentee to view the notes for a past meeting"""
+
+    template_name = "people/mentee_view_notes.html"
+
+    def get(self, request, eventId=None) -> HttpResponse:
+       
+        meeting_notes = MeetingNotes.objects.get(id=eventId).all()
+
+        return render(
+            request,
+            self.template_name,
+            {"meeting_notes": meeting_notes},
+        )
+
+class MenteeAddMeetingNotesPage(IsUserMenteeMixin, TemplateView):
+    """Allows a mentee to add meeting notes"""
+
+    template_name = "people/mentee_add_notes.html"
+
+    form_class: Any = CreateMeetingNotesForm
+
+    def get(self, request: HttpRequest, *args: Any, **kwarsgs: Any) -> HttpResponse:
+        form = self.form_class()
+        return render(request, self.template_name, {})
+
+    def post(self, request, eventId=None) -> HttpResponse:
+        form = self.form_class(request.POST)
+        if form.is_valid():
+
+            mentee = request.user
+            mentor = get_mentor(mentee)
+            meeting = Event.objects.get(id=eventId)
+            content = form.cleaned_data["content"]
+
+            note = MeetingNotes(
+                event = meeting,
+                mentee = mentee,
+                mentor = mentor,
+                content = content
+            )
+
+            note.save()
+
+            # Show a message saying "Meeting note saved" and redirect to ?
+            messages.success(request, "Meeting note saved")
+            return redirect("dashboard")
+
+        else:
+
+            # Show error messages and go back to ?
+            messages.error(request, "Error saving meeting note")
+            return render(request, self.template_name, {})
+
+class MenteeEditMeetingNotesPage(IsUserMenteeMixin, TemplateView):
+    """Allows the mentee to edit a meeting note"""
+    
+    template_name = "people/mentee_edit_notes.html"
+    form_class: Any = CreateMeetingNotesForm
+
+    def get(self, request: HttpRequest, *args: Any, **kwarsgs: Any) -> HttpResponse:
+        return render(request, self.template_name, {})
+
+    def post(self, request, noteId=None) -> HttpResponse:
+        form = self.form_class(request.POST)
+        if form.is_valid():
+            #get note
+            note = MeetingNotes.objects.get(id=noteId)
+            #edit the note
+            note.content = form.cleaned_data["content"]
+            
+            messages.success(request, "Meeting note succesfully updated")
+            return redirect("dashboard")
+        
+        else:
+
+            # Show error messages and go back to ?
+            messages.error(request, "Error updating meeting note")
+            return render(request, self.template_name, {})
+    
+class MentorViewMeetingNotesPage(IsUserMentorMixin, TemplateView):
+    """Allows the mentor to view the notes for a past meeting"""
+
+    template_name = "people/mentoe_view_notes.html"
+
+    def get(self, request, eventId=None) -> HttpResponse:
+       
+        meeting_notes = MeetingNotes.objects.get(id=eventId).all()
+
+        return render(
+            request,
+            self.template_name,
+            {"meeting_notes": meeting_notes},
+        )
+
+class MentorAddMeetingNotesPage(IsUserMentorMixin, TemplateView):
+    """Allows a mentor to add meeting notes"""
+
+    template_name = "people/mentor_add_notes.html"
+
+    form_class: Any = CreateMeetingNotesForm
+
+    def get(self, request: HttpRequest, *args: Any, **kwarsgs: Any) -> HttpResponse:
+        form = self.form_class()
+        return render(request, self.template_name, {})
+
+    def post(self, request, eventId=None) -> HttpResponse:
+        form = self.form_class(request.POST)
+        if form.is_valid():
+
+            mentor = request.user
+            #not sure how to get the mentee here
+            mentee = mentor
+            meeting = Event.objects.get(id=eventId)
+            content = form.cleaned_data["content"]
+
+            note = MeetingNotes(
+                event = meeting,
+                mentee = mentee,
+                mentor = mentor,
+                content = content
+            )
+
+            note.save()
+
+            # Show a message saying "Meeting note saved" and redirect to ?
+            messages.success(request, "Meeting note saved")
+            return redirect("dashboard")
+
+        else:
+
+            # Show error messages and go back to ?
+            messages.error(request, "Error saving meeting note")
+            return render(request, self.template_name, {})
+
+class MentorEditMeetingNotesPage(IsUserMentorMixin, TemplateView):
+    """Allows the mentor to edit a meeting note"""
+    
+    template_name = "people/mentor_edit_notes.html"
+    form_class: Any = CreateMeetingNotesForm
+
+    def get(self, request: HttpRequest, *args: Any, **kwarsgs: Any) -> HttpResponse:
+        return render(request, self.template_name, {})
+
+    def post(self, request, noteId=None) -> HttpResponse:
+        form = self.form_class(request.POST)
+        if form.is_valid():
+            #get note
+            note = MeetingNotes.objects.get(id=noteId)
+            #edit the note
+            note.content = form.cleaned_data["content"]
+            
+            messages.success(request, "Meeting note succesfully updated")
+            return redirect("dashboard")
+        
+        else:
+
+            # Show error messages and go back to ?
+            messages.error(request, "Error updating meeting note")
+            return render(request, self.template_name, {})
+
+
+    
