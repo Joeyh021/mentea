@@ -140,6 +140,8 @@ class MentorMentee(models.Model):
         User, on_delete=models.CASCADE, related_name="mentee", db_index=True
     )
     approved = models.BooleanField(default=False)
+    updated_at = models.DateTimeField(auto_now=True)
+    created_at = models.DateTimeField(auto_now_add=True)
 
     class Meta:
         indexes = [models.Index(fields=["mentee", "mentor"])]

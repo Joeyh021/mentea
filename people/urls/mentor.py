@@ -6,7 +6,9 @@ from ..views import *
 urlpatterns = [
     path("", MentorDashboardPage.as_view(), name="mentor_dashboard"),
     path("mentees/", MentorMenteesPage.as_view(), name="mentees"),
-    path("mentees/<uuid:menteeid>/", MentorMenteePage.as_view(), name="mentee"),
+    
+    
+    path("mentees/<uuid:menteeId>/", MentorMenteePage.as_view(), name="mentee"),
     path(
         "mentees/<uuid:menteeid>/feedback/",
         MentorMenteeFeedbackPage.as_view(),

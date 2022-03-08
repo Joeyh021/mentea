@@ -1,7 +1,7 @@
 from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.http import HttpRequest, HttpResponse, HttpResponseRedirect
-from django.shortcuts import redirect, render
+from django.shortcuts import get_object_or_404, redirect, render
 from django.views.generic import TemplateView
 from django.contrib.auth.mixins import LoginRequiredMixin
 from typing import Any
@@ -18,7 +18,7 @@ from .forms import (
     RegistrationForm,
 )
 from .models import *
-from .util import get_mentor
+from .util import get_mentor, mentor_mentors_mentee
 
 
 class IsUserMenteeMixin(UserPassesTestMixin):
@@ -420,10 +420,18 @@ class MentorMenteesPage(IsUserMentorMixin, TemplateView):
 class MentorMenteePage(IsUserMentorMixin, TemplateView):
     """A mentor's overview of a specfic mentee and their relationship"""
 
-    template_name: str = "people/mentor_mentee.html"
+    template_name: str = "mentor_mentee/relationship.html"
 
-    def get(self, request: HttpRequest, *args: Any, **kwarsgs: Any) -> HttpResponse:
-        return render(request, self.template_name, {})
+    def get(self, request: HttpRequest, menteeId = None) -> HttpResponse:
+        
+        mentee = get_object_or_404(User, id=menteeId)
+        
+
+        
+        if not mentor_mentors_mentee(request.user, mentee):
+            return render(request,"mentor_mentee/no_relationship.html", {})
+        else:
+            return render(request, self.template_name, {"mentor": request.user, "mentee": mentee})
 
 
 class MentorMenteeFeedbackPage(IsUserMentorMixin, TemplateView):
