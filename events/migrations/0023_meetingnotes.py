@@ -10,18 +10,45 @@ class Migration(migrations.Migration):
 
     dependencies = [
         migrations.swappable_dependency(settings.AUTH_USER_MODEL),
-        ('events', '0022_meetingrequest'),
+        ("events", "0022_meetingrequest"),
     ]
 
     operations = [
         migrations.CreateModel(
-            name='MeetingNotes',
+            name="MeetingNotes",
             fields=[
-                ('id', models.UUIDField(default=uuid.uuid4, editable=False, primary_key=True, serialize=False)),
-                ('note', models.CharField(max_length=500)),
-                ('event', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='events.event')),
-                ('mentee', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='notes_mentee', to=settings.AUTH_USER_MODEL)),
-                ('mentor', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='notes_mentor', to=settings.AUTH_USER_MODEL)),
+                (
+                    "id",
+                    models.UUIDField(
+                        default=uuid.uuid4,
+                        editable=False,
+                        primary_key=True,
+                        serialize=False,
+                    ),
+                ),
+                ("note", models.CharField(max_length=500)),
+                (
+                    "event",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE, to="events.event"
+                    ),
+                ),
+                (
+                    "mentee",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="notes_mentee",
+                        to=settings.AUTH_USER_MODEL,
+                    ),
+                ),
+                (
+                    "mentor",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="notes_mentor",
+                        to=settings.AUTH_USER_MODEL,
+                    ),
+                ),
             ],
         ),
     ]
