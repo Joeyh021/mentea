@@ -7,6 +7,8 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from typing import Any
 from django.contrib.auth import login, authenticate
 from django.contrib import messages
+
+from events.notification import NotificationManager
 from .forms import RegistrationForm
 
 
@@ -477,6 +479,11 @@ class MentorMenteePlansPage(IsUserMentorMixin, TemplateView):
             target = PlanOfActionTarget.objects.get(name=request.POST["completed"])
             target.achieved = True
             target.save()
+            
+            mentor = target.associated_poa.associated_mentor
+            mentee = target.associated_poa.associated_mentee
+            
+            
         return HttpResponseRedirect("")
 
     def __parse_plans(self, plans):
@@ -536,7 +543,7 @@ class MentorMenteeNewPlanPage(IsUserMentorMixin, TemplateView):
                         associated_poa=plan,
                         set_by=request.user,
                     )
-
+            NotificationManager.send("New Plan of Action", current_user.get_full_name() + " has created a new Plan of Action for you!", current_mentee, "/mentee/plans/")
             return HttpResponseRedirect("..")
         else:
             messages.error(request, "Error creating plan")
