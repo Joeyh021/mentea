@@ -57,6 +57,21 @@ class IsUserMentorMixin(UserPassesTestMixin):
         if not request.user.is_authenticated or not self.test_func():
             return self.handle_no_permission()
         return super().dispatch(request, *args, **kwargs)
+    
+class MenteeHasMentorMixin(UserPassesTestMixin):
+    
+    def test_func(self):
+        try:
+            get_mentor(self.request.user)
+            return True
+        except:
+            return False
+        
+    def dispatch(self, request, *args, **kwargs):
+        if not request.user.is_authenticated or not self.test_func():
+            return self.handle_no_permission()
+        return super().dispatch(request, *args, **kwargs)
+        
 
 
 class UserSignupPage(TemplateView):
@@ -433,18 +448,35 @@ class ChatPage(LoginRequiredMixin, TemplateView):
     template_name: str = "people/chat.html"
 
     def get(self, request: HttpRequest, *args: Any, **kwargs: Any) -> HttpResponse:
+        
+        current_mentor = None
+
+
 
         if "menteeid" in kwargs:
             current_mentee = User.objects.get(id=kwargs["menteeid"])
+            current_mentor = request.user
             templateBase = "mentor_base.html"
         else:
             current_mentee = request.user
             templateBase = "mentee_base.html"
+            try:
+                current_mentor = get_mentor(current_mentee)
+            except:
+                return HttpResponse("no mentor")
 
-        current_mentor = get_mentor(current_mentee)
+ 
         form = SendMessageForm()
-        chatMessages = ChatMessage.objects.all().filter(
+        
+        chat = None
+        try:
             chat=Chat.objects.get(mentee=current_mentee, mentor=current_mentor)
+        except:
+            chat= Chat(mentee=current_mentee, mentor=current_mentor)
+            chat.save()
+        
+        chatMessages = ChatMessage.objects.all().filter(
+            chat=chat
         )
 
         return render(
@@ -489,7 +521,7 @@ class ChatPage(LoginRequiredMixin, TemplateView):
             request,
             self.template_name,
             {
-                "form": form,
+                "form": SendMessageForm(),
                 "base": templateBase,
                 "chatMessages": chatMessages,
                 "mentee": current_mentee,
@@ -497,6 +529,60 @@ class ChatPage(LoginRequiredMixin, TemplateView):
             },
         )
 
+class ChatMessages(LoginRequiredMixin, TemplateView):
+    
+    
+    template_name: str = "people/chat_messages.html"
+
+    def get(self, request: HttpRequest, *args: Any, **kwargs: Any) -> HttpResponse:
+        
+        current_mentor = None
+
+
+
+        if "menteeid" in kwargs:
+            current_mentee = User.objects.get(id=kwargs["menteeid"])
+            current_mentor = request.user
+            templateBase = "mentor_base.html"
+        else:
+            current_mentee = request.user
+            templateBase = "mentee_base.html"
+            try:
+                current_mentor = get_mentor(current_mentee)
+            except:
+                return HttpResponse("no mentor")
+
+ 
+        form = SendMessageForm()
+        
+        chat = None
+        try:
+            chat=Chat.objects.get(mentee=current_mentee, mentor=current_mentor)
+        except:
+            chat= Chat(mentee=current_mentee, mentor=current_mentor)
+            chat.save()
+        
+        chatMessages = ChatMessage.objects.all().filter(
+            chat=chat
+        )
+
+
+
+        resp = render(
+            request,
+            self.template_name,
+            {
+                "base": templateBase,
+                "chatMessages": chatMessages,
+                "mentee": current_mentee,
+                "mentor": current_mentor,
+            },
+        )
+        resp[
+            "Content-Security-Policy"
+        ] = "frame-ancestors 'self' https://localhost:8000"
+        
+        return resp
 
 class MenteeMeetingsPage(IsUserMenteeMixin, TemplateView):
     """Upcoming meetings and records of past meetings between a mentee and their mentor"""
