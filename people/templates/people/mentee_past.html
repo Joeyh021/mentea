@@ -1,0 +1,17 @@
+{% extends "mentee_base.html" %}
+
+{% block title %}Mentee Past Meetings{% endblock %}
+
+{% block body %}
+<h4> Past Meetings: </h4>
+{% for meeting in past_meetings %}
+    <p> Name:  {{meeting.name}} </p>
+    <p> Start Time: {{meeting.start_time}} </p>
+    <p> Duration: {{meeting.duration}} </p>
+    <p> Location: {{meeting.location}} </p>
+    <span class="btn btn-rounded btn-mentee" style="font-size: 0.9rem;"> Give Feedback </span>
+    <span class="btn btn-rounded btn-mentee" style="font-size: 0.9rem;"> View Feedback </span>
+    {% empty %}
+    <div class="alert alert-danger w-100" style="margin-top: 40px;">You don't have any previous meetings!</div>
+    {% endfor %}
+{% endblock %}

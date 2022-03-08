@@ -140,3 +140,11 @@ class EventRequest(models.Model):
                 fields=["requested_by", "associated_topic"], name="unique_request"
             )
         ]
+
+
+class MeetingRequest(models.Model):
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    event = models.ForeignKey(Event, on_delete=models.CASCADE, db_index=True)
+    mentee = models.ForeignKey(User, on_delete=models.CASCADE, db_index=True)
+    mentor_approved = models.BooleanField()
+    mentee_approved = models.BooleanField()

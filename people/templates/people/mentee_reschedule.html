@@ -1,0 +1,11 @@
+{% extends "mentee_base.html" %}
+
+{% block title %}Mentee Reschedule Meeting{% endblock %}
+
+{% block body %}
+<form method="POST">
+{% csrf_token %}
+    <!--Add form to reschedule here-->
+    <input class="btn btn-primary" type="submit" value="Reschedule Meeting">
+</form>
+{% endblock %}

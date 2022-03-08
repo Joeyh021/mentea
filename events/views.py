@@ -9,6 +9,8 @@ from typing import Any
 from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin
 
+from events.forms import WorkshopForm
+from people.models import Topic
 from events.forms import WorkshopForm, WorkshopRequestForm
 from events.notification import NotificationManager
 from people.models import Notification, Topic, UserTopic

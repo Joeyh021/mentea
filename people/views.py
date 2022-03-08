@@ -18,9 +18,16 @@ from .forms import (
     BusinessAreaForm,
     TopicForm,
     RegistrationForm,
+    CreateMeetingForm,
+    MenteeRescheduleForm,
 )
+
 from .models import *
 from .util import get_mentor, mentor_mentors_mentee
+
+from events.models import Event, MeetingRequest, FeedbackForm, Questions
+
+from datetime import datetime
 
 
 class IsUserMenteeMixin(UserPassesTestMixin):
@@ -95,7 +102,33 @@ class UserProfilePage(LoginRequiredMixin, TemplateView):
         return render(
             request,
             self.template_name,
-            {"mentee_topics": mentee_topics, "mentor_topics": mentor_topics},
+            {
+                "mentee_topics": mentee_topics,
+                "mentor_topics": mentor_topics,
+                "my_profile": True,
+            },
+        )
+
+
+class ViewUserProfilePage(LoginRequiredMixin, TemplateView):
+    template_name: str = "people/profile.html"
+
+    def get(self, request: HttpRequest, userId=None) -> HttpResponse:
+
+        user = get_object_or_404(User, id=userId)
+
+        mentee_topics = UserTopic.objects.filter(user=user, usertype=UserType.Mentee)
+        mentor_topics = UserTopic.objects.filter(user=user, usertype=UserType.Mentor)
+
+        return render(
+            request,
+            self.template_name,
+            {
+                "user": user,
+                "mentee_topics": mentee_topics,
+                "mentor_topics": mentor_topics,
+                "my_profile": False,
+            },
         )
 
 
@@ -280,7 +313,16 @@ class MenteeDashboardPage(IsUserMenteeMixin, TemplateView):
     template_name: str = "people/mentee_dashboard.html"
 
     def get(self, request: HttpRequest, *args: Any, **kwarsgs: Any) -> HttpResponse:
-        return render(request, self.template_name, {})
+        # need to check if date is after today
+        upcoming_meetings = MeetingRequest.objects.filter(
+            mentee=request.user, mentee_approved=True, mentor_approved=True
+        )
+
+        return render(
+            request,
+            self.template_name,
+            {"upcoming_meetings": upcoming_meetings},
+        )
 
 
 class MenteeFeedbackPage(IsUserMenteeMixin, TemplateView):
@@ -563,3 +605,204 @@ class MentorMenteeMeetingsPage(IsUserMentorMixin, TemplateView):
 
     def get(self, request: HttpRequest, *args: Any, **kwarsgs: Any) -> HttpResponse:
         return render(request, self.template_name, {})
+
+
+class MeetingRequestPage(TemplateView):
+    """A mentee should be able to request a meeting with their mentor."""
+
+    template_name = "people/request.html"
+    form_class: Any = CreateMeetingForm
+
+    def get(self, request: HttpRequest, *args: Any, **kwarsgs: Any) -> HttpResponse:
+        form = self.form_class()
+        return render(request, self.template_name, {})
+
+    def post(self, request: HttpRequest, *args: Any, **kwarsgs: Any) -> HttpResponse:
+        form = self.form_class(request.POST)
+        if form.is_valid():
+
+            # Get the current user object
+            current_user = request.user
+
+            # Get the event information from the form
+            event_name = form.cleaned_data["name"]
+            start_time = form.cleaned_data["start_time"]
+            duration = form.cleaned_data["duration"]
+            location = form.cleaned_data["location"]
+            user = request.user
+            mentor = get_mentor(user)
+
+            # Create feedback form
+            ff = FeedbackForm(
+                name="Feedback for " + meeting.name,
+                desc="Please fill out this form honestly! It can only be submitted once!",
+                allowsMultipleSubmissions=False,
+                allowsEditingSubmissions=False,
+            )
+            ff.save()
+
+            q1 = Questions(
+                name="General Feedback",
+                form=ff,
+                required=False,
+                order=1,
+                type="textarea",
+                type_data="",
+            )
+            q1.save()
+
+            meeting.feedback_form = ff
+            meeting.save()
+
+            # Add event to database:
+            meeting = Event(
+                name=event_name,
+                startTime=start_time,
+                duration=duration,
+                location=location,
+                mentor=mentor,
+                feedback_form=ff,
+            )
+            meeting.save()
+
+            # Add event request to database:
+            meeting_request = MeetingRequest(
+                event=meeting,
+                mentee=current_user,
+                mentor_approved=False,
+                mentee_approved=True,
+            )
+            meeting_request.save()
+
+            # Show a message saying "Meeting request sent" and redirect to ?
+            messages.success(request, "Meeting request sent")
+            return redirect("dashboard")
+
+        else:
+
+            # Show error messages and go back to ?
+            messages.error(request, "Error sending meeting request")
+            return render(request, self.template_name, {})
+
+
+class MenteePastMeetingsPage(IsUserMenteeMixin, TemplateView):
+    """Allows mentee to view past meetings and provide feedback for them"""
+
+    template_name = "people/mentee_past.html"
+
+    def get(self, request: HttpRequest, *args: Any, **kwarsgs: Any) -> HttpResponse:
+        # check if date is before today
+        past_meetings = MeetingRequest.objects.filter(
+            mentee=request.user, mentee_approved=True, mentor_approved=True
+        )
+
+        return render(
+            request,
+            self.template_name,
+            {"past_meetings": past_meetings},
+        )
+
+
+class MenteePendingMeetingsPage(IsUserMenteeMixin, TemplateView):
+    """Allows mentee to view and approve pending meetings"""
+
+    template_name = "people/mentee_pending.html"
+
+    def get(self, request: HttpRequest, *args: Any, **kwarsgs: Any) -> HttpResponse:
+        past_meetings = MeetingRequest.objects.filter(
+            mentee=request.user, mentee_approved=False, mentor_approved=True
+        )
+
+        return render(
+            request,
+            self.template_name,
+            {"past_meetings": past_meetings},
+        )
+
+    def post(self, request: HttpRequest, *args: Any, **kwargs: Any) -> HttpResponse:
+        # change mentee_approved to True for the given meeting
+        messages.success(
+            request,
+            "Meeting successfully approved",
+        )
+        return redirect("dashboard")
+
+
+class MenteeRescheduleMeetingPage(IsUserMenteeMixin, TemplateView):
+    """Allows mentee to reschedule a meeting"""
+
+    template_name = "people/mentee_reschedule"
+    form_class: Any = MenteeRescheduleForm
+
+    def get(self, request: HttpRequest, *args: Any, **kwarsgs: Any) -> HttpResponse:
+        return render(request, self.template_name, {})
+
+    def post(self, request, eventId=None) -> HttpResponse:
+        form = self.form_class(request.POST)
+        if form.is_valid():
+
+            # Get the event object for the current meeting
+            meeting = Event.objects.get(id=eventId)
+
+            # Update the time and location
+            meeting.startTime = form.cleaned_data["start_time"]
+            meeting.duration = form.cleaned_data["duration"]
+            meeting.location = form.cleaned_data["location"]
+            meeting.save()
+
+            # Get the meeting request object for the event
+            meeting_request = MeetingRequest.objects.get(event=eventId)
+
+            # Update the approval (mentee approved mentor not approved)
+            meeting_request.mentee_approved = True
+            meeting_request.mentor_approved = False
+
+            # Show a message saying "Meeting request updated" and redirect to dashboard
+            messages.success(request, "Meeting request updated")
+            return redirect("dashboard")
+
+        else:
+
+            # Show error messages and go back to ?
+            messages.error(request, "Error updating meeting request")
+            return render(request, self.template_name, {})
+
+
+class MenteeEditMeetingPage(IsUserMenteeMixin, TemplateView):
+    """Allows mentee to edit a meeting"""
+
+    template_name = "people/mentee_edit_meeting"
+    form_class: Any = CreateMeetingForm
+
+    def get(self, request: HttpRequest, *args: Any, **kwarsgs: Any) -> HttpResponse:
+        return render(request, self.template_name, {})
+
+    def post(self, request, eventId=None) -> HttpResponse:
+        form = self.form_class(request.POST)
+        if form.is_valid():
+
+            # Get the event object for the current meeting
+            meeting = Event.objects.get(id=eventId)
+
+            # Update the name, time and location
+            meeting.name = form.cleaned_data["name"]
+            meeting.startTime = form.cleaned_data["start_time"]
+            meeting.duration = form.cleaned_data["duration"]
+            meeting.location = form.cleaned_data["location"]
+
+            # Get the meeting request object for the event
+            meeting_request = MeetingRequest.objects.get(event=eventId)
+
+            # Update the approval (mentee approved mentor not approved)
+            meeting_request.mentee_approved = True
+            meeting_request.mentor_approved = False
+
+            # Show a message saying "Meeting request updated" and redirect to dashboard
+            messages.success(request, "Meeting updated, request sent to mentor")
+            return redirect("dashboard")
+
+        else:
+
+            # Show error messages and go back to ?
+            messages.error(request, "Error updating meeting")
+            return render(request, self.template_name, {})

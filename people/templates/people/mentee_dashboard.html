@@ -3,6 +3,57 @@
 {% block title %}Mentee Index Page{% endblock %}
 
 {% block body %}
-<p>Mentee Index Page</p>
-dfh
+<div class="center">
+    <h1 class="mt-2 mb-0" color="#6e6464" style="font-size: 6rem;" color:>
+        Mentee Portal
+    </h1>
+</div>
+
+<div style="text-align:right; border:5px;">
+    <select name="Subject area" class="select-mentee" id="subject;">
+        <option value="select">Subject Area</option>
+        <option value="Public Speaking">Public Speaking</option>
+        <option value="Entrepreneurship">Entrepreneurship</option>
+        <option value="Leadership">Leadership</option>
+        <option value="Organisation">Organisation</option>
+    </select>
+    <input type="text" class="text-mentee" placeholder="Mentor Name" />
+    <span class="btn btn-primary btn-rounded mt-4 px-4 " style="font-size: 1rem; background-color: #6e6464;">Filter Mentors</span>
+</div>
+<br>
+<div class="bg-block-mentee" >
+    (insert mentor profiles here)
+    <br><br>
+    <a href="/user/profile/" class="nav-item">
+        <i class="fa-solid fa-circle-user fa-2x" style="padding-right:10px; width: 6rem; height: 6rem; color: #6e6464;"></i>
+    </a>
+    <br>
+    <span class="btn btn-rounded bg-mentee-white" style="font-size: 0.9rem;"> View Feedback </span>
+    <br><br>
+    <span class="btn btn-rounded bg-mentee-white" style="font-size: 0.9rem;"> Give Feedback </span>
+    <br><br>
+    <a href="request" class="btn btn-rounded bg-mentee-white" style="font-size: 0.9rem;"> Request Meeting </a>
+    <br><br>
+    <span class="btn btn-rounded bg-mentee-white" style="font-size: 0.9rem;"> End Mentorship </span>
+</div>
+
+<div style="text-align:center; border:5px;">
+    <span class="btn btn-primary btn-rounded mt-4 px-4 " style="font-size: 2rem; background-color: #6e6464;">Request New Mentor</span>
+</div>
+<br>
+<div class="bg-block-mentee-light">
+    <h4> Upcoming Meetings: </h4>
+    {% for meeting in upcoming_meetings %}
+    <p> Name:  {{meeting.name}} </p>
+    <p> Start Time: {{meeting.start_time}} </p>
+    <p> Duration: {{meeting.duration}} </p>
+    <p> Location: {{meeting.location}} </p>
+    {% empty %}
+    <div class="alert alert-danger w-100" style="margin-top: 40px;">You don't have any upcoming meetings!</div>
+    {% endfor %}
+    <a href="mentee_past" class="btn btn-rounded btn-mentee" style="font-size: 0.9rem;"> View Past Meetings </a>
+    <a href="mentee_pending" class="btn btn-rounded btn-mentee" style="font-size: 0.9rem;"> View Pending Meetings </a>
+    <span class="btn btn-rounded btn-mentee" style="font-size: 0.9rem;"> Edit Upcoming Meetings </span>
+</div>
+
 {% endblock %}
