@@ -716,23 +716,30 @@ class MenteeRescheduleMeetingPage(IsUserMenteeMixin, TemplateView):
     """Allows mentee to reschedule a meeting"""
 
     template_name = "people/mentee_reschedule"
-
     form_class: Any = MenteeRescheduleForm
 
     def get(self, request: HttpRequest, *args: Any, **kwarsgs: Any) -> HttpResponse:
         return render(request, self.template_name, {})
 
-    def post(self, request: HttpRequest, *args: Any, **kwarsgs: Any) -> HttpResponse:
+    def post(self, request, eventId=None) -> HttpResponse:
         form = self.form_class(request.POST)
         if form.is_valid():
 
             # Get the event object for the current meeting
+            meeting = Event.objects.get(id=eventId)
 
             # Update the time and location
+            meeting.startTime = form.cleaned_data["start_time"]
+            meeting.duration = form.cleaned_data["duration"]
+            meeting.location = form.cleaned_data["location"]
+            meeting.save()
 
             # Get the meeting request object for the event
+            meeting_request = MeetingRequest.objects.get(event=eventId)
 
             # Update the approval (mentee approved mentor not approved)
+            meeting_request.mentee_approved = True
+            meeting_request.mentor_approved = False
 
             # Show a message saying "Meeting request updated" and redirect to dashboard
             messages.success(request, "Meeting request updated")
@@ -741,5 +748,45 @@ class MenteeRescheduleMeetingPage(IsUserMenteeMixin, TemplateView):
         else:
 
             # Show error messages and go back to ?
-            messages.error(request, "Error updatinh meeting request")
+            messages.error(request, "Error updating meeting request")
+            return render(request, self.template_name, {})
+
+
+class MenteeEditMeetingPage(IsUserMenteeMixin, TemplateView):
+    """Allows mentee to edit a meeting"""
+
+    template_name = "people/mentee_edit_meeting"
+    form_class: Any = CreateMeetingForm
+
+    def get(self, request: HttpRequest, *args: Any, **kwarsgs: Any) -> HttpResponse:
+        return render(request, self.template_name, {})
+
+    def post(self, request, eventId=None) -> HttpResponse:
+        form = self.form_class(request.POST)
+        if form.is_valid():
+
+            # Get the event object for the current meeting
+            meeting = Event.objects.get(id=eventId)
+
+            # Update the name, time and location
+            meeting.name = form.cleaned_data["name"]
+            meeting.startTime = form.cleaned_data["start_time"]
+            meeting.duration = form.cleaned_data["duration"]
+            meeting.location = form.cleaned_data["location"]
+
+            # Get the meeting request object for the event
+            meeting_request = MeetingRequest.objects.get(event=eventId)
+
+            # Update the approval (mentee approved mentor not approved)
+            meeting_request.mentee_approved = True
+            meeting_request.mentor_approved = False
+
+            # Show a message saying "Meeting request updated" and redirect to dashboard
+            messages.success(request, "Meeting updated, request sent to mentor")
+            return redirect("dashboard")
+
+        else:
+
+            # Show error messages and go back to ?
+            messages.error(request, "Error updating meeting")
             return render(request, self.template_name, {})
