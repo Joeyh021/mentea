@@ -28,4 +28,19 @@ urlpatterns = [
         MentorMenteeMeetingsPage.as_view(),
         name="meetings",
     ),
+    path(
+        "mentro_upcoming/", MentorUpcomingMeetingsPage.as_view(), name="mentor_upcoming"
+    ),
+    path("mentor_past/", MentorPastMeetingsPage.as_view(), name="mentor_past"),
+    path("mentor_pending/", MentorPendingMeetingsPage.as_view(), name="mentor_pending"),
+    path(
+        "mentor_reschedule/<uuid:eventId>",
+        MentorRescheduleMeetingPage.as_view(),
+        name="mentor_reschedule",
+    ),
+    path(
+        "mentor_edit_meeting/<uuid:eventId>",
+        MentorEditMeetingPage.as_view(),
+        name="mentor_edit_meeting",
+    ),
 ]
