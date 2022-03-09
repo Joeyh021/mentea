@@ -1206,6 +1206,7 @@ class MenteeViewMeetingNotesPage(IsUserMenteeMixin, TemplateView):
         )
 
 
+
 class MenteeAddMeetingNotesPage(IsUserMenteeMixin, TemplateView):
     """Allows a mentee to add meeting notes"""
 
