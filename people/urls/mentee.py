@@ -19,6 +19,7 @@ urlpatterns = [
         name="mentee_reschedule",
     ),
     path("request/", MeetingRequestPage.as_view(), name="request"),
+    path("mentee_pending/request/", MeetingRequestPage.as_view(), name="request"),
     path(
         "mentee_edit_meeting/<uuid:eventId>",
         MenteeEditMeetingPage.as_view(),
