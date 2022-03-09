@@ -1047,11 +1047,14 @@ class MentorUpcomingMeetingsPage(IsUserMentorMixin, TemplateView):
 
     def get(self, request: HttpRequest, *args: Any, **kwarsgs: Any) -> HttpResponse:
         # could also filter for each mentee in particular
-        upcoming_meetings = Event.objects.filter(
-            mentor=request.user,
+
+        upcoming_meetings_id = MeetingRequest.objects.filter(
             mentee_approved=True,
             mentor_approved=True,
-            endTime__gte=datetime.now(),
+        ).all()
+
+        upcoming_meetings = Event.objects.filter(
+            id__in=upcoming_meetings_id, endTime__gte=datetime.now(), mentor=request.user
         ).all()
 
         return render(

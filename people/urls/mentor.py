@@ -30,7 +30,7 @@ urlpatterns = [
         name="meetings",
     ),
     path(
-        "mentro_upcoming/", MentorUpcomingMeetingsPage.as_view(), name="mentor_upcoming"
+        "mentor_upcoming/", MentorUpcomingMeetingsPage.as_view(), name="mentor_upcoming"
     ),
     path("mentor_past/", MentorPastMeetingsPage.as_view(), name="mentor_past"),
     path("mentor_pending/", MentorPendingMeetingsPage.as_view(), name="mentor_pending"),
