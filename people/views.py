@@ -30,9 +30,9 @@ from .forms import (
 from .models import *
 from .util import get_mentor, mentor_mentors_mentee
 
-from events.models import Event, MeetingRequest, FeedbackForm, Questions, MeetingNotes
+from events.models import Event, EventRequest, EventType, MeetingRequest, FeedbackForm, Questions, MeetingNotes
 
-from datetime import datetime
+from datetime import datetime, timedelta
 
 
 class IsUserMenteeMixin(UserPassesTestMixin):
@@ -333,12 +333,17 @@ class MenteeDashboardPage(IsUserMenteeMixin, TemplateView):
     template_name: str = "people/mentee_dashboard.html"
 
     def get(self, request: HttpRequest, *args: Any, **kwarsgs: Any) -> HttpResponse:
-        upcoming_meetings = Event.objects.filter(
+        upcoming_meetings_ids = MeetingRequest.objects.filter(
             mentee=request.user,
             mentee_approved=True,
             mentor_approved=True,
-            endTime__gte=datetime.now(),
         ).all()
+        
+        upcoming_meetings = Event.objects.filter(
+            id__in=upcoming_meetings_ids,
+            endTime__gte=datetime.now()
+        ).all()
+        
 
         return render(
             request,
@@ -780,7 +785,7 @@ class MeetingRequestPage(TemplateView):
 
             # Create feedback form
             ff = FeedbackForm(
-                name="Feedback for " + meeting.name,
+                name="Feedback for " + event_name,
                 desc="Please fill out this form honestly! It can only be submitted once!",
                 allowsMultipleSubmissions=False,
                 allowsEditingSubmissions=False,
@@ -797,17 +802,22 @@ class MeetingRequestPage(TemplateView):
             )
             q1.save()
 
-            meeting.feedback_form = ff
-            meeting.save()
 
+            etype = EventType.objects.get(name="121")
+
+
+            
+            endTime = start_time + timedelta(minutes=duration)
             # Add event to database:
             meeting = Event(
                 name=event_name,
                 startTime=start_time,
+                endTime=endTime,
                 duration=duration,
                 location=location,
                 mentor=mentor,
                 feedback_form=ff,
+                type=etype
             )
             meeting.save()
 
@@ -837,12 +847,13 @@ class MenteePastMeetingsPage(IsUserMenteeMixin, TemplateView):
     template_name = "people/mentee_past.html"
 
     def get(self, request: HttpRequest, *args: Any, **kwarsgs: Any) -> HttpResponse:
-        past_meetings = Event.objects.filter(
+        past_meetings_id = MeetingRequest.objects.filter(
             mentee=request.user,
             mentee_approved=True,
             mentor_approved=True,
-            endTime__lt=datetime.now(),
         ).all()
+        
+        past_meetings = Event.objects.filter(id__in=past_meetings_id, endTime__lt=datetime.now()).all()
 
         return render(
             request,

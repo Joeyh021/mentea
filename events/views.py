@@ -38,20 +38,24 @@ class EventsIndexPage(LoginRequiredMixin, TemplateView):
 
     def get(self, request: HttpRequest, *args: Any, **kwarsgs: Any) -> HttpResponse:
 
+        etype = EventType.objects.get(name="WORKSHOP")
+
         my_events = (
             request.user.eusers.order_by("startTime")
-            .filter(endTime__gte=datetime.now())
+            .filter(endTime__gte=datetime.now(), type=etype)
             .all()
         )
         my_running_events = Event.objects.filter(
-            mentor=request.user, endTime__gte=datetime.now()
+            mentor=request.user, endTime__gte=datetime.now(), type=etype
         )
 
         # return HttpResponse(my_events)
 
+        
+
         event_list = (
             Event.objects.order_by("startTime")
-            .filter(endTime__gte=datetime.now())
+            .filter(endTime__gte=datetime.now(), type=etype)
             .all()
         )
         paginator = Paginator(event_list, 9)
