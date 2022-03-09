@@ -1013,6 +1013,32 @@ class MenteeEditMeetingPage(IsUserMenteeMixin, TemplateView):
             messages.error(request, "Error updating meeting")
             return render(request, self.template_name, {})
 
+class MenteeUpcomingMeetingsPage(IsUserMenteeMixin, TemplateView):
+    """Allows a mentee to view upcoming meetings and access their editing and rescheduling pages"""
+
+    template_name = "people/mentee_upcoming.html"
+
+    def get(self, request: HttpRequest, *args: Any, **kwarsgs: Any) -> HttpResponse:
+        upcoming_meetings_id = MeetingRequest.objects.filter(
+            mentee=request.user,
+            mentee_approved=True,
+            mentor_approved=True,
+        ).all()
+
+        upcoming_meetings = Event.objects.filter(
+            id__in=upcoming_meetings_id, endTime__gte=datetime.now()
+        ).all()
+
+        mm = MentorMentee.objects.filter(mentee=request.user).select_related("mentor")
+
+        return render(
+            request,
+            self.template_name,
+            {"upcoming_meetings": upcoming_meetings, "mm": mm},
+        )
+
+
+
 
 class MentorUpcomingMeetingsPage(IsUserMentorMixin, TemplateView):
     """Allows a mentor to view their upcoming meetings"""
