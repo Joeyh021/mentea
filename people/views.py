@@ -1251,7 +1251,8 @@ class MenteeEditMeetingNotesPage(IsUserMenteeMixin, TemplateView):
     form_class: Any = CreateMeetingNotesForm
 
     def get(self, request: HttpRequest, *args: Any, **kwarsgs: Any) -> HttpResponse:
-        return render(request, self.template_name, {})
+        form = self.form_class()
+        return render(request, self.template_name, {"form": form})
 
     def post(self, request, noteId=None) -> HttpResponse:
         form = self.form_class(request.POST)
