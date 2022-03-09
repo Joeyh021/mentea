@@ -11,7 +11,9 @@ def get_mentor(mentee: User) -> User:
 
 def mentor_mentors_mentee(mentor: User, mentee: User) -> Tuple[bool, MentorMentee]:
     try:
-        return (True, MentorMentee.objects.get(mentee=mentee, mentor=mentor, approved=True))
+        return (
+            True,
+            MentorMentee.objects.get(mentee=mentee, mentor=mentor, approved=True),
+        )
     except:
         return (False, None)
-    

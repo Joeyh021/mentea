@@ -51,8 +51,6 @@ class EventsIndexPage(LoginRequiredMixin, TemplateView):
 
         # return HttpResponse(my_events)
 
-        
-
         event_list = (
             Event.objects.order_by("startTime")
             .filter(endTime__gte=datetime.now(), type=etype)

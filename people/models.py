@@ -79,7 +79,7 @@ class User(AbstractBaseUser):
     REQUIRED_FIELDS = []
 
     def __str__(self):
-        return self.email
+        return self.first_name + " " + self.last_name
 
     def get_full_name(self):
         # The user is identified by their email address
@@ -87,9 +87,6 @@ class User(AbstractBaseUser):
 
     def get_short_name(self):
         # The user is identified by their email address
-        return self.email
-
-    def __str__(self):
         return self.email
 
     def has_perm(self, perm, obj=None):
@@ -103,7 +100,9 @@ class User(AbstractBaseUser):
         # Simplest possible
 
     def notifs(self):
-        return Notification.objects.filter(user=self, read=False)
+        return Notification.objects.filter(user=self, read=False).order_by(
+            "-created_at"
+        )
 
     def has_notifs(self):
         return self.notifs().count() > 0
@@ -142,9 +141,11 @@ class MentorMentee(models.Model):
     approved = models.BooleanField(default=False)
     updated_at = models.DateTimeField(auto_now=True)
     created_at = models.DateTimeField(auto_now_add=True)
-    
+
     def get_plans_of_action(self):
-        return PlanOfAction.objects.filter(associated_mentor=self.mentor, associated_mentee=self.mentee).all()
+        return PlanOfAction.objects.filter(
+            associated_mentor=self.mentor, associated_mentee=self.mentee
+        ).all()
 
     class Meta:
         indexes = [models.Index(fields=["mentee", "mentor"])]

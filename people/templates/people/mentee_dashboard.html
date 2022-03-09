@@ -22,11 +22,34 @@
 </div>
 <br>
 <div class="bg-block-mentee" >
-    (insert mentor profiles here)
-    <br><br>
-    <a href="/user/profile/" class="nav-item">
-        <i class="fa-solid fa-circle-user fa-2x" style="padding-right:10px; width: 6rem; height: 6rem; color: #6e6464;"></i>
-    </a>
+    
+    <div class="card-group row row-cols-1 row-cols-md-5 g-4 mb-4">
+        {% for mem in mm  %}
+            <div class="col">
+                <div class="card h-100 text-white" style="background-color: transparent !important; border: 0px !important;">
+                    <div class="card-body d-flex flex-column align-items-center justify-content-between">
+                        <i class="fa-solid fa-circle-user fa-5x"></i>
+                        
+                        <h5 class="card-title d-flex" style="margin-top: 0.5em !important; margin-bottom: 0px !important;">{{ mem.mentor.get_full_name }}</h5>
+
+
+
+
+
+                        
+                    </div>
+         
+
+                      <a href="/user/{{ mem.mentor.id }}" class="stretched-link"></a>
+        
+                </div>
+            </div>
+        {% empty %}
+
+        <div class="alert alert-danger w-100" style="margin-top: 40px;">There are no plans of action yet! <a href="plans/new/" class="alert-link">Create one?</a></div>
+        {% endfor %}
+    </div>
+
     <br>
     <span class="btn btn-rounded bg-mentee-white" style="font-size: 0.9rem;"> View Feedback </span>
     <br><br>

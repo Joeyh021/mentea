@@ -3,17 +3,45 @@
 {% block title %}Mentee Pending Meetings{% endblock %}
 
 {% block body %}
-{% for meeting in upcoming_meetings %}
-<p> Name:  {{meeting.name}} </p>
-<p> Start Time: {{meeting.start_time}} </p>
-<p> Duration: {{meeting.duration}} </p>
-<p> Location: {{meeting.location}} </p>
-<form method="POST">
-    {% csrf_token %}
-        <input class="btn btn-primary" type="submit" value="Approve Meeting">
-    </form>
-    <a href="mentee_reschedule"> Reschedule Meeting </a>
-{% empty %}
-<div class="alert alert-danger w-100" style="margin-top: 40px;">You don't have any pending meetings!</div>
-{% endfor %}
+
+<small>
+    <a href="../">Back</a>
+</small>
+<h1>Pending Meetings:</h2>
+<p>Here are all your pending meetings; including meetings you need to approve and, meetings that your Mentor needs to approve!</p>
+
+<div class="card-group row row-cols-1 row-cols-md-4 g-4 mb-4">
+    {% for meeting in pending_meetings  %}
+        <div class="col">
+            <div class="card h-100" >
+                <div class="card-body">
+                    
+                    <h5 class="card-title d-flex" style="margin-bottom: 0px !important;">{{ meeting.event.name }}</h5>
+                    <small><strong>With:</strong> {{ meeting.event.mentor.get_full_name }} ({{ meeting.event.location }})</small>
+            
+                    <hr>
+
+                    {% if not meeting.mentor_approved %}
+                        <span class="text-info">Waiting for mentor to approve</span>
+                    {% endif %}
+
+
+
+                    
+                </div>
+                <div class="card-footer d-flex align-items-center">
+                    <span style="font-size: 0.8em;">{{ meeting.event.startTime|date:"d/m/y @ H:i" }} - {{ meeting.event.endTime|date:"H:i" }}</span>
+                    <a href="../mentee_reschedule/{{ meeting.event.id }}" class="ms-auto">Reschedule </a>
+                </div>
+     
+
+                 
+    
+            </div>
+        </div>
+    {% empty %}
+
+    <div class="alert alert-danger w-100" style="margin-top: 40px;">There are no plans of action yet! <a href="plans/new/" class="alert-link">Create one?</a></div>
+    {% endfor %}
+</div>
 {% endblock %}
