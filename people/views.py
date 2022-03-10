@@ -1200,8 +1200,18 @@ class MentorEditMeetingPage(IsUserMentorMixin, TemplateView):
     template_name = "people/mentor_edit_meeting"
     form_class: Any = CreateMeetingForm
 
-    def get(self, request: HttpRequest, *args: Any, **kwarsgs: Any) -> HttpResponse:
-        return render(request, self.template_name, {})
+    def get(self, request: HttpRequest, eventId=None) -> HttpResponse:
+        meeting = get_object_or_404(Event, id=eventId)
+
+        form = self.form_class(
+            initial={
+                "name": meeting.name,
+                "start-time": meeting.startTime,
+                "duration": meeting.duration,
+                "location": meeting.location,
+            }
+        )
+        return render(request, self.template_name, {"form":form})
 
     def post(self, request, eventId=None) -> HttpResponse:
         form = self.form_class(request.POST)
@@ -1232,7 +1242,6 @@ class MentorEditMeetingPage(IsUserMentorMixin, TemplateView):
             # Show error messages and go back to ?
             messages.error(request, "Error updating meeting")
             return render(request, self.template_name, {})
-
 
 class MenteeViewMeetingNotesPage(IsUserMenteeMixin, TemplateView):
     """Allows the mentee to view the notes for a past meeting"""
