@@ -1334,7 +1334,7 @@ class MenteeEditMeetingNotesPage(IsUserMenteeMixin, TemplateView):
 class MentorViewMeetingNotesPage(IsUserMentorMixin, TemplateView):
     """Allows the mentor to view the notes for a past meeting"""
 
-    template_name = "people/mentoe_view_notes.html"
+    template_name = "people/mentor_view_notes.html"
 
     def get(self, request, eventId=None) -> HttpResponse:
 
