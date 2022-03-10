@@ -16,12 +16,12 @@
 
     
 
-    <div class="ms-auto g-2">
+    <div class="ms-auto g-2 event-buttons-mobile">
         {% if user.user_type == "Mentor" or user.user_type == "MentorMentee" %}
-            <a href="create" class="btn btn-primary">Add Workshop</a>
+            <a href="create" class="btn btn-primary">Add</a>
         {% endif %}
         {% if user.user_type == "Mentee" or user.user_type == "MentorMentee"  %}
-            <a href="request" class="btn btn-primary position-relative">Request Workshop</a>
+            <a href="request" class="btn btn-primary position-relative">Request</a>
         {% endif %}
     </div>
 </div>

@@ -3,6 +3,86 @@
 {% block title %}Home{% endblock %}
 
 {% block body %}
+
+<div class="bg-mentea position-absolute top-0 start-0" style="width: 100vw !important; max-width: 100vw; padding: 0 !important; float: left; overflow: hidden;">
+    <br><br><br><br>
+    <div class="row" >
+        <div class="col d-flex flex-column align-items-center justify-content-center" style="">
+            <h1 class="mt-2 mb-0" color="#6e6464" style="font-size: 3rem; text-align: center" >
+                mentoring made easy.
+            </h1>
+            <img src="../static/images/mentea.jpg" alt="Mentea image" class="mobile-80-width" style="width:50%; height:auto;">
+        </div>
+    </div>
+    <div class="row bg-white" style="padding-top: 6em; padding-bottom: 6em; overflow: hidden !important">
+        <div class="col d-flex align-items-center justify-content-center  " style="padding: 0 !important; padding-bottom: 10px !important; padding-top: 10px !important">
+            <div class="bg-text-boxes-homepage mobile-80-width" style="padding: 30px; align-self:center; width: 60%">
+                <h1 class="mt-2 mb-0" color="#6e6464" style="font-size: 3rem;">
+                    gain expertise and connections.
+                </h1>
+                <br>
+                <p style="color: #3f4040;"> Mentea is a mentoring-mentee platform that allows you to connect with mentors, organise mentoring meetings and newtork in group sessions and workshops.</p>
+            </div>
+        </div>
+
+        <div class="col d-flex align-items-center justify-content-center " style="padding: 0 !important;">
+            <div class="bg-text-boxes-homepage2 mobile-80-width" style="padding: 30px; align-self:center; width: 60%">
+                <h1 class="mt-2 mb-0" color="#6e6464" style="font-size: 3rem; color:#3f4040;">
+                    help others grow and develop.
+                </h1>
+                <br>
+                <p style="color: #3f4040;"> Mentea's algorithm matches mentors and mentees with similar areas of expertise and interest. 
+                    You're matched with mentors and mentees based off the preferences specified in your profile.  </p>
+            </div>
+        </div>
+    </div>
+    <div class="row" style="color: #3f4040; background-color:#D2F1A5;">
+        <div class="col" style="width:100%; height:auto; background-color:#D2F1A5; padding:5vw">
+            <h1 class="mt-2 mb-0" style="color: #3f4040; padding: 30px; font-size: 3rem;">
+                fulfill your potential.
+            </h1>
+            <p style="color: #3f4040;">Our philosophy revolves around the following rules of mentoring:</p>
+                <ol style="color: #3f4040; font-weight: bold; padding-bottom:30px; padding-right:30px; border-right:5px solid #3f4040; border-bottom:5px solid #3f4040;">
+                    <li>A mentee should always drive the relationship, setting the agenda and approaching the mentor when help is require.</li>
+                    <li>A mentor will always give up time to the mentee.</li>
+                    <li>The mentoring arrangement should be based on themes and topic areas that they require help unblocking to achieve success.</li>
+                    <li>A mentor should always be from a different business area to the mentee.</li>
+                </ol>
+            <br><br><br>
+            <div style="border-top:5px solid #3f4040; border-left:5px solid #3f4040;">
+                <h1 class="mt-2 mb-0" style="color: #3f4040; padding-top:30px; padding-left:30px; font-size: 3rem;">
+                    achieve success.
+                </h1>
+                <p style="color: #3f4040; padding:30px;">The act of mentoring is reliant on the relationship between mentor and mentee.
+                    Mentea facilitates that relationship and helps maintain it. 
+                    Mentea ensures mentoring is beneficial and impactful to both mentor and mentee by following the rules of mentoring. 
+                </p>
+                <h1 class="mt-2 mb-0" style="color: #3f4040; padding-left:30px; font-size: 2rem;">
+                    tell me more.
+                </h1>
+                <a style="color: #3f4040; padding-left:30px;" href="faq/">See our FAQs.</a> 
+            </div>
+        </div>
+    </div>
+    <footer class="footer mt-auto bg-dark py-2">
+        <div class="container">
+            <span class="text-light row">
+                <div class="col">
+                    <span><i class="fa-solid fa-mug-hot text-white fw-bolder fst-italic mx-2" style="font-size:18px;"></i></span>
+                    <span> Copyright &copy; 2022 Mentea, Inc</span>
+                </div>  
+                <div class="col-md-6 text-md-end">
+                    <a href="{% url "main:tos" %}" class="link-light">Terms of Service</a>
+                    <span class="text-muted mx-2">|</span> 
+                    <a href="{% url "main:privacy" %}" class="link-light">Privacy Policy</a>
+                </div>
+            </span>
+        </div>
+    </footer>
+</div>
+
+
+<!-- 
 <div class="bg-block-main-green"> 
     <br>
     <div class="bg-child-block" style="background-color:#439481; display: flex; align-items: flex-end;"> 
@@ -62,7 +142,7 @@
             </div>
         </div>
     </div>
-</div>
+</div> -->
 
 
 {% endblock %}

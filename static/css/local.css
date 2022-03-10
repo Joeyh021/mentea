@@ -287,3 +287,14 @@ label{
     border-radius: 20px;
 
 }
+
+@media all and (max-width: 600px) 
+{
+    .mobile-80-width {
+        width: 80% !important;
+    }
+
+    .event-buttons-mobile {
+        margin-left: auto !important;
+    }
+}

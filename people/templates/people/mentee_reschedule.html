@@ -3,6 +3,11 @@
 {% block title %}Mentee Reschedule Meeting{% endblock %}
 
 {% block body %}
+<small>
+    <a href="../">Back</a>
+</small>
+<h1>Reschedule Meeting</h1>
+
 <form method="POST">
     {% csrf_token %}
         
@@ -39,6 +44,6 @@
         </div>
     
     
-        <input class="btn btn-primary" type="submit" value="Reschedule Meeting">
+        <input class="btn btn-primary" type="submit" value="Reschedule">
     </form>
 {% endblock %}

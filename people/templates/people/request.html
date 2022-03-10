@@ -3,6 +3,10 @@
 {% block title %}Request a Meeting{% endblock %}
 
 {% block body %}
+<small>
+    <a href="../">Back</a>
+</small>
+<h1>Reschedule Meeting</h1>
 <form method="POST">
 {% csrf_token %}
     
