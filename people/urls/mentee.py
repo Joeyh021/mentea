@@ -24,7 +24,9 @@ urlpatterns = [
         MenteeEditMeetingPage.as_view(),
         name="mentee_edit_meeting",
     ),
-    path("mentee_upcoming/", MenteeUpcomingMeetingsPage.as_view(), name="mentee_upcoming"),
+    path(
+        "mentee_upcoming/", MenteeUpcomingMeetingsPage.as_view(), name="mentee_upcoming"
+    ),
     path("view_notes/", MenteeViewMeetingNotesPage.as_view(), name="view_notes"),
     path("add_notes/", MenteeAddMeetingNotesPage.as_view(), name="add_notes"),
     path("edit_notes/", MenteeEditMeetingNotesPage.as_view(), name="edit_notes"),
