@@ -7,6 +7,7 @@ def create_default_data():
     mentee = User.objects.create_user(
         email="mentee@mentea.me", password="menteepassword"
     )
+    mentee.bio = "I am a mentee"
     mentee.user_type = "Mentee"
     mentee.save()
 
@@ -14,7 +15,8 @@ def create_default_data():
     mentor = User.objects.create_user(
         email="mentor@mentea.me", password="mentorpassword"
     )
-    mentor.user_type = "Mentee"
+    mentor.user_type = "Mentor"
+    mentor.bio = "I am a mentor"
     mentor.save()
 
     MentorMentee.objects.create(mentor=mentor, mentee=mentee, approved=True)
@@ -34,6 +36,20 @@ def create_default_data():
         achieved=False,
         associated_poa=plan,
     )
+
+    # some topics
+    management = Topic.objects.create(topic="project management")
+    spreadsheets = Topic.objects.create(topic="excel spreadsheets")
+    python = Topic.objects.create(topic="python programming")
+
+    # give the users some topics
+    UserTopic.objects.create(user=mentee, topic=python, usertype=UserType.Mentee)
+    UserTopic.objects.create(user=mentee, topic=spreadsheets, usertype=UserType.Mentee)
+    UserTopic.objects.create(user=mentor, topic=management, usertype=UserType.Mentor)
+
+    # create some business areas
+    marketing = BusinessArea.objects.create(business_area="marketing")
+    engineering = BusinessArea.objects.create(business_area="engineering")
 
 
 # data used only for matching tests
