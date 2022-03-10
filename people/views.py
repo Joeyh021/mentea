@@ -1391,8 +1391,15 @@ class MentorEditMeetingNotesPage(IsUserMentorMixin, TemplateView):
     template_name = "people/mentor_edit_notes.html"
     form_class: Any = CreateMeetingNotesForm
 
-    def get(self, request: HttpRequest, *args: Any, **kwarsgs: Any) -> HttpResponse:
-        return render(request, self.template_name, {})
+    def get(self, request: HttpRequest, noteId=None) -> HttpResponse:
+        note = get_object_or_404(MeetingNotes, id=noteId)
+
+        form = self.form_class(
+            initial={
+                "content": note.content,
+            }
+        )
+        return render(request, self.template_name, {"form":form})
 
     def post(self, request, noteId=None) -> HttpResponse:
         form = self.form_class(request.POST)
