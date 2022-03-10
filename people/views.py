@@ -1356,16 +1356,16 @@ class MentorAddMeetingNotesPage(IsUserMentorMixin, TemplateView):
 
     def get(self, request: HttpRequest, *args: Any, **kwarsgs: Any) -> HttpResponse:
         form = self.form_class()
-        return render(request, self.template_name, {})
+        return render(request, self.template_name, {"form": form})
 
     def post(self, request, eventId=None) -> HttpResponse:
         form = self.form_class(request.POST)
         if form.is_valid():
 
             mentor = request.user
-            # not sure how to get the mentee here
-            mentee = mentor
             meeting = Event.objects.get(id=eventId)
+            #not sure this is right
+            mentee = meeting.attendees
             content = form.cleaned_data["content"]
 
             note = MeetingNotes(
