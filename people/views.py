@@ -40,6 +40,7 @@ from events.models import (
     GeneralFeedbackForm,
     FeedbackSubmission,
     Questions,
+    Answer,
     MeetingNotes,
 )
 
@@ -1434,8 +1435,10 @@ class MenteeMeetingFeedbackPage(IsUserMenteeMixin, TemplateView):
 
         mentee = request.user
         mentor = get_mentor(mentee)
-
-        feedback = FeedbackSubmission.objects.get(id=meetingId, user=mentor)
+        meeting = Event.objects.get(id=meetingId)
+        ff = meeting.feedback_form
+        submission = FeedbackSubmission.objects.get(form=ff, user=mentor)
+        feedback = Answer.objects.get(associated_submission=submission)
 
         return render(
             request,
@@ -1512,12 +1515,13 @@ class MentorMeetingFeedbackPage(IsUserMentorMixin, TemplateView):
     template_name = "people/mentor_meeting_feedback.html"
 
     def get(self, request: HttpRequest, meetingId=None) -> HttpResponse:
-
         mentor = request.user
-        meeting = MeetingRequest.objects.get(id=meetingId)
-        mentee = meeting.mentee
-
-        feedback = FeedbackSubmission.objects.get(id=meetingId, user=mentee)
+        m = MeetingRequest.objects.get(id=meetingId)
+        mentee = m.mentee
+        meeting = m.event
+        ff = meeting.feedback_form
+        submission = FeedbackSubmission.objects.get(form=ff, user=mentee)
+        feedback = Answer.objects.get(associated_submission=submission)
 
         return render(
             request,
