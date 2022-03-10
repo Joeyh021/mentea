@@ -171,17 +171,19 @@ class SendMessageForm(forms.Form):
 
 class RatingMentorForm(forms.Form):
     rating = forms.IntegerField()
-    feedback = forms.CharField( 
+    feedback = forms.CharField(
         widget=forms.Textarea(attrs={"rows": 20, "cols": 40, "class": "form-control"}),
         required=True,
-        )
+    )
+
 
 class GeneralFeedbackForm(forms.Form):
-    feedback = forms.CharField( 
+    feedback = forms.CharField(
         widget=forms.Textarea(attrs={"rows": 20, "cols": 40, "class": "form-control"}),
         required=True,
-        )
-        
+    )
+
+
 class MentorRescheduleForm(forms.Form):
     start_time = forms.DateTimeField(
         widget=forms.DateTimeInput(

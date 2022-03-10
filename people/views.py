@@ -771,6 +771,7 @@ class MentorMenteeMeetingsPage(IsUserMentorMixin, TemplateView):
     def get(self, request: HttpRequest, *args: Any, **kwarsgs: Any) -> HttpResponse:
         return render(request, self.template_name, {})
 
+
 class MeetingRequestPage(TemplateView):
     """A mentee should be able to request a meeting with their mentor."""
 
@@ -1423,13 +1424,14 @@ class MentorEditMeetingNotesPage(IsUserMentorMixin, TemplateView):
             messages.error(request, "Error updating meeting note")
             return render(request, self.template_name, {})
 
+
 class MenteeMeetingFeedbackPage(IsUserMenteeMixin, TemplateView):
     """Allows mentee to see their feedback for a given meeting"""
 
     template_name = "people/mentee_meeting_feedback.html"
 
     def get(self, request: HttpRequest, meetingId=None) -> HttpResponse:
-        
+
         mentee = request.user
         mentor = get_mentor(mentee)
 
@@ -1441,6 +1443,7 @@ class MenteeMeetingFeedbackPage(IsUserMenteeMixin, TemplateView):
             {"feedback": feedback},
             {"mentor": mentor},
         )
+
 
 class MenteeGiveGeneralFeedbackPage(IsUserMenteeMixin, TemplateView):
     """Allows mentee to give general feedback for mentor"""
@@ -1458,20 +1461,19 @@ class MenteeGiveGeneralFeedbackPage(IsUserMenteeMixin, TemplateView):
         if form.is_valid():
             mentee = request.user
             mentor = get_mentor(mentee)
-            #save the feedback to show to the mentor
+            # save the feedback to show to the mentor
             ff = GeneralFeedbackForm(
-                feedback = form.cleaned_data["feedback"],
-                submitted_by = mentee,
-                submitted_for = mentor
-
+                feedback=form.cleaned_data["feedback"],
+                submitted_by=mentee,
+                submitted_for=mentor,
             )
             ff.save()
-            #save rating
+            # save rating
             rating = Rating(
-                mentor = mentor,
-                rating = form.cleaned_data["rating"],
-                rated_by = mentee,
-                #not sure how to get associated topic
+                mentor=mentor,
+                rating=form.cleaned_data["rating"],
+                rated_by=mentee,
+                # not sure how to get associated topic
             )
 
             messages.success(request, "Feedback successfully sent")
@@ -1482,6 +1484,7 @@ class MenteeGiveGeneralFeedbackPage(IsUserMenteeMixin, TemplateView):
             messages.error(request, "Error sending feedback")
             return render(request, self.template_name, {})
 
+
 class MenteeViewGeneralFeedbackPage(IsUserMenteeMixin, TemplateView):
     """Allows the mentee to view general feedback from the mentor"""
 
@@ -1491,7 +1494,9 @@ class MenteeViewGeneralFeedbackPage(IsUserMenteeMixin, TemplateView):
 
         mentee = request.user
         mentor = get_mentor(mentee)
-        ff = GeneralFeedbackForm.objects.get(submitted_by=mentor, submitted_for=mentee).all()
+        ff = GeneralFeedbackForm.objects.get(
+            submitted_by=mentor, submitted_for=mentee
+        ).all()
 
         return render(
             request,
@@ -1507,7 +1512,7 @@ class MentorMeetingFeedbackPage(IsUserMentorMixin, TemplateView):
     template_name = "people/mentor_meeting_feedback.html"
 
     def get(self, request: HttpRequest, meetingId=None) -> HttpResponse:
-        
+
         mentor = request.user
         meeting = MeetingRequest.objects.get(id=meetingId)
         mentee = meeting.mentee
@@ -1520,6 +1525,7 @@ class MentorMeetingFeedbackPage(IsUserMentorMixin, TemplateView):
             {"feedback": feedback},
             {"mentee": mentee},
         )
+
 
 class MentorGiveGeneralFeedbackPage(IsUserMentorMixin, TemplateView):
     """Allows mentor to give general feedback for mentee"""
@@ -1537,10 +1543,9 @@ class MentorGiveGeneralFeedbackPage(IsUserMentorMixin, TemplateView):
         if form.is_valid():
             mentee = User.objects.get(id=menteeId)
             ff = GeneralFeedbackForm(
-                feedback = form.cleaned_data["feedback"],
-                submitted_by = request.user,
-                submitted_for = mentee
-
+                feedback=form.cleaned_data["feedback"],
+                submitted_by=request.user,
+                submitted_for=mentee,
             )
             ff.save()
 
@@ -1552,6 +1557,7 @@ class MentorGiveGeneralFeedbackPage(IsUserMentorMixin, TemplateView):
             messages.error(request, "Error sending feedback")
             return render(request, self.template_name, {})
 
+
 class MentorViewGeneralFeedbackPage(IsUserMentorMixin, TemplateView):
     """Allows the mentor to view general feedback from the mentee"""
 
@@ -1561,7 +1567,9 @@ class MentorViewGeneralFeedbackPage(IsUserMentorMixin, TemplateView):
 
         mentee = User.objects.get(id=menteeId)
         mentor = request.user
-        ff = GeneralFeedbackForm.objects.get(submitted_by=mentee, submitted_for=mentor).all()
+        ff = GeneralFeedbackForm.objects.get(
+            submitted_by=mentee, submitted_for=mentor
+        ).all()
 
         return render(
             request,
@@ -1569,8 +1577,3 @@ class MentorViewGeneralFeedbackPage(IsUserMentorMixin, TemplateView):
             {"ff": ff},
             {"mentee": mentee},
         )
-
-
-
-
-

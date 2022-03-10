@@ -55,10 +55,16 @@ class DefaultFeedbackForms(models.Model):
         self.pk = self.id = 1
         return super().save(*args, **kwargs)
 
+
 class GeneralFeedbackForm(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
-    submitted_by = models.ForeignKey(User, on_delete=models.CASCADE, related_name="submitted_by")
-    submitted_for = models.ForeignKey(User, on_delete=models.CASCADE, related_name="submitted_for")
+    submitted_by = models.ForeignKey(
+        User, on_delete=models.CASCADE, related_name="submitted_by"
+    )
+    submitted_for = models.ForeignKey(
+        User, on_delete=models.CASCADE, related_name="submitted_for"
+    )
+
 
 class EventType(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
