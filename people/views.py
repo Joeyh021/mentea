@@ -1071,10 +1071,14 @@ class MentorPastMeetingsPage(IsUserMentorMixin, TemplateView):
 
     def get(self, request: HttpRequest, *args: Any, **kwarsgs: Any) -> HttpResponse:
         # could also filter for each mentee in particular
-        past_meetings = Event.objects.filter(
-            mentor=request.user,
+
+        past_meetings_id = MeetingRequest.objects.filter(
             mentee_approved=True,
             mentor_approved=True,
+        ).all()
+
+        past_meetings = Event.objects.filter(
+            mentor=request.user,
             endTime__lt=datetime.now(),
         ).all()
 
