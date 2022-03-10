@@ -1,4 +1,4 @@
-"""mentoring URL Configuration
+"""Mentea's top level URL Configuration
 
 The `urlpatterns` list routes URLs to views. For more information please see:
     https://docs.djangoproject.com/en/4.0/topics/http/urls/
@@ -17,11 +17,19 @@ from django.contrib import admin
 from django.urls import include, path
 
 urlpatterns = [
-    path("admin/", admin.site.urls),
-    path("", include("main.urls")),
-    path("mentor/", include("people.urls.mentor")),
-    path("mentee/", include("people.urls.mentee")),
-    path("user/", include("people.urls.user")),
-    path("workshops/", include("events.urls")),
+    path("admin/", admin.site.urls),  # routes to any admin stuff
+    path("", include("main.urls")),  # URLs under the main app, general site stuff
+    path(
+        "mentor/", include("people.urls.mentor")
+    ),  # mentor view URLs under the people app
+    path(
+        "mentee/", include("people.urls.mentee")
+    ),  # mentee view URLs under the people app
+    path(
+        "user/", include("people.urls.user")
+    ),  # general user view URLs under the people app
+    path(
+        "workshops/", include("events.urls")
+    ),  # any workshops stuff under the events app
     path("__reload__/", include("django_browser_reload.urls")),
 ]
