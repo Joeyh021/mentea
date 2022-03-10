@@ -1,6 +1,6 @@
-{% extends "mentee_base.html" %}
+{% extends "mentor_base.html" %}
 
-{% block title %}Mentee Meeting Feedback{% endblock %}
+{% block title %}Mentor Meeting Feedback{% endblock %}
 
 {% block body %}
 
@@ -9,7 +9,7 @@
 </small>
 
 <h1> Feedback: </h1>
-<p> Here is the feedback from your mentor, {{mentor.get_full_name}} </p>
+<p> Here is the feedback from your mentee, {{mentee.get_full_name}} </p>
 {% if feedback %}
 <div class="card-group row row-cols-1 row-cols-md-4 g-4 mb-4">
         <div class="col">
@@ -26,7 +26,7 @@
 
     {% else %}
     
-    <div class="alert alert-danger w-100" style="margin-top: 40px;"> Mentor has not given feedback yet! </div>
+    <div class="alert alert-danger w-100" style="margin-top: 40px;"> Mentee has not given feedback yet! </div>
         
 </div>
 

@@ -1449,4 +1449,23 @@ class MenteeMeetingFeedbackPage(IsUserMenteeMixin, TemplateView):
             {"mentor": mentor},
         )
 
+class MentorMeetingFeedbackPage(IsUserMentorMixin, TemplateView):
+    """Allows mentor to see their feedback for a given meeting"""
+
+    template_name = "people/mentor_meeting_feedback.html"
+
+    def get(self, request: HttpRequest, meetingId=None) -> HttpResponse:
+        
+        mentor = request.user
+        meeting = MeetingRequest.objects.get(id=meetingId)
+        mentee = meeting.mentee
+
+        feedback = FeedbackSubmission.objects.get(id=meetingId, user=mentee)
+
+        return render(
+            request,
+            self.template_name,
+            {"feedback": feedback},
+            {"mentee": mentee},
+        )
 
