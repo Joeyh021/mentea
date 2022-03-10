@@ -981,15 +981,18 @@ class MenteeEditMeetingPage(IsUserMenteeMixin, TemplateView):
     template_name = "people/mentee_edit_meeting"
     form_class: Any = CreateMeetingForm
 
-    def get(self, request: HttpRequest, noteId=None) -> HttpResponse:
-        note = get_object_or_404(Event, id=noteId)
+    def get(self, request: HttpRequest, eventId=None) -> HttpResponse:
+        meeting = get_object_or_404(Event, id=eventId)
 
         form = self.form_class(
             initial={
-                "content": note.content,
+                "name": meeting.name,
+                "start-time": meeting.startTime,
+                "duration": meeting.duration,
+                "location": meeting.location,
             }
         )
-        return render(request, self.template_name, {})
+        return render(request, self.template_name, {"form":form})
 
     def post(self, request, eventId=None) -> HttpResponse:
         form = self.form_class(request.POST)
@@ -1291,9 +1294,15 @@ class MenteeEditMeetingNotesPage(IsUserMenteeMixin, TemplateView):
     template_name = "people/mentee_edit_notes.html"
     form_class: Any = CreateMeetingNotesForm
 
-    def get(self, request: HttpRequest, *args: Any, **kwarsgs: Any) -> HttpResponse:
-        form = self.form_class()
-        return render(request, self.template_name, {"form": form})
+    def get(self, request: HttpRequest, noteId=None) -> HttpResponse:
+        note = get_object_or_404(MeetingNotes, id=noteId)
+
+        form = self.form_class(
+            initial={
+                "content": note.content,
+            }
+        )
+        return render(request, self.template_name, {"form":form})
 
     def post(self, request, noteId=None) -> HttpResponse:
         form = self.form_class(request.POST)
