@@ -25,6 +25,7 @@ from .forms import (
     MenteeRescheduleForm,
     MentorRescheduleForm,
     CreateMeetingNotesForm,
+    GeneralFeedbackForm,
 )
 
 from .models import *
@@ -36,6 +37,7 @@ from events.models import (
     EventType,
     MeetingRequest,
     FeedbackForm,
+    GeneralFeedbackForm,
     FeedbackSubmission,
     Questions,
     MeetingNotes,
@@ -769,15 +771,6 @@ class MentorMenteeMeetingsPage(IsUserMentorMixin, TemplateView):
     def get(self, request: HttpRequest, *args: Any, **kwarsgs: Any) -> HttpResponse:
         return render(request, self.template_name, {})
 
-
-class RateMentorPage(IsUserMenteeMixin, TemplateView):
-    """Allows a mentee to rate their mentor"""
-
-    template_name = "people/rate_mentor.html"
-
-    form_class: Any = RatingMentorForm
-
-
 class MeetingRequestPage(TemplateView):
     """A mentee should be able to request a meeting with their mentor."""
 
@@ -1449,6 +1442,8 @@ class MenteeMeetingFeedbackPage(IsUserMenteeMixin, TemplateView):
             {"mentor": mentor},
         )
 
+
+
 class MentorMeetingFeedbackPage(IsUserMentorMixin, TemplateView):
     """Allows mentor to see their feedback for a given meeting"""
 
@@ -1468,4 +1463,37 @@ class MentorMeetingFeedbackPage(IsUserMentorMixin, TemplateView):
             {"feedback": feedback},
             {"mentee": mentee},
         )
+
+class MentorGiveGeneralFeedbackPage(IsUserMentorMixin, TemplateView):
+    """Allows mentor to give general feedback for mentee"""
+
+    template_name = "people/mentor_give_general_feedback.html"
+
+    form_class = GeneralFeedbackForm
+
+    def get(self, request: HttpRequest, *args: Any, **kwarsgs: Any) -> HttpResponse:
+        form = self.form_class()
+        return render(request, self.template_name, {"form": form})
+
+    def post(self, request, menteeId=None) -> HttpResponse:
+        form = self.form_class(request.POST)
+        if form.is_valid():
+            mentee = User.objects.get(id=menteeId)
+            ff = GeneralFeedbackForm(
+                feedback = form.cleaned_data["feedback"],
+                submitted_by = request.user,
+                submitted_for = mentee
+
+            )
+            ff.save()
+
+            messages.success(request, "Feedback successfully sent")
+            return redirect("dashboard")
+
+        else:
+            # Show error messages and go back to ?
+            messages.error(request, "Error sending feedback")
+            return render(request, self.template_name, {})
+
+
 

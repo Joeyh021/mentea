@@ -11,7 +11,7 @@ urlpatterns = [
     path("chat/", ChatPage.as_view(), name="chat"),
     path("chat/messages/", ChatMessages.as_view(), name="chat"),
     path("meetings/", MenteeMeetingsPage.as_view(), name="meetings"),
-    path("rate_mentor/", RateMentorPage.as_view(), name="rate_mentor"),
+ 
     path("mentee_past/", MenteePastMeetingsPage.as_view(), name="mentee_past"),
     path("mentee_pending/", MenteePendingMeetingsPage.as_view(), name="mentee_pending"),
     path(

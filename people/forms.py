@@ -182,6 +182,12 @@ class RatingMentorForm(forms.Form):
         if commit:
             feedback.save()
         return feedback
+
+class GeneralFeedbackForm(forms.Form):
+    feedback = forms.CharField( 
+        widget=forms.Textarea(attrs={"rows": 20, "cols": 40, "class": "form-control"}),
+        required=True,
+        )
         
 class MentorRescheduleForm(forms.Form):
     start_time = forms.DateTimeField(
