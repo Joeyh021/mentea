@@ -1,7 +1,7 @@
 from django import forms
 from django.contrib.auth.forms import UserCreationForm
 
-from .models import MentorMentee, User, BusinessArea, Topic, UserType
+from .models import MentorMentee, User, BusinessArea, Topic, UserType, Rating
 
 
 class RegistrationForm(UserCreationForm):
@@ -167,6 +167,21 @@ class MenteeRescheduleForm(forms.Form):
 
 class SendMessageForm(forms.Form):
     content = forms.CharField(widget=forms.TextInput(attrs={"class": "form-control"}))
+
+
+class RatingMentorForm(forms.Form):
+    rating = forms.IntegerField()
+    feedback = forms.CharField(
+        widget=forms.Textarea(attrs={"rows": 20, "cols": 40, "class": "form-control"}),
+        required=True,
+    )
+
+
+class GeneralFeedbackForm(forms.Form):
+    feedback = forms.CharField(
+        widget=forms.Textarea(attrs={"rows": 20, "cols": 40, "class": "form-control"}),
+        required=True,
+    )
 
 
 class MentorRescheduleForm(forms.Form):
