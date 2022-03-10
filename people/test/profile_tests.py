@@ -4,7 +4,6 @@ from people.models import *
 import pytest
 import random
 
-
 pytestmark = pytest.mark.django_db()
 
 
@@ -41,13 +40,24 @@ def test_edit_profile(client: Client, mentor: User):
     data = {
         "usertype": ["MentorMentee"],
         "bio": ["About me"],
-        "mentee_topics": new_mentee_topics,
-        "mentor_topics": new_mentor_topics,
-        "business_area": new_business_area,
+        "mentee_topics": [x.id for x in new_mentee_topics],
+        "mentor_topics": [x.id for x in new_mentor_topics],
+        "business_area": [new_business_area.id],
     }
-    response = client.post("/user/profile/edit", data=data)
+    response = client.post("/user/profile/edit/", data=data)
     print(response.content)
+    mentor.refresh_from_db()
     assert mentor.user_type == "MentorMentee"
+    assert mentor.bio == "About me"
+    assert mentor.business_area == new_business_area
+    assert set(new_mentor_topics) == set(
+        ut.topic
+        for ut in UserTopic.objects.filter(user=mentor, usertype=UserType.Mentor)
+    )
+    assert set(new_mentee_topics) == set(
+        ut.topic
+        for ut in UserTopic.objects.filter(user=mentor, usertype=UserType.Mentee)
+    )
 
 
 def test_add_topics(client: Client, mentor: User):
