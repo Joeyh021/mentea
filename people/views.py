@@ -1534,5 +1534,25 @@ class MentorGiveGeneralFeedbackPage(IsUserMentorMixin, TemplateView):
             messages.error(request, "Error sending feedback")
             return render(request, self.template_name, {})
 
+class MentorViewGeneralFeedbackPage(IsUserMentorMixin, TemplateView):
+    """Allows the mentor to view general feedback from the mentee"""
+
+    template_name = "people/mentor_view_general_feedback.html"
+
+    def get(self, request, menteeId=None) -> HttpResponse:
+
+        mentee = User.objects.get(id=menteeId)
+        mentor = request.user
+        ff = GeneralFeedbackForm.objects.get(submitted_by=mentee, submitted_for=mentor).all()
+
+        return render(
+            request,
+            self.template_name,
+            {"ff": ff},
+            {"mentee": mentee},
+        )
+
+
+
 
 

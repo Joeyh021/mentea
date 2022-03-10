@@ -49,4 +49,5 @@ urlpatterns = [
     path("edit_notes/", MentorEditMeetingNotesPage.as_view(), name="edit_notes"),
     path("meeting_feedback/", MentorMeetingFeedbackPage.as_view(), name="meeting_feedback"),
     path("give_general_feedback/", MentorGiveGeneralFeedbackPage.as_view(), name="give_general_feedback"),
+    path("view_general_feedback/", MentorViewGeneralFeedbackPage.as_view(), name="view_general_feedback")
 ]
