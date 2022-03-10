@@ -1,0 +1,37 @@
+{% extends "mentee_base.html" %}
+
+{% block title %}Mentee General Feedback{% endblock %}
+
+{% block body %}
+
+<small>
+    <a href="../">Back</a>
+</small>
+
+<form method="POST">
+    {% csrf_token %}
+        
+        <div class="mb-3">
+            <label for="name">Feedback:</label>
+            <input type="textarea" class="form-control" id="feedback" name="feedback" required>
+            {% if form.feedback.errors %}
+                {% for e in form.feedback.errors %}
+                    <p class="help is-danger">{{ e }}</p>
+                {% endfor %}
+            {% endif %}
+        </div>   
+
+        <div class="mb-3">
+            <label for="name">Give a rating from 1 to 5: </label>
+            <input type="text" class="form-control" id="rating" name="rating" required>
+            {% if form.rating.errors %}
+                {% for e in form.rating.errors %}
+                    <p class="help is-danger">{{ e }}</p>
+                {% endfor %}
+            {% endif %}
+        </div>   
+    
+        <input class="btn btn-primary" type="submit" value="Submit Feedback">
+    </form>
+
+{% endblock %}

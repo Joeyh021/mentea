@@ -171,17 +171,10 @@ class SendMessageForm(forms.Form):
 
 class RatingMentorForm(forms.Form):
     rating = forms.IntegerField()
-
-    class Meta:
-        model = Rating
-        fields = ("rating",)
-
-    def save(self, commit=True):
-        feedback = super(RatingMentorForm, self).save(commit=False)
-        feedback.rating = self.cleaned_data["rating"]
-        if commit:
-            feedback.save()
-        return feedback
+    feedback = forms.CharField( 
+        widget=forms.Textarea(attrs={"rows": 20, "cols": 40, "class": "form-control"}),
+        required=True,
+        )
 
 class GeneralFeedbackForm(forms.Form):
     feedback = forms.CharField( 
