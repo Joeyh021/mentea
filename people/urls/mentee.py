@@ -31,4 +31,5 @@ urlpatterns = [
     path("view_notes/", MenteeViewMeetingNotesPage.as_view(), name="view_notes"),
     path("add_notes/", MenteeAddMeetingNotesPage.as_view(), name="add_notes"),
     path("edit_notes/", MenteeEditMeetingNotesPage.as_view(), name="edit_notes"),
+    path("meeting_feedback/", MenteeMeetingFeedbackPage.as_view(), name="meeting_feedback"),
 ]

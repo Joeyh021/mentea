@@ -36,6 +36,7 @@ from events.models import (
     EventType,
     MeetingRequest,
     FeedbackForm,
+    FeedbackSubmission,
     Questions,
     MeetingNotes,
 )
@@ -775,6 +776,8 @@ class RateMentorPage(IsUserMenteeMixin, TemplateView):
     template_name = "people/rate_mentor.html"
 
     form_class: Any = RatingMentorForm
+
+
 class MeetingRequestPage(TemplateView):
     """A mentee should be able to request a meeting with their mentor."""
 
@@ -1426,3 +1429,24 @@ class MentorEditMeetingNotesPage(IsUserMentorMixin, TemplateView):
             # Show error messages and go back to ?
             messages.error(request, "Error updating meeting note")
             return render(request, self.template_name, {})
+
+class MenteeMeetingFeedbackPage(IsUserMenteeMixin, TemplateView):
+    """Allows mentee to see their feedback for a given meeting"""
+
+    template_name = "people/mentee_meeting_feedback.html"
+
+    def get(self, request: HttpRequest, meetingId=None) -> HttpResponse:
+        
+        mentee = request.user
+        mentor = get_mentor(mentee)
+
+        feedback = FeedbackSubmission.objects.get(id=meetingId, user=mentor)
+
+        return render(
+            request,
+            self.template_name,
+            {"feedback": feedback},
+            {"mentor": mentor},
+        )
+
+
