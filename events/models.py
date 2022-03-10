@@ -164,10 +164,8 @@ class MeetingRequest(models.Model):
 class MeetingNotes(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     event = models.ForeignKey(Event, on_delete=models.CASCADE, db_index=True)
-    mentee = models.ForeignKey(
-        User, on_delete=models.CASCADE, related_name="notes_mentee", db_index=True
+    author = models.ForeignKey(
+        User, on_delete=models.CASCADE, db_index=True
     )
-    mentor = models.ForeignKey(
-        User, on_delete=models.CASCADE, related_name="notes_mentor", db_index=True
-    )
+  
     content = models.CharField(max_length=500)

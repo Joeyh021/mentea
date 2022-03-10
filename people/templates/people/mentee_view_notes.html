@@ -22,7 +22,7 @@
                 </div>
                 <div class="card-footer d-flex align-items-center">
                     
-                    <a href="../edit_note/{{ note.id }}" class="ms-auto">Edit Meeting Note </a>
+                    <a href="{{ note.id }}" class="ms-auto">Edit Meeting Note </a>
                 </div>
             </div>
         </div>
@@ -33,8 +33,9 @@
     
     {% endfor %}
    
-    <a href="../add_note/{{ note.event.id }}" class="ms-auto">Add a Meeting Note</a>
+    
         
 </div>
+<a href="add" class="btn btn-primary ms-auto">Add a Meeting Note</a>
 
 {% endblock %}

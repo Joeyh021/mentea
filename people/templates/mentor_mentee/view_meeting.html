@@ -12,7 +12,7 @@
 </div>
 {% endif %}
 <small>
-    <a href="../">Back to Mentee portal</a>
+    <a href="../../">Back to Mentee portal</a>
 </small>
 <div class="row">
     <div class="col">
@@ -29,17 +29,8 @@
     
 </p>
 
-<div>
-    <h4>Notes</h4>
-    {% for note in meeting.mettingnotes_set %}
-    <div>
-        <p>{{ note.content }}</p>
-        <small>added by ...</small>
-    </div>
-    {% empty %}
-    <div class="alert alert-danger">There are no notes on this meeting</div>
-    {% endfor %}
-</div>
+<a href="notes" class="btn btn-primary">View notes</a>
+<a href="notes" class="btn btn-primary">View feedback</a>
 
 
 

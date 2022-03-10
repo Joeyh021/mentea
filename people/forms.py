@@ -195,4 +195,4 @@ class MentorRescheduleForm(forms.Form):
 
 
 class CreateMeetingNotesForm(forms.Form):
-    content = forms.CharField(max_length=500)
+    content = forms.CharField(max_length=500, widget=forms.TextInput(attrs={"class": "form-control"}))

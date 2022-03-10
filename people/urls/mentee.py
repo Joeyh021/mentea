@@ -20,18 +20,13 @@ urlpatterns = [
     ),
     path("request/", MeetingRequestPage.as_view(), name="request"),
     path(
-        "mentee_edit_meeting/<uuid:eventId>",
-        MenteeEditMeetingPage.as_view(),
-        name="mentee_edit_meeting",
-    ),
-    path(
         "mentee_upcoming/", MenteeUpcomingMeetingsPage.as_view(), name="mentee_upcoming"
     ),
-    path("view_notes/", MenteeViewMeetingNotesPage.as_view(), name="view_notes"),
-    path("add_notes/", MenteeAddMeetingNotesPage.as_view(), name="add_notes"),
-    path("edit_notes/", MenteeEditMeetingNotesPage.as_view(), name="edit_notes"),
+    path("meeting/<uuid:meetingId>/notes/", MenteeViewMeetingNotesPage.as_view(), name="view_notes"),
+    path("meeting/<uuid:meetingId>/notes/add/", MenteeAddMeetingNotesPage.as_view(), name="add_notes"),
+    path("meeting/<uuid:meetingId>/notes/<uuid:noteId>/", MenteeEditMeetingNotesPage.as_view(), name="edit_notes"),
     path(
-        "meeting_feedback/",
+        "meeting/<uuid:meetingId>/feedback/",
         MenteeMeetingFeedbackPage.as_view(),
         name="meeting_feedback",
     ),

@@ -16,7 +16,7 @@
             <div class="card h-100" >
                 <div class="card-body">
                     
-                    <h5 class="card-title d-flex" style="margin-bottom: 0px !important;">{{ feedback.form }}</h5>
+                    <custom-form-result-viewer form-id="{{ ff.id }}">Loading form...</custom-form-result-viewer>
 
                     <hr>
 
@@ -27,6 +27,8 @@
     {% else %}
     
     <div class="alert alert-danger w-100" style="margin-top: 40px;"> Mentor has not given feedback yet! </div>
+
+    {% endif %}
         
 </div>
 

@@ -875,7 +875,7 @@ class MenteePastMeetingsPage(IsUserMenteeMixin, TemplateView):
             mentee=request.user,
             mentee_approved=True,
             mentor_approved=True,
-        ).all()
+        ).all().values('event')
 
         past_meetings = Event.objects.filter(
             id__in=past_meetings_id, endTime__lt=datetime.now()
@@ -983,7 +983,7 @@ class MenteeRescheduleMeetingPage(IsUserMenteeMixin, TemplateView):
             return render(request, self.template_name, {})
 
 
-class MenteeEditMeetingPage(IsUserMenteeMixin, TemplateView):
+class MenteeEditMeetingPage(IsUserMenteeMixin, TemplateView): # THIS IS THE SAME AS RESCHEDULING, SO IGNORING THIS
     """Allows mentee to edit a meeting"""
 
     template_name = "people/mentee_edit_meeting"
@@ -1259,9 +1259,9 @@ class MenteeViewMeetingNotesPage(IsUserMenteeMixin, TemplateView):
 
     template_name = "people/mentee_view_notes.html"
 
-    def get(self, request, eventId=None) -> HttpResponse:
+    def get(self, request, meetingId=None) -> HttpResponse:
 
-        meeting_notes = MeetingNotes.objects.get(id=eventId).all()
+        meeting_notes = MeetingNotes.objects.filter(event=meetingId).all()
 
         return render(
             request,
@@ -1281,24 +1281,23 @@ class MenteeAddMeetingNotesPage(IsUserMenteeMixin, TemplateView):
         form = self.form_class()
         return render(request, self.template_name, {"form": form})
 
-    def post(self, request, eventId=None) -> HttpResponse:
+    def post(self, request, meetingId=None) -> HttpResponse:
         form = self.form_class(request.POST)
         if form.is_valid():
 
-            mentee = request.user
-            mentor = get_mentor(mentee)
-            meeting = Event.objects.get(id=eventId)
+            author = request.user
+            meeting = Event.objects.get(id=meetingId)
             content = form.cleaned_data["content"]
 
             note = MeetingNotes(
-                event=meeting, mentee=mentee, mentor=mentor, content=content
+                event=meeting, author=author, content=content
             )
 
             note.save()
 
             # Show a message saying "Meeting note saved" and redirect to ?
             messages.success(request, "Meeting note saved")
-            return redirect("dashboard")
+            return redirect("..")
 
         else:
 
@@ -1313,7 +1312,7 @@ class MenteeEditMeetingNotesPage(IsUserMenteeMixin, TemplateView):
     template_name = "people/mentee_edit_notes.html"
     form_class: Any = CreateMeetingNotesForm
 
-    def get(self, request: HttpRequest, noteId=None) -> HttpResponse:
+    def get(self, request: HttpRequest, meetingId=None, noteId=None) -> HttpResponse:
         note = get_object_or_404(MeetingNotes, id=noteId)
 
         form = self.form_class(
@@ -1323,16 +1322,18 @@ class MenteeEditMeetingNotesPage(IsUserMenteeMixin, TemplateView):
         )
         return render(request, self.template_name, {"form": form})
 
-    def post(self, request, noteId=None) -> HttpResponse:
+    def post(self, request, meetingId=None, noteId=None) -> HttpResponse:
         form = self.form_class(request.POST)
         if form.is_valid():
             # get note
             note = MeetingNotes.objects.get(id=noteId)
             # edit the note
             note.content = form.cleaned_data["content"]
+            
+            note.save()
 
             messages.success(request, "Meeting note succesfully updated")
-            return redirect("dashboard")
+            return redirect("..")
 
         else:
 
@@ -1440,14 +1441,12 @@ class MenteeMeetingFeedbackPage(IsUserMenteeMixin, TemplateView):
         mentor = get_mentor(mentee)
         meeting = Event.objects.get(id=meetingId)
         ff = meeting.feedback_form
-        submission = FeedbackSubmission.objects.get(form=ff, user=mentor)
-        feedback = Answer.objects.get(associated_submission=submission)
+
 
         return render(
             request,
             self.template_name,
-            {"feedback": feedback},
-            {"mentor": mentor},
+            {"ff": ff, "mentor": mentor},
         )
 
 

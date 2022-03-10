@@ -13,7 +13,7 @@
         
         <div class="mb-3">
             <label for="content"> Content:</label>
-            <input type="textarea" class="form-control" id="content" name="content" required>
+            {{ form.content }}
             {% if form.content.errors %}
                 {% for e in form.content.errors %}
                     <p class="help is-danger">{{ e }}</p>
@@ -22,7 +22,7 @@
         </div>
     
     
-        <input class="btn btn-primary" type="submit" value="Add Meeting Note">
+        <input class="btn btn-primary" type="submit" value="Update">
     </form>
 
 {% endblock %}
