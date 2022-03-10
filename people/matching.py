@@ -5,7 +5,6 @@ from events.models import Event
 def get_matches(mentee: User):
     """
     given the uuid of a mentee, find the best possible mentors, returning a list of their uuids in order of suitability
-    if debug, then a dict of the calculated values is returned for testing/debugging purposes
     """
     mentee_type = UserType.Mentee
     mentor_mentee_type = UserType.MentorMentee
