@@ -27,8 +27,7 @@
                     <span style="font-size: 0.8em;">{{ meeting.event.startTime|date:"d/m/y @ H:i" }} - {{ meeting.event.endTime|date:"H:i" }}</span>
                     <a href="../view_notes/{{ meeting.event.id }}" class="ms-auto"> View Meeting Notes </a>
                     <a href="../add_notes/{{ meeting.event.id }}" class="ms-auto"> Add Meeting Notes </a>
-                    <a href="../view_feedback/{{ meeting.event.id }}" class="ms-auto"> View Feedback </a>
-                    <a href="../give_feedback/{{ meeting.event.id }}" class="ms-auto"> Give Feedback </a>
+                    <a href="../meeting_feedback/{{ meeting.event.id }}" class="ms-auto"> View Feedback </a>
                 </div>
             </div>
         </div>
