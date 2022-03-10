@@ -41,6 +41,8 @@ from events.models import (
 
 from datetime import datetime, timedelta
 
+from django.db.models import Q
+
 
 class IsUserMenteeMixin(UserPassesTestMixin):
     def test_func(self):
@@ -884,11 +886,10 @@ class MenteePendingMeetingsPage(IsUserMenteeMixin, TemplateView):
     template_name = "people/mentee_pending.html"
 
     def get(self, request: HttpRequest, *args: Any, **kwarsgs: Any) -> HttpResponse:
-        pending_meetings = (
-            MeetingRequest.objects.filter(mentee=request.user)
-            .order_by("-event__startTime")
-            .all()
-        )
+        pending_meetings = MeetingRequest.objects.filter(
+            Q(mentee_approved = False) | Q(mentor_approved = False),
+            mentee=request.user,
+            )
 
         return render(
             request,
@@ -980,7 +981,14 @@ class MenteeEditMeetingPage(IsUserMenteeMixin, TemplateView):
     template_name = "people/mentee_edit_meeting"
     form_class: Any = CreateMeetingForm
 
-    def get(self, request: HttpRequest, *args: Any, **kwarsgs: Any) -> HttpResponse:
+    def get(self, request: HttpRequest, noteId=None) -> HttpResponse:
+        note = get_object_or_404(Event, id=noteId)
+
+        form = self.form_class(
+            initial={
+                "content": note.content,
+            }
+        )
         return render(request, self.template_name, {})
 
     def post(self, request, eventId=None) -> HttpResponse:
@@ -1096,8 +1104,9 @@ class MentorPendingMeetingsPage(IsUserMentorMixin, TemplateView):
 
     def get(self, request: HttpRequest, *args: Any, **kwarsgs: Any) -> HttpResponse:
         pending_meetings = MeetingRequest.objects.filter(
-            mentor=request.user, mentor_approved=False
-        ).all()
+            Q(mentee_approved = False) | Q(mentor_approved = False),
+            mentee=request.user,
+            )
 
         return render(
             request,
@@ -1115,7 +1124,6 @@ class MentorPendingMeetingsPage(IsUserMentorMixin, TemplateView):
             "Meeting successfully approved",
         )
         return redirect("dashboard")
-
 
 class MentorRescheduleMeetingPage(IsUserMentorMixin, TemplateView):
     """Allows mentor to reschedule a meeting"""
