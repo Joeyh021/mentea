@@ -1,3 +1,6 @@
+"""
+Views for app people, encompassing most user-focused stuff: mentor, mentee, user profiles, etc.
+"""
 import operator
 from django.contrib import messages
 from django.contrib.auth import login, authenticate
@@ -56,6 +59,8 @@ from django.db.models import Q
 
 
 class IsUserMenteeMixin(UserPassesTestMixin):
+    """Mixin to assert that a user must be a mentee to view a page"""
+
     def test_func(self):
         return (
             self.request.user.user_type == "Mentee"
@@ -69,6 +74,8 @@ class IsUserMenteeMixin(UserPassesTestMixin):
 
 
 class IsUserMentorMixin(UserPassesTestMixin):
+    """Mixin to assert that a user must be a mentor to view a page"""
+
     def test_func(self):
         return (
             self.request.user.user_type == "Mentor"
@@ -103,10 +110,15 @@ class UserSignupPage(TemplateView):
     form_class: Any = RegistrationForm
 
     def get(self, request: HttpRequest, *args: Any, **kwarsgs: Any) -> HttpResponse:
+        """GET returns the template with the signup form"""
         form = self.form_class()
         return render(request, self.template_name, {"form": form})
 
     def post(self, request: HttpRequest, *args: Any, **kwargs: Any) -> HttpResponse:
+        """
+        POSTing a form submission to this view creates a new account if the form data is all valid,
+        redirecting the user to then edit their newly created profile
+        """
         form = self.form_class(request.POST)
         if form.is_valid():
             form.save()
@@ -126,11 +138,12 @@ class UserSignupPage(TemplateView):
 
 
 class UserProfilePage(LoginRequiredMixin, TemplateView):
-    """Shows a user's profile page and allows them to edit it"""
+    """Shows a user's profile page"""
 
     template_name: str = "people/profile.html"
 
     def get(self, request: HttpRequest, *args: Any, **kwarsgs: Any) -> HttpResponse:
+        """GET renders the template, filling in the topics on the profile page"""
         mentee_topics = UserTopic.objects.filter(
             user=request.user, usertype=UserType.Mentee
         )
@@ -150,9 +163,12 @@ class UserProfilePage(LoginRequiredMixin, TemplateView):
 
 
 class ViewUserProfilePage(LoginRequiredMixin, TemplateView):
+    """View another user's profile page"""
+
     template_name: str = "people/profile.html"
 
     def get(self, request: HttpRequest, userId=None) -> HttpResponse:
+        """GET renders the template, but using another users's ID"""
 
         user = get_object_or_404(User, id=userId)
 
@@ -175,11 +191,13 @@ class UserProfileEditPage(LoginRequiredMixin, TemplateView):
     """Allows a user to edit their profile"""
 
     template_name: str = "people/profile_edit.html"
+    # three forms: the overall form, plus two forms to add new business areas and topics
     form_class: Any = ProfileForm
     ba_form_class: Any = BusinessAreaForm
     topic_form_class: Any = TopicForm
 
     def get(self, request: HttpRequest, *args: Any, **kwarsgs: Any) -> HttpResponse:
+        """Returns the template, passing the three forms as the rendering context"""
         form = self.form_class(
             initial={
                 "bio": request.user.bio,
@@ -204,6 +222,7 @@ class UserProfileEditPage(LoginRequiredMixin, TemplateView):
         )
 
     def post(self, request: HttpRequest, *args: Any, **kwarsgs: Any) -> HttpResponse:
+        """A POST to this URL could be submitting one of the three forms"""
         print(request.POST)
         if "business_area_new" in request.POST:
             # Process business area form
@@ -250,6 +269,7 @@ class UserProfileEditPage(LoginRequiredMixin, TemplateView):
                     },
                 )
         else:
+            # if not one of the other two forms its the profile edit form
             form = self.form_class(request.POST)
             if form.is_valid():
 
@@ -307,21 +327,13 @@ class UserProfileEditPage(LoginRequiredMixin, TemplateView):
                 )
 
 
-class UserCalendarPage(LoginRequiredMixin, TemplateView):
-    """Shows a user's calendar with all their upcoming meetings and events"""
-
-    template_name: str = "people/calendar.html"
-
-    def get(self, request: HttpRequest, *args: Any, **kwarsgs: Any) -> HttpResponse:
-        return render(request, self.template_name, {})
-
-
 class UserNotificationsPage(LoginRequiredMixin, TemplateView):
-    """Shows all of a users notifications"""
+    """Shows all of a users notifcations in the side bar"""
 
     template_name: str = "people/notifications.html"
 
     def get(self, request: HttpRequest, *args: Any, **kwarsgs: Any) -> HttpResponse:
+        """return rendered template, editing the content security policy of the response slightly"""
         resp = render(request, self.template_name, {})
         resp[
             "Content-Security-Policy"
@@ -329,6 +341,7 @@ class UserNotificationsPage(LoginRequiredMixin, TemplateView):
         return resp
 
     def post(self, request: HttpRequest) -> HttpResponse:
+        """POST to mark a notifaction has been read"""
         try:
             notifId = request.POST["notifId"]
 
@@ -389,11 +402,13 @@ class MenteeFeedbackPage(IsUserMenteeMixin, TemplateView):
 
 
 class MenteePlansPage(IsUserMenteeMixin, TemplateView):
-    """A mentee's plans of action page"""
+    """A mentee's plans of action page. Allows them to view their plans of action and tick off any completed targets."""
 
     template_name: str = "people/plans.html"
 
     def get(self, request: HttpRequest, *args: Any, **kwarsgs: Any) -> HttpResponse:
+        """GET renders the template, passing the plans to the template context"""
+
         user_plans = PlanOfAction.objects.all().filter(
             associated_mentee=request.user.id
         )
@@ -408,6 +423,7 @@ class MenteePlansPage(IsUserMenteeMixin, TemplateView):
         )
 
     def post(self, request: HttpRequest, *args, **kwargs) -> HttpResponse:
+        """POST ticks of a target as completed"""
         print(request.POST)
         if "completed" in request.POST:
             target = PlanOfActionTarget.objects.get(id=request.POST["completed"])
@@ -416,6 +432,7 @@ class MenteePlansPage(IsUserMenteeMixin, TemplateView):
         return HttpResponseRedirect(".")
 
     def __parse_plans(self, plans):
+        """simple helper method to parse plans of action and targets into an object easier for the template to render"""
         plans_list = []
         for p in plans:
             plan_targets = PlanOfActionTarget.objects.filter(associated_poa=p)
@@ -431,11 +448,12 @@ class MenteePlansPage(IsUserMenteeMixin, TemplateView):
 
 
 class MenteeNewPlanPage(IsUserMenteeMixin, TemplateView):
-    """allows a mentee to create a new plan of action for themselves"""
+    """Allows a mentee to create a new plan of action for themselves"""
 
     template_name: str = "people/new_plan.html"
 
     def get(self, request: HttpRequest, *args, **kwargs) -> HttpResponse:
+        """GET returns form rendered into template"""
         form = PlanOfActionForm()
         return render(
             request,
@@ -444,6 +462,7 @@ class MenteeNewPlanPage(IsUserMenteeMixin, TemplateView):
         )
 
     def post(self, request: HttpRequest, *args, **kwargs) -> HttpResponse:
+        """POST will contain a form submission with new plan of action to add to database"""
         current_user = request.user
         form = PlanOfActionForm(request.POST)
         print(request.POST)
@@ -454,8 +473,9 @@ class MenteeNewPlanPage(IsUserMenteeMixin, TemplateView):
                 name=plan_name,
                 associated_mentee=current_user,
                 associated_mentor=get_mentor(current_user),
-            )
+            )  # create new plan for form content
 
+            # add each of the new targets (if they were filled in)
             for i in range(1, 6):
                 target = form.cleaned_data[f"target_{i}"]
                 description = form.cleaned_data[f"description_{i}"]
@@ -478,11 +498,12 @@ class MenteeNewPlanPage(IsUserMenteeMixin, TemplateView):
 
 
 class ChatPage(LoginRequiredMixin, TemplateView):
-    """Chat between a mentee and their mentor"""
+    """Chat between two users"""
 
     template_name: str = "people/chat.html"
 
     def get(self, request: HttpRequest, *args: Any, **kwargs: Any) -> HttpResponse:
+        """returns the chat page with the send message form, any chat messages, and the mentee and mentor"""
 
         current_mentor = None
 
@@ -522,6 +543,7 @@ class ChatPage(LoginRequiredMixin, TemplateView):
         )
 
     def post(self, request: HttpRequest, *args: Any, **kwargs: Any) -> HttpResponse:
+        """POST submits a new form with a new chat message"""
 
         if "menteeid" in kwargs:
             current_mentee = User.objects.get(id=kwargs["menteeid"])
@@ -650,7 +672,6 @@ class MentorMenteesPage(IsUserMentorMixin, TemplateView):
         return render(request, self.template_name, {})
 
 
-# possible rename due to ambiguous names
 class MentorMenteePage(IsUserMentorMixin, TemplateView):
     """A mentor's overview of a specfic mentee and their relationship"""
 
@@ -685,7 +706,7 @@ class MentorMenteePage(IsUserMentorMixin, TemplateView):
 
 
 class MentorMenteeFeedbackPage(IsUserMentorMixin, TemplateView):
-    """Feedback between the mentor and specific mentee"""
+    """A page to display feedback between the mentor and specific mentee"""
 
     template_name: str = "people/mentor_feedback.html"
 
@@ -694,7 +715,10 @@ class MentorMenteeFeedbackPage(IsUserMentorMixin, TemplateView):
 
 
 class MentorMenteePlansPage(IsUserMentorMixin, TemplateView):
-    """Allows a mentor to view and manage plans of action for a specific mentee"""
+    """
+    Allows a mentor to view and manage plans of action for a specific mentee.
+    Very similar to the mentee one above, but rendering for the current mentee from the URL
+    """
 
     template_name: str = "people/plans.html"
 
@@ -740,7 +764,10 @@ class MentorMenteePlansPage(IsUserMentorMixin, TemplateView):
 
 
 class MentorMenteeNewPlanPage(IsUserMentorMixin, TemplateView):
-    """Allows a mentor to create a new plan of action for their mentee"""
+    """
+    Allows a mentor to create a new plan of action for a mentee
+    Very similar to the mentee one above, but rendering for the current mentee from the URL
+    """
 
     template_name: str = "people/new_plan.html"
 
