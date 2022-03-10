@@ -1,0 +1,44 @@
+{% extends "mentee_base.html" %}
+
+{% block title %}Mentee Past Meetings{% endblock %}
+
+{% block body %}
+
+<small>
+    <a href="../">Back</a>
+</small>
+
+<h1> Past Meetings: </h1>
+<p> Here are all of your previous meetings with your mentor. You can view and add meeting notes, view the feedback from your mentor and provide feedback for them. </p>
+
+<div class="card-group row row-cols-1 row-cols-md-4 g-4 mb-4">
+    {% for meeting in past_meetings %}
+        <div class="col">
+            <div class="card h-100" >
+                <div class="card-body">
+                    
+                    <h5 class="card-title d-flex" style="margin-bottom: 0px !important;">{{ meeting.event.name }}</h5>
+                    <small><strong>With:</strong> {{ meeting.event.mentor.get_full_name }} ({{ meeting.event.location }})</small>
+
+                    <hr>
+
+                </div>
+                <div class="card-footer d-flex align-items-center">
+                    <span style="font-size: 0.8em;">{{ meeting.event.startTime|date:"d/m/y @ H:i" }} - {{ meeting.event.endTime|date:"H:i" }}</span>
+                    <a href="../view_notes/{{ meeting.event.id }}" class="ms-auto"> View Meeting Notes </a>
+                    <a href="../add_notes/{{ meeting.event.id }}" class="ms-auto"> Add Meeting Notes </a>
+                    <a href="../view_feedback/{{ meeting.event.id }}" class="ms-auto"> View Feedback </a>
+                    <a href="../give_feedback/{{ meeting.event.id }}" class="ms-auto"> Give Feedback </a>
+                </div>
+            </div>
+        </div>
+
+    {% empty %}
+    
+    <div class="alert alert-danger w-100" style="margin-top: 40px;"> You have no past meetings! </div>
+    
+    {% endfor %}
+        
+</div>
+
+{% endblock %}

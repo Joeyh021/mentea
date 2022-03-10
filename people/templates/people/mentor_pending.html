@@ -1,0 +1,52 @@
+{% extends "mentor_base.html" %}
+
+{% block title %}Mentor Pending Meetings{% endblock %}
+
+{% block body %}
+
+<small>
+    <a href="../">Back</a>
+</small>
+<h1>Pending Meetings:</h2>
+<p>Here are all your pending meetings; including meetings you need to approve and, meetings that your Mentee needs to approve!</p>
+
+<div class="card-group row row-cols-1 row-cols-md-4 g-4 mb-4">
+    {% for meeting in pending_meetings  %}
+        <div class="col">
+            <div class="card h-100" >
+                <div class="card-body">
+                    
+                    <h5 class="card-title d-flex" style="margin-bottom: 0px !important;">{{ meeting.event.name }}</h5>
+                    <small><strong>With:</strong> {{ meeting.event.mentee.get_full_name }} ({{ meeting.event.location }})</small>
+            
+                    <hr>
+
+                    {% if not meeting.mentee_approved %}
+                        <span class="text-info">Waiting for mentee to approve</span>
+                    {% endif %}
+
+                    
+                </div>
+                <div class="card-footer d-flex align-items-center">
+                    <span style="font-size: 0.8em;">{{ meeting.event.startTime|date:"d/m/y @ H:i" }} - {{ meeting.event.endTime|date:"H:i" }}</span>
+                    <a href="../mentor_reschedule/{{ meeting.event.id }}" class="ms-auto">Reschedule </a>
+                    {% if not meeting.mentor_approved %}  
+                        <form action="POST">
+                            {% csrf_token %}
+                            <input type="submit" class="btn btn-primary" value="Approve Meeting" name="approve">
+                            <input type="hidden" value={{ meeting.id }} name="id">
+                        </form>
+                    {% endif %}
+                </div>
+     
+
+                 
+    
+            </div>
+        </div>
+    {% empty %}
+
+    <div class="alert alert-danger w-100" style="margin-top: 40px;"> You have no pending meetings! </div>
+    {% endfor %}
+</div>
+{% endblock %}

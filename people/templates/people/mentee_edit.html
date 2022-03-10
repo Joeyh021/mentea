@@ -1,0 +1,52 @@
+{% extends "mentee_base.html" %}
+
+{% block title %}Mentee Edit Meeting{% endblock %}
+
+{% block body %}
+<form method="POST">
+    {% csrf_token %}
+        
+        <div class="mb-3">
+            <label for="name">Name:</label>
+            {{ form.name }}
+            {% if form.name.errors %}
+                {% for e in form.name.errors %}
+                    <p class="help is-danger">{{ e }}</p>
+                {% endfor %}
+            {% endif %}
+        </div>
+    
+        <div class="mb-3">
+            <label for="start_time">Start Time:</label>
+            {{ form.start_time }}
+            {% if form.start_time.errors %}
+                {% for e in form.start_time.errors %}
+                    <p class="help is-danger">{{ e }}</p>
+                {% endfor %}
+            {% endif %}
+        </div>
+    
+        <div class="mb-3">
+            <label for="location">Location:</label>
+            {{ form.location }}
+            {% if form.location.errors %}
+                {% for e in form.location.errors %}
+                    <p class="help is-danger">{{ e }}</p>
+                {% endfor %}
+            {% endif %}
+        </div>
+    
+        <div class="mb-3">
+            <label for="duration">Duration:</label>
+            {{ form.duration }}
+            {% if form.duration.errors %}
+                {% for e in form.duration.errors %}
+                    <p class="help is-danger">{{ e }}</p>
+                {% endfor %}
+            {% endif %}
+        </div>
+    
+    
+        <input class="btn btn-primary" type="submit" value="Edit Meeting">
+    </form>
+{% endblock %}

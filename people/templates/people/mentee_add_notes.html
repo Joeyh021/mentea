@@ -1,0 +1,28 @@
+{% extends "mentee_base.html" %}
+
+{% block title %}Mentee Add Meeting Notes{% endblock %}
+
+{% block body %}
+
+<small>
+    <a href="../">Back</a>
+</small>
+
+<form method="POST">
+    {% csrf_token %}
+        
+        <div class="mb-3">
+            <label for="content"> Content:</label>
+            <input type="textarea" class="form-control" id="content" name="content" required>
+            {% if form.content.errors %}
+                {% for e in form.content.errors %}
+                    <p class="help is-danger">{{ e }}</p>
+                {% endfor %}
+            {% endif %}
+        </div>
+    
+    
+        <input class="btn btn-primary" type="submit" value="Add Meeting Note">
+    </form>
+
+{% endblock %}

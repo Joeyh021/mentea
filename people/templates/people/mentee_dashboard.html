@@ -22,15 +22,38 @@
 </div>
 <br>
 <div class="bg-block-mentee" >
-    (insert mentor profiles here)
-    <br><br>
-    <a href="/user/profile/" class="nav-item">
-        <i class="fa-solid fa-circle-user fa-2x" style="padding-right:10px; width: 6rem; height: 6rem; color: #6e6464;"></i>
-    </a>
+    
+    <div class="card-group row row-cols-1 row-cols-md-5 g-4 mb-4">
+        {% for mem in mm  %}
+            <div class="col">
+                <div class="card h-100 text-white" style="background-color: transparent !important; border: 0px !important;">
+                    <div class="card-body d-flex flex-column align-items-center justify-content-between">
+                        <i class="fa-solid fa-circle-user fa-5x"></i>
+                        
+                        <h5 class="card-title d-flex" style="margin-top: 0.5em !important; margin-bottom: 0px !important;">{{ mem.mentor.get_full_name }}</h5>
+
+
+
+
+
+                        
+                    </div>
+         
+
+                      <a href="/user/{{ mem.mentor.id }}" class="stretched-link"></a>
+        
+                </div>
+            </div>
+        {% empty %}
+
+        <div class="alert alert-danger w-100" style="margin-top: 40px;">There are no plans of action yet! <a href="plans/new/" class="alert-link">Create one?</a></div>
+        {% endfor %}
+    </div>
+
     <br>
     <a href="rate_mentor" class="btn btn-rounded bg-mentee-white" style="font-size: 0.9rem;"> Rate your mentor </a>
     <br><br>
-    <span class="btn btn-rounded bg-mentee-white" style="font-size: 0.9rem;"> Request Meeting </span>
+    <a href="request" class="btn btn-rounded bg-mentee-white" style="font-size: 0.9rem;"> Request Meeting </a>
     <br><br>
     <span class="btn btn-rounded bg-mentee-white" style="font-size: 0.9rem;"> End Mentorship </span>
 </div>
@@ -38,13 +61,20 @@
 <div style="text-align:center; border:5px;">
     <span class="btn btn-primary btn-rounded mt-4 px-4 " style="font-size: 2rem; background-color: #6e6464;">Request New Mentor</span>
 </div>
-
 <br>
 <div class="bg-block-mentee-light">
-   <h4> Upcoming Meetings </h3>
-   <p> Insert upcoming meetings here </p>
-   <span class="btn btn-rounded btn-mentee" style="font-size: 0.9rem;"> View Past Meetings </span>
-   <span class="btn btn-rounded btn-mentee" style="font-size: 0.9rem;"> View Pending Meetings </span>
+    <h4> Upcoming Meetings: </h4>
+    {% for meeting in upcoming_meetings %}
+    <p> Name:  {{meeting.name}} </p>
+    <p> Start Time: {{meeting.start_time}} </p>
+    <p> Duration: {{meeting.duration}} </p>
+    <p> Location: {{meeting.location}} </p>
+    {% empty %}
+    <div class="alert alert-danger w-100" style="margin-top: 40px;">You don't have any upcoming meetings!</div>
+    {% endfor %}
+    <a href="mentee_past" class="btn btn-rounded btn-mentee" style="font-size: 0.9rem;"> View Past Meetings </a>
+    <a href="mentee_pending" class="btn btn-rounded btn-mentee" style="font-size: 0.9rem;"> View Pending Meetings </a>
+    <a href="mentee_upcoming" class="btn btn-rounded btn-mentee" style="font-size: 0.9rem;"> Edit Upcoming Meetings </a>
 </div>
 
 {% endblock %}
