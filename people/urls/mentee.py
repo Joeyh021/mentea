@@ -45,4 +45,10 @@ urlpatterns = [
         MenteeViewGeneralFeedbackPage.as_view(),
         name="view_general_feedback",
     ),
+    path(
+        "meeting/<uuid:meetingId>/",
+        ViewMeetingPage.as_view(),
+        name="view_meeting"
+        
+    ),
 ]

@@ -137,9 +137,7 @@ class PlanOfActionForm(forms.Form):
 
 class CreateMeetingForm(forms.Form):
     name = forms.CharField(widget=forms.Textarea)
-    mentor = forms.ModelChoiceField(
-        widget=forms.Select(attrs={"class": "form-select"}), queryset=User.objects.all()
-    )
+
     start_time = forms.DateTimeField()
     location = forms.CharField(widget=forms.Textarea)
     duration = forms.IntegerField()

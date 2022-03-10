@@ -64,6 +64,7 @@ class GeneralFeedbackForm(models.Model):
     submitted_for = models.ForeignKey(
         User, on_delete=models.CASCADE, related_name="submitted_for"
     )
+    feedback = models.TextField(blank=True)
 
 
 class EventType(models.Model):

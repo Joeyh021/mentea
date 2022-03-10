@@ -17,23 +17,23 @@
             <div class="card h-100" >
                 <div class="card-body">
                     
-                    <h5 class="card-title d-flex" style="margin-bottom: 0px !important;">{{ meeting.event.name }}</h5>
-                    <small><strong>With:</strong> {{ meeting.event.mentor.get_full_name }} ({{ meeting.event.location }})</small>
-
-                    <hr>
+                    <h5 class="card-title d-flex" style="margin-bottom: 0px !important;">{{ meeting.name }}</h5>
+                    <small><strong>When:</strong> {{ meeting.startTime|date:"D m, Y @ H:i" }}</small>
+                    <br>
+                    <small><strong>Where:</strong> {{ meeting.location }}</small>
 
                 </div>
                 <div class="card-footer d-flex align-items-center">
-                    <span style="font-size: 0.8em;">{{ meeting.event.startTime|date:"d/m/y @ H:i" }} - {{ meeting.event.endTime|date:"H:i" }}</span>
-                    <a href="../mentee_reschedule/{{ meeting.event.id }}" class="ms-auto">Reschedule Meeting</a>
-                    <a href="../mentee_edit/{{ meeting.event.id }}" class="ms-auto">Edit Meeting </a>
+                    <span style="font-size: 0.8em;">{{ meeting.startTime|date:"d/m/y @ H:i" }} - {{ meeting.endTime|date:"H:i" }}</span>
+                    <a href="../mentee_reschedule/{{ meeting.id }}" class="ms-auto">Edit/Reschedule</a>
+
                 </div>
             </div>
         </div>
 
     {% empty %}
     
-    <div class="alert alert-danger w-100" style="margin-top: 40px;"> You have no upcoming meetings!<a href="../request/" class="alert-link">Request a meeting?</a> </div>
+    <div class="alert alert-danger w-100" style="margin-top: 40px;"> You have no upcoming meetings! <a href="../request/" class="alert-link">Request a meeting?</a> </div>
     
     {% endfor %}
         

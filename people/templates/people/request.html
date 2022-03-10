@@ -6,7 +6,7 @@
 <small>
     <a href="../">Back</a>
 </small>
-<h1>Reschedule Meeting</h1>
+<h1>Request Meeting</h1>
 <form method="POST">
 {% csrf_token %}
     
@@ -20,15 +20,6 @@
         {% endif %}
     </div>
 
-    <div class="mb-3">
-        <label for="name">Mentor:</label>
-        {{ form.mentor }}
-        {% if form.mentor.errors %}
-            {% for e in form.mentor.errors %}
-                <p class="help is-danger">{{ e }}</p>
-            {% endfor %}
-        {% endif %}
-    </div>
 
     <div class="mb-3">
         <label for="start_time">Start Time:</label>

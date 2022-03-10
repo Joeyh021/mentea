@@ -1,0 +1,56 @@
+{% extends "main.html" %}
+
+{% block title %}Events Index{% endblock %}
+
+{% block body %}
+{% if edited %}
+<div class="alert alert-success alert-dismissible fade show">
+    This workshop was successfully updated!
+    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close">
+
+      </button>
+</div>
+{% endif %}
+<small>
+    <a href="../">Back to Mentee portal</a>
+</small>
+<div class="row">
+    <div class="col">
+        <h1>{{ meeting.name }}</h1>
+    </div>
+
+</div>
+<small>{{ meeting.startTime|date:'M d, Y @ h:iA' }} - {{ meeting.endTime|date:"M d, Y @ h:iA" }}</small>
+
+<p class="mt-2">
+
+    <strong>Where:</strong>
+    {{ meeting.location }}
+    
+</p>
+
+<div>
+    <h4>Notes</h4>
+    {% for note in meeting.mettingnotes_set %}
+    <div>
+        <p>{{ note.content }}</p>
+        <small>added by ...</small>
+    </div>
+    {% empty %}
+    <div class="alert alert-danger">There are no notes on this meeting</div>
+    {% endfor %}
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+{% endblock %}

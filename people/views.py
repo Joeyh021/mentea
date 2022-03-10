@@ -44,7 +44,7 @@ from events.models import (
     MeetingNotes,
 )
 
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 
 from django.db.models import Q
 
@@ -350,18 +350,21 @@ class MenteeDashboardPage(IsUserMenteeMixin, TemplateView):
             mentee=request.user,
             mentee_approved=True,
             mentor_approved=True,
-        ).all()
+        ).all().values("event")
 
         upcoming_meetings = Event.objects.filter(
-            id__in=upcoming_meetings_ids, endTime__gte=datetime.now()
+            id__in=upcoming_meetings_ids, startTime__gte=datetime.now()
         ).all()
+        
+        plans = PlanOfAction.objects.all().filter(
+            associated_mentee=request.user.id
+        )
 
-        mm = MentorMentee.objects.filter(mentee=request.user).select_related("mentor")
 
         return render(
             request,
             self.template_name,
-            {"upcoming_meetings": upcoming_meetings, "mm": mm},
+            {"upcoming_meetings": upcoming_meetings, "mentor": get_mentor(request.user), "plans": plans},
         )
 
 
@@ -781,7 +784,7 @@ class MeetingRequestPage(TemplateView):
 
     def get(self, request: HttpRequest, *args: Any, **kwarsgs: Any) -> HttpResponse:
         form = self.form_class()
-        form.updateQSToUser(request.user)
+
         return render(request, self.template_name, {"form": form})
 
     def post(self, request: HttpRequest, *args: Any, **kwarsgs: Any) -> HttpResponse:
@@ -797,7 +800,7 @@ class MeetingRequestPage(TemplateView):
             duration = form.cleaned_data["duration"]
             location = form.cleaned_data["location"]
             user = request.user
-            mentor = form.cleaned_data["mentor"]
+            mentor = get_mentor(current_user)
 
             # Create feedback form
             ff = FeedbackForm(
@@ -1040,7 +1043,7 @@ class MenteeUpcomingMeetingsPage(IsUserMenteeMixin, TemplateView):
             mentee=request.user,
             mentee_approved=True,
             mentor_approved=True,
-        ).all()
+        ).all().values("event")
 
         upcoming_meetings = Event.objects.filter(
             id__in=upcoming_meetings_id, endTime__gte=datetime.now()
@@ -1497,15 +1500,14 @@ class MenteeViewGeneralFeedbackPage(IsUserMenteeMixin, TemplateView):
 
         mentee = request.user
         mentor = get_mentor(mentee)
-        ff = GeneralFeedbackForm.objects.get(
+        ff = GeneralFeedbackForm.objects.filter(
             submitted_by=mentor, submitted_for=mentee
         ).all()
 
         return render(
             request,
             self.template_name,
-            {"ff": ff},
-            {"mentor": mentor},
+            {"ff": ff, "mentor": mentor}
         )
 
 
@@ -1581,3 +1583,19 @@ class MentorViewGeneralFeedbackPage(IsUserMentorMixin, TemplateView):
             {"ff": ff},
             {"mentee": mentee},
         )
+
+
+class ViewMeetingPage(LoginRequiredMixin, TemplateView):
+    template_name = "mentor_mentee/view_meeting.html"
+    
+    def get(self, request, meetingId):
+        meeting = get_object_or_404(Event, id=meetingId)
+        
+        notes = meeting.meetingnotes_set
+        
+        return render(
+            request,
+            self.template_name,
+            {"meeting": meeting}
+        )
+        
