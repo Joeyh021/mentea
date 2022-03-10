@@ -1131,8 +1131,19 @@ class MentorRescheduleMeetingPage(IsUserMentorMixin, TemplateView):
     template_name = "people/mentor_reschedule"
     form_class: Any = MentorRescheduleForm
 
-    def get(self, request: HttpRequest, *args: Any, **kwarsgs: Any) -> HttpResponse:
-        return render(request, self.template_name, {})
+    def get(self, request: HttpRequest, eventId=None) -> HttpResponse:
+
+        event = get_object_or_404(Event, id=eventId)
+
+        form = self.form_class(
+            initial={
+                "start_time": event.startTime.replace(tzinfo=None).isoformat(),
+                "duration": event.duration,
+                "location": event.location,
+            }
+        )
+
+        return render(request, self.template_name, {"form": form})
 
     def post(self, request, eventId=None) -> HttpResponse:
         form = self.form_class(request.POST)
@@ -1141,18 +1152,33 @@ class MentorRescheduleMeetingPage(IsUserMentorMixin, TemplateView):
             # Get the event object for the current meeting
             meeting = Event.objects.get(id=eventId)
 
+            endTime = form.cleaned_data["start_time"] + timedelta(
+                minutes=form.cleaned_data["duration"]
+            )
+
             # Update the time and location
             meeting.startTime = form.cleaned_data["start_time"]
             meeting.duration = form.cleaned_data["duration"]
             meeting.location = form.cleaned_data["location"]
+            meeting.endTime = endTime
             meeting.save()
 
             # Get the meeting request object for the event
             meeting_request = MeetingRequest.objects.get(event=eventId)
 
-            # Update the approval (mentor approved mentee not approved)
+            # Update the approval (mentoe approved mentee not approved)
             meeting_request.mentee_approved = False
             meeting_request.mentor_approved = True
+
+            meeting_request.save()
+
+            NotificationManager.send(
+                "1-2-1 Meeting Reschedule",
+                request.user.get_full_name()
+                + ", has rescheduled a 1-2-1 meeting with you! Please re-confirm it",
+                meeting.mentee,
+                "",
+            )
 
             # Show a message saying "Meeting request updated" and redirect to dashboard
             messages.success(request, "Meeting request updated")
