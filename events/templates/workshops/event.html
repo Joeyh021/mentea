@@ -12,14 +12,14 @@
 </div>
 {% endif %}
 <small>
-    <a href="../">Back to all workshops</a>
+    <a href="{% url 'events:workshop-index' %}">Back to all workshops</a>
 </small>
 <div class="row">
     <div class="col">
         <h1>{{ event.name }}</h1>
     </div>
     <div class="col">
-        <form class="d-flex align-items-center " action="toggleAttendance" method="get">
+        <form class="d-flex align-items-center " action="{% url 'events:workshop-toggleattendance' eventId=eId %}" method="get">
             {% csrf_token %}
             {% if not registeredToEvent and not event.has_finished %}
             <button class="ms-auto btn btn-primary">Join Workshop</button>
@@ -109,7 +109,7 @@
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-          <form action="delete" method="post">
+          <form action="{% url 'events:workshop-delete' eventId=eId %}" method="post">
               {% csrf_token %}
             <button type="submit" class="btn btn-danger">Delete</button>
           </form>
