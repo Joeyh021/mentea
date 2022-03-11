@@ -1,11 +1,11 @@
 {% extends "mentee_base.html" %}
 
-{% block title %}Mentee General Feedback{% endblock %}
+{% block title %}General Feedback{% endblock %}
 
 {% block body %}
 
 <small>
-    <a href="../">Back</a>
+    <a href="{% url 'dashboard' %}">Back</a>
 </small>
 
 <form method="POST">

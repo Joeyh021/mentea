@@ -1,11 +1,11 @@
 {% extends "mentee_base.html" %}
 
-{% block title %}Mentee Pending Meetings{% endblock %}
+{% block title %}Pending Meetings{% endblock %}
 
 {% block body %}
 
 <small>
-    <a href="../">Back</a>
+    <a href="{% url 'dashboard' %}">Back</a>
 </small>
 <h1>Pending Meetings:</h2>
 <p>Here are all your pending meetings; including meetings you need to approve and, meetings that your Mentor needs to approve!</p>
@@ -47,7 +47,7 @@
         </div>
     {% empty %}
 
-    <div class="alert alert-danger w-100" style="margin-top: 40px;"> You have no pending meetings! <a href="../request/" class="alert-link"> Request a meeting?</a></div>
+    <div class="alert alert-danger w-100" style="margin-top: 40px;"> You have no pending meetings! <a href="{% url 'request' %}" class="alert-link"> Request a meeting?</a></div>
     {% endfor %}
 </div>
 {% endblock %}

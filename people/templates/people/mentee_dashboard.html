@@ -1,6 +1,6 @@
 {% extends "mentee_base.html" %}
 
-{% block title %}Mentee Index Page{% endblock %}
+{% block title %}Mentee Portal{% endblock %}
 
 {% block body %}
 <div class="center">
@@ -18,8 +18,8 @@
         <i class="fa-solid fa-circle-user" style="font-size: 10em;"></i>
         <h1>{{ mentor.get_full_name }} </h1>
         <br>
-        <form action="end-mentorship/" method="POST">
-            {%csrf_token%}
+        <form action="{% url 'end_mentorship' %}" method="POST">
+            {% csrf_token %}
             <input type="submit" class="btn btn-danger" value="End Mentorship">
         </form>
     </div>
@@ -28,10 +28,10 @@
 <br>
 <div class="row">
 
-    <div class="col d-flex"><a href="request" class="btn btn-mentee ms-auto me-auto">Request Meeting</a></div>
-    <div class="col d-flex"><a href="give_general_feedback" class="btn btn-mentee ms-auto me-auto">Give Feedback</a></div>
-    <div class="col d-flex"><a  href="view_general_feedback" class="btn btn-mentee ms-auto me-auto">View Feedback</a></div>
-    <div class="col d-flex"><a  href="chat" class="btn btn-mentee ms-auto me-auto">Chat</a></div>
+    <div class="col d-flex"><a href="{% url 'request' %}" class="btn btn-mentee ms-auto me-auto">Request Meeting</a></div>
+    <div class="col d-flex"><a href="{% url 'give_general_feedback' %}" class="btn btn-mentee ms-auto me-auto">Give Feedback</a></div>
+    <div class="col d-flex"><a  href="{% url 'view_general_feedback' %}" class="btn btn-mentee ms-auto me-auto">View Feedback</a></div>
+    <div class="col d-flex"><a  href="{% url 'chat' %}" class="btn btn-mentee ms-auto me-auto">Chat</a></div>
     
 </div>
 <br>
@@ -52,7 +52,7 @@
                         <br>
                         <small><strong>Where:</strong> {{ meeting.location }}</small>
 
-                        <a href="meeting/{{ meeting.id }}" class="stretched-link"></a>
+                        <a href="{% url 'view_meeting' meetingId=meeting.id %}" class="stretched-link"></a>
                     </div>
      
                 </div>
@@ -60,14 +60,14 @@
     
         {% empty %}
         
-        <div class="alert alert-danger w-100" style="margin-top: 40px;"> You have no upcoming meetings! <a href="request/" class="alert-link">Request a meeting?</a> </div>
+        <div class="alert alert-danger w-100" style="margin-top: 40px;"> You have no upcoming meetings! <a href="{% url 'request' %}" class="alert-link">Request a meeting?</a> </div>
         
         {% endfor %}
             
     </div>
-    <a href="mentee_past" class="btn btn-rounded btn-mentee" style="font-size: 0.9rem;"> View Past Meetings </a>
-    <a href="mentee_pending" class="btn btn-rounded btn-mentee" style="font-size: 0.9rem;"> View Pending Meetings </a>
-    <a href="mentee_upcoming" class="btn btn-rounded btn-mentee" style="font-size: 0.9rem;"> Edit Upcoming Meetings </a>
+    <a href="{% url 'mentee_past' %}" class="btn btn-rounded btn-mentee" style="font-size: 0.9rem;"> View Past Meetings </a>
+    <a href="{% url 'mentee_pending' %}" class="btn btn-rounded btn-mentee" style="font-size: 0.9rem;"> View Pending Meetings </a>
+    <a href="{% url 'mentee_upcoming' %}" class="btn btn-rounded btn-mentee" style="font-size: 0.9rem;"> Edit Upcoming Meetings </a>
 </div>
 
 <br>

@@ -1,11 +1,11 @@
 {% extends "mentee_base.html" %}
 
-{% block title %}Mentee Meeting Feedback{% endblock %}
+{% block title %}Meeting Feedback{% endblock %}
 
 {% block body %}
 
 <small>
-    <a href="../">Back</a>
+    <a href="{% url 'view_meeting' meetingId=meeting_id %}">Back</a>
 </small>
 
 <h1> Feedback: </h1>
@@ -26,7 +26,7 @@
 
     {% else %}
     
-    <div class="alert alert-danger w-100" style="margin-top: 40px;"> Mentor has not given feedback yet! </div>
+    <div class="alert alert-danger w-100" style="margin-top: 40px;"> Your mentor has not given feedback yet! </div>
 
     {% endif %}
         

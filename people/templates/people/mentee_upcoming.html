@@ -1,11 +1,11 @@
 {% extends "mentee_base.html" %}
 
-{% block title %}Mentee Upcoming Meetings{% endblock %}
+{% block title %}Upcoming Meetings{% endblock %}
 
 {% block body %}
 
 <small>
-    <a href="../">Back</a>
+    <a href="{% url 'dashboard' %}">Back</a>
 </small>
 
 <h1> Upcoming Meetings: </h1>
@@ -33,7 +33,7 @@
 
     {% empty %}
     
-    <div class="alert alert-danger w-100" style="margin-top: 40px;"> You have no upcoming meetings! <a href="../request/" class="alert-link">Request a meeting?</a> </div>
+    <div class="alert alert-danger w-100" style="margin-top: 40px;"> You have no upcoming meetings! <a href="{% url 'request' %}" class="alert-link">Request a meeting?</a> </div>
     
     {% endfor %}
         

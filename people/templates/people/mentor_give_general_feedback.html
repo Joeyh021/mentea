@@ -1,11 +1,11 @@
 {% extends "mentor_base.html" %}
 
-{% block title %}Mentor General Feedback{% endblock %}
+{% block title %}General Feedback{% endblock %}
 
 {% block body %}
 
 <small>
-    <a href="../">Back</a>
+    <a href="{% url 'mentee' menteeId=mentee_id %}">Back</a>
 </small>
 
 <form method="POST">

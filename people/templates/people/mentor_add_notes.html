@@ -1,11 +1,11 @@
 {% extends "mentor_base.html" %}
 
-{% block title %}Mentor Add Meeting Notes{% endblock %}
+{% block title %}Add Meeting Notes{% endblock %}
 
 {% block body %}
 
 <small>
-    <a href="../">Back</a>
+    <a href="{% url 'mentor_view_notes' meetingId=meeting_id %}">Back</a>
 </small>
 
 <form method="POST">
