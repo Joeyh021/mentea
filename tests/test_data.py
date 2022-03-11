@@ -210,9 +210,7 @@ def create_matching_data() -> None:
 
     # also give me an awful review so theres no way i get any new mentees
     # my mentee thinks my tiktok dances are awful
-    Rating.objects.create(
-        mentor=joey, rating=1, associated_topic=tiktok, rated_by=joeys_mentee
-    )
+    Rating.objects.create(mentor=joey, rating=1, rated_by=joeys_mentee)
     # create some new mentees
     # these will be our test cases
     tim = User.objects.create(
