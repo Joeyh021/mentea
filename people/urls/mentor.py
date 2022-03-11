@@ -29,7 +29,11 @@ urlpatterns = [
         MentorMenteeMeetingsPage.as_view(),
         name="meetings",
     ),
-    path("mentees/<uuid:menteeId>/end-mentorship/", EndMentorshipMentor.as_view(), name="end_mentorship_mentor"),
+    path(
+        "mentees/<uuid:menteeId>/end-mentorship/",
+        EndMentorshipMentor.as_view(),
+        name="end_mentorship_mentor",
+    ),
     path(
         "mentor_upcoming/", MentorUpcomingMeetingsPage.as_view(), name="mentor_upcoming"
     ),

@@ -2,7 +2,15 @@ from django.contrib import admin
 
 from events.models import MeetingRequest
 
-from .models import BusinessArea, MentorMentee, Notification, Rating, Topic, User, UserType
+from .models import (
+    BusinessArea,
+    MentorMentee,
+    Notification,
+    Rating,
+    Topic,
+    User,
+    UserType,
+)
 
 # Register your models here.
 

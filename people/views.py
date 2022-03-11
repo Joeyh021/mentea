@@ -816,17 +816,13 @@ class MeetingRequestPage(TemplateView):
     template_name = "people/request.html"
     form_class: Any = CreateMeetingForm
 
-
-
     def get(self, request: HttpRequest, *args: Any, **kwarsgs: Any) -> HttpResponse:
         default_name = ""
         try:
-            default_name = request.GET['t']
+            default_name = request.GET["t"]
         except:
             pass
-        form = self.form_class(initial={
-            "name": default_name 
-        })
+        form = self.form_class(initial={"name": default_name})
 
         return render(request, self.template_name, {"form": form})
 
@@ -1639,80 +1635,107 @@ class ViewMeetingPage(LoginRequiredMixin, TemplateView):
 
         return render(request, self.template_name, {"meeting": meeting})
 
+
 class ChooseMentorPage(IsUserMenteeMixin, TemplateView):
-    
+
     template_name = "people/choose_mentor.html"
-    
+
     def get(self, request):
-        
-        
+
         recommended_mentors = get_matches(request.user)
-        
+
         recommended_mentors = map(operator.itemgetter(0), recommended_mentors)
-        
-        
+
         return render(request, self.template_name, {"mentors": recommended_mentors})
-    
+
     def post(self, request):
         chosenMentorId = ""
         try:
-            chosenMentorId = request.POST['chosenMentor']
+            chosenMentorId = request.POST["chosenMentor"]
         except:
             messages.error(request, "Error choosing mentor, please try again!")
             return render(request, self.template_name, {})
-        
+
         mentor = None
         try:
             mentor = User.objects.get(id=chosenMentorId)
         except:
             messages.error(request, "Sorry, the chosen mentor no longer exists!")
             return render(request, self.template_name, {})
-        
+
         mm = MentorMentee(mentor=mentor, mentee=request.user, approved=True)
         mm.save()
-        
-        NotificationManager.send("Mentorship Started", mm.mentee.get_full_name() + " has been matched with you!", mm.mentor, "/mentor/mentees/{{ mm.mentee.id }}")
-        NotificationManager.send("Mentorship Started", "You've matched with: " + mm.mentor.get_full_name() + ", why don't you schedule your first meeting", mm.mentee, "/mentee/request?t=First Meeting")
-        
+
+        NotificationManager.send(
+            "Mentorship Started",
+            mm.mentee.get_full_name() + " has been matched with you!",
+            mm.mentor,
+            "/mentor/mentees/{{ mm.mentee.id }}",
+        )
+        NotificationManager.send(
+            "Mentorship Started",
+            "You've matched with: "
+            + mm.mentor.get_full_name()
+            + ", why don't you schedule your first meeting",
+            mm.mentee,
+            "/mentee/request?t=First Meeting",
+        )
+
         return redirect("/mentee/")
-    
+
+
 def common_terminate_mentorship(mentorMentee: MentorMentee):
-    
-    meetings_ids = MeetingRequest.objects.filter(mentee=mentorMentee.mentee).all().values('event')
+
+    meetings_ids = (
+        MeetingRequest.objects.filter(mentee=mentorMentee.mentee).all().values("event")
+    )
     print(meetings_ids)
     meetings = Event.objects.filter(id__in=meetings_ids, mentor=mentorMentee.mentor)
     meetings.delete()
+
+
 class EndMentorship(IsUserMenteeMixin, TemplateView):
-    
     def post(self, request):
-        
+
         try:
             mm = MentorMentee.objects.get(mentee=request.user)
             common_terminate_mentorship(mm)
-            NotificationManager.send("Mentorship Ended", "Your mentee: " + mm.mentee.get_full_name() + ", ended your mentoring relationship!", mm.mentor, "")
+            NotificationManager.send(
+                "Mentorship Ended",
+                "Your mentee: "
+                + mm.mentee.get_full_name()
+                + ", ended your mentoring relationship!",
+                mm.mentor,
+                "",
+            )
             mm.delete()
         except:
             pass
-            
-        
+
         return redirect("/mentee/")
-    
-    
+
+
 class EndMentorshipMentor(IsUserMentorMixin, TemplateView):
-    
     def post(self, request, menteeId=None):
-        
+
         mentee = User.objects.get(id=menteeId)
-        
+
         try:
             mm = MentorMentee.objects.get(mentee=mentee, mentor=request.user)
             common_terminate_mentorship(mm)
-            NotificationManager.send("Mentorship Ended", "Your mentor: " + mm.mentor.get_full_name() + ", ended your mentoring relationship!", mm.mentee, "")
+            NotificationManager.send(
+                "Mentorship Ended",
+                "Your mentor: "
+                + mm.mentor.get_full_name()
+                + ", ended your mentoring relationship!",
+                mm.mentee,
+                "",
+            )
             mm.delete()
         except:
             pass
-            
-        messages.error(request, "Your relationship with " + mentee.get_full_name() + " has ended!")
+
+        messages.error(
+            request, "Your relationship with " + mentee.get_full_name() + " has ended!"
+        )
         return redirect("/mentor/")
-    
-    
