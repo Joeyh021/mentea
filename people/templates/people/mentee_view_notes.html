@@ -1,0 +1,41 @@
+{% extends "mentee_base.html" %}
+
+{% block title %}Mentee View Meeting Notes{% endblock %}
+
+{% block body %}
+
+<small>
+    <a href="../">Back</a>
+</small>
+
+<h1> Meeting Notes: </h1>
+<p> Here are all of your notes for the selected meeting. You can edit existing notes or add new ones. </p>
+
+<div class="card-group row row-cols-1 row-cols-md-4 g-4 mb-4">
+    {% for note in meeting_notes %}
+        <div class="col">
+            <div class="card h-100" >
+                <div class="card-body">
+                    
+                    <h5 class="card-title d-flex" style="margin-bottom: 0px !important;">{{ note.content }}</h5>
+                    
+                </div>
+                <div class="card-footer d-flex align-items-center jsutify-content-center">
+                    <small style="margin: 0;">By {{ note.author.get_full_name }}</small>
+                    <a href="{{ note.id }}" class="ms-auto">Edit Meeting Note </a>
+                </div>
+            </div>
+        </div>
+
+    {% empty %}
+    
+    <div class="alert alert-danger w-100" style="margin-top: 40px;"> You have no notes for this meeting! </div>
+    
+    {% endfor %}
+   
+    
+        
+</div>
+<a href="add" class="btn btn-primary ms-auto">Add a Meeting Note</a>
+
+{% endblock %}

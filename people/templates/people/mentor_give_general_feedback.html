@@ -1,0 +1,27 @@
+{% extends "mentor_base.html" %}
+
+{% block title %}Mentor General Feedback{% endblock %}
+
+{% block body %}
+
+<small>
+    <a href="../">Back</a>
+</small>
+
+<form method="POST">
+    {% csrf_token %}
+        
+        <div class="mb-3">
+            <label for="name">Feedback:</label>
+            {{ form.feedback }}
+            {% if form.feedback.errors %}
+                {% for e in form.feedback.errors %}
+                    <p class="help is-danger">{{ e }}</p>
+                {% endfor %}
+            {% endif %}
+        </div>   
+    
+        <input class="btn btn-primary" type="submit" value="Submit Feedback">
+    </form>
+
+{% endblock %}

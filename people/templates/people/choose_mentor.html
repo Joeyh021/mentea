@@ -1,0 +1,47 @@
+{% extends "mentee_base.html" %}
+
+{% block title %}Choose a Mentor{% endblock %}
+
+{% block body %}
+
+
+<h1>Please choose a Mentor</h1>
+<p>Based on your profile, here are the top 3 mentors we think might suit you!</p>
+
+<hr>
+
+<div class="row row-cols-1 row-cols-md-3 g-4 d-flex justify-content-center">
+    {% for mentor in mentors %}
+    <div class="col">
+        <div class="card ">
+            <div class="card-body d-flex flex-column align-items-center justify-content-center" style="margin-bottom: 10px;">
+                <i class="fa-solid fa-circle-user" style="font-size: 8em;"></i>
+                    
+                <p style="margin-top: 15px; margin-bottom: 10px">{{ mentor.get_full_name }}</p>
+
+                <hr style="width: 100%;"/>
+                {% if mentor.rating != None %}
+                    <p>{{ mentor.rating }} <i class="fa-solid fa-star"></i></p>
+                {% else %}
+                    <p class="text-secondary" style="font-style: italic;">no ratings</p>
+                {% endif %}
+                <a href="/user/{{ mentor.id }}" target="_blank">View Profile</a>
+            </div>
+    
+
+                <form method="POST">
+                    {%csrf_token%}
+                    <input type="submit" class=" btn btn-primary" style="width: 100%; border-top-right-radius: 0; border-top-left-radius: 0" value="Choose">
+                    <input type="hidden" name="chosenMentor" value="{{ mentor.id }}">
+                </form>
+           
+        </div>
+    </div>
+    {% empty %}
+    <div class="alert alert-danger">
+        It looks like no Mentors are currently available! Please try again later!
+    </div>
+    {% endfor %}
+</div>
+
+{% endblock %}

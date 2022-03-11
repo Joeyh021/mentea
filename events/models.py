@@ -1,10 +1,12 @@
-from datetime import datetime, timedelta
-from random import randint
+from datetime import timedelta
 from django.utils import timezone
-import uuid
 
-from django.db import models
 from people.models import *
+
+
+class EventType(models.TextChoices):
+    Workshop = "Workshops"
+    OneToOne = "OneToOne", "One to One"
 
 
 class FeedbackForm(models.Model):
@@ -56,11 +58,15 @@ class DefaultFeedbackForms(models.Model):
         return super().save(*args, **kwargs)
 
 
-class EventType(models.Model):
+class GeneralFeedbackForm(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
-    name = models.CharField(max_length=50)
-    max_members = models.IntegerField()
-    min_members = models.IntegerField()
+    submitted_by = models.ForeignKey(
+        User, on_delete=models.CASCADE, related_name="submitted_by"
+    )
+    submitted_for = models.ForeignKey(
+        User, on_delete=models.CASCADE, related_name="submitted_for"
+    )
+    feedback = models.TextField(blank=True)
 
 
 class Event(models.Model):
@@ -72,7 +78,7 @@ class Event(models.Model):
     duration = models.IntegerField()
     description = models.TextField(blank=True)
     mentor = models.ForeignKey(User, on_delete=models.CASCADE)
-    type = models.ForeignKey(EventType, on_delete=models.CASCADE)
+    type = models.CharField(max_length=50, choices=EventType.choices)
     updated_at = models.DateTimeField(auto_now=True)
     created_at = models.DateTimeField(auto_now_add=True)
     feedback_form = models.ForeignKey(
@@ -116,6 +122,9 @@ class Event(models.Model):
     def current_user_is_mentor(self, user: User):
         return self.mentor == user
 
+    def get_mentee(self):
+        return self.attendees.first()
+
 
 class EventAttendee(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
@@ -128,7 +137,7 @@ class EventAttendee(models.Model):
 
 class EventRequest(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
-    type = models.ForeignKey(EventType, on_delete=models.CASCADE)
+    type = models.CharField(max_length=50, choices=EventType.choices)
     requested_by = models.ForeignKey(User, on_delete=models.CASCADE)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
@@ -140,3 +149,19 @@ class EventRequest(models.Model):
                 fields=["requested_by", "associated_topic"], name="unique_request"
             )
         ]
+
+
+class MeetingRequest(models.Model):
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    event = models.ForeignKey(Event, on_delete=models.CASCADE, db_index=True)
+    mentee = models.ForeignKey(User, on_delete=models.CASCADE, db_index=True)
+    mentor_approved = models.BooleanField()
+    mentee_approved = models.BooleanField()
+
+
+class MeetingNotes(models.Model):
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    event = models.ForeignKey(Event, on_delete=models.CASCADE, db_index=True)
+    author = models.ForeignKey(User, on_delete=models.CASCADE, db_index=True)
+
+    content = models.CharField(max_length=500)

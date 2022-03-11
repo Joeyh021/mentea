@@ -1,7 +1,7 @@
 from django import forms
 from django.contrib.auth.forms import UserCreationForm
 
-from .models import User, BusinessArea, Topic, UserType
+from .models import MentorMentee, User, BusinessArea, Topic, UserType, Rating
 
 
 class RegistrationForm(UserCreationForm):
@@ -101,6 +101,8 @@ class PlanOfActionForm(forms.Form):
         widget=forms.TextInput(attrs={"class": "form-control"}),
     )
 
+    # Change this to be all mentors with a relationship to the mentee.
+    # mentor = forms.ModelChoiceField(queryset=User.objects.all())
     description_1 = forms.CharField(
         label="Description",
         max_length=100,
@@ -133,5 +135,66 @@ class PlanOfActionForm(forms.Form):
     )
 
 
+class CreateMeetingForm(forms.Form):
+    name = forms.CharField(widget=forms.TextInput(attrs={"class": "form-control"}))
+
+    start_time = forms.DateTimeField()
+    location = forms.CharField(widget=forms.Textarea)
+    duration = forms.IntegerField()
+
+    def updateQSToUser(self, user: User):
+        mentorList = (
+            MentorMentee.objects.filter(mentee=user, approved=True)
+            .all()
+            .values("mentor")
+        )
+        self.fields["mentor"].queryset = User.objects.filter(id__in=mentorList).all()
+
+
+class MenteeRescheduleForm(forms.Form):
+    start_time = forms.DateTimeField(
+        widget=forms.DateTimeInput(
+            attrs={"class": "form-control", "type": "datetime-local"}
+        )
+    )
+    location = forms.CharField(widget=forms.TextInput(attrs={"class": "form-control"}))
+    duration = forms.IntegerField(
+        widget=forms.NumberInput(attrs={"class": "form-control"})
+    )
+
+
 class SendMessageForm(forms.Form):
     content = forms.CharField(widget=forms.TextInput(attrs={"class": "form-control"}))
+
+
+class RatingMentorForm(forms.Form):
+    rating = forms.IntegerField()
+    feedback = forms.CharField(
+        widget=forms.Textarea(attrs={"rows": 20, "cols": 40, "class": "form-control"}),
+        required=True,
+    )
+
+
+class GeneralFeedbackFormF(forms.Form):
+    feedback = forms.CharField(
+        widget=forms.Textarea(attrs={"rows": 20, "cols": 40, "class": "form-control"}),
+        required=True,
+    )
+
+
+class MentorRescheduleForm(forms.Form):
+    start_time = forms.DateTimeField(
+        widget=forms.DateTimeInput(
+            attrs={"class": "form-control", "type": "datetime-local"}
+        )
+    )
+    location = forms.CharField(widget=forms.TextInput(attrs={"class": "form-control"}))
+    duration = forms.IntegerField(
+        widget=forms.NumberInput(attrs={"class": "form-control"})
+    )
+
+
+class CreateMeetingNotesForm(forms.Form):
+    content = forms.CharField(
+        max_length=500, widget=forms.TextInput(attrs={"class": "form-control"})
+    )

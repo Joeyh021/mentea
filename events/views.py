@@ -1,21 +1,19 @@
-from datetime import datetime, timedelta, timezone
+from datetime import datetime, timedelta
 import json
-from typing_extensions import Required
 from django.shortcuts import get_object_or_404, redirect, render
-from django.urls import reverse
 from django.views.generic import TemplateView
 from django.http import HttpRequest, HttpResponse
 from typing import Any
 from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin
 
+from people.models import Topic
 from events.forms import WorkshopForm, WorkshopRequestForm
 from events.notification import NotificationManager
 from people.models import Notification, Topic, UserTopic
 
 from .models import (
     Event,
-    EventAttendee,
     EventRequest,
     EventType,
     FeedbackForm,
@@ -38,18 +36,18 @@ class EventsIndexPage(LoginRequiredMixin, TemplateView):
 
         my_events = (
             request.user.eusers.order_by("startTime")
-            .filter(endTime__gte=datetime.now())
+            .filter(endTime__gte=datetime.now(), type=EventType.Workshop)
             .all()
         )
         my_running_events = Event.objects.filter(
-            mentor=request.user, endTime__gte=datetime.now()
+            mentor=request.user, endTime__gte=datetime.now(), type=EventType.Workshop
         )
 
         # return HttpResponse(my_events)
 
         event_list = (
             Event.objects.order_by("startTime")
-            .filter(endTime__gte=datetime.now())
+            .filter(endTime__gte=datetime.now(), type=EventType.Workshop)
             .all()
         )
         paginator = Paginator(event_list, 9)
@@ -87,11 +85,11 @@ class EventsPreviousPage(LoginRequiredMixin, TemplateView):
 
         my_events = (
             request.user.eusers.order_by("startTime")
-            .filter(endTime__lte=datetime.now())
+            .filter(endTime__lte=datetime.now(), type=EventType.Workshop)
             .all()
         )
         my_running_events = Event.objects.order_by("startTime").filter(
-            mentor=request.user, endTime__lte=datetime.now()
+            mentor=request.user, endTime__lte=datetime.now(), type=EventType.Workshop
         )
 
         # return HttpResponse(my_events)
@@ -128,7 +126,7 @@ class EventRequestPage(TemplateView):
 
             formData = form.cleaned_data
 
-            etype = EventType.objects.get(name="WORKSHOP")
+            etype = EventType.Workshop
 
             eventRequest = EventRequest(
                 requested_by=request.user,
@@ -212,7 +210,7 @@ class EventCreatePage(TemplateView):
 
             formData = form.cleaned_data
 
-            etype = EventType.objects.get(name="WORKSHOP")
+            etype = EventType.Workshop
 
             startTime = formData["startTime"]
             endTime = startTime + timedelta(minutes=formData["duration"])

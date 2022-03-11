@@ -1,0 +1,47 @@
+{% extends "main.html" %}
+
+{% block title %}Events Index{% endblock %}
+
+{% block body %}
+{% if edited %}
+<div class="alert alert-success alert-dismissible fade show">
+    This workshop was successfully updated!
+    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close">
+
+      </button>
+</div>
+{% endif %}
+<small>
+    <a href="../../">Back</a>
+</small>
+<div class="row">
+    <div class="col">
+        <h1>{{ meeting.name }}</h1>
+    </div>
+
+</div>
+<small>{{ meeting.startTime|date:'M d, Y @ h:iA' }} - {{ meeting.endTime|date:"M d, Y @ h:iA" }}</small>
+
+<p class="mt-2">
+
+    <strong>Where:</strong>
+    {{ meeting.location }}
+    
+</p>
+
+<a href="notes" class="btn btn-primary">View notes</a>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+{% endblock %}

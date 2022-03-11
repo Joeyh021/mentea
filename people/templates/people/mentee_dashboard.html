@@ -9,44 +9,101 @@
     </h1>
 </div>
 
-<div style="text-align:right; border:5px;">
-    <select name="Subject area" class="select-mentee" id="subject;">
-        <option value="select">Subject Area</option>
-        <option value="Public Speaking">Public Speaking</option>
-        <option value="Entrepreneurship">Entrepreneurship</option>
-        <option value="Leadership">Leadership</option>
-        <option value="Organisation">Organisation</option>
-    </select>
-    <input type="text" class="text-mentee" placeholder="Mentor Name" />
-    <span class="btn btn-primary btn-rounded mt-4 px-4 " style="font-size: 1rem; background-color: #6e6464;">Filter Mentors</span>
+
+
+<div class="row d-flex align-items-center justify-content-center">
+    <div class="col-md-3 bg-block-mentee d-flex flex-column align-items-center text-white" style="background-color: #54aaa7;">
+        <p style="margin: 0;">Your Mentor:</p>
+        <br>
+        <i class="fa-solid fa-circle-user" style="font-size: 10em;"></i>
+        <h1>{{ mentor.get_full_name }} </h1>
+        <br>
+        <form action="end-mentorship/" method="POST">
+            {%csrf_token%}
+            <input type="submit" class="btn btn-danger" value="End Mentorship">
+        </form>
+    </div>
+
 </div>
 <br>
-<div class="bg-block-mentee" >
-    (insert mentor profiles here)
-    <br><br>
-    <a href="/user/profile/" class="nav-item">
-        <i class="fa-solid fa-circle-user fa-2x" style="padding-right:10px; width: 6rem; height: 6rem; color: #6e6464;"></i>
-    </a>
-    <br>
-    <span class="btn btn-rounded bg-mentee-white" style="font-size: 0.9rem;"> View Feedback </span>
-    <br><br>
-    <span class="btn btn-rounded bg-mentee-white" style="font-size: 0.9rem;"> Give Feedback </span>
-    <br><br>
-    <span class="btn btn-rounded bg-mentee-white" style="font-size: 0.9rem;"> Request Meeting </span>
-    <br><br>
-    <span class="btn btn-rounded bg-mentee-white" style="font-size: 0.9rem;"> End Mentorship </span>
-</div>
+<div class="row">
 
-<div style="text-align:center; border:5px;">
-    <span class="btn btn-primary btn-rounded mt-4 px-4 " style="font-size: 2rem; background-color: #6e6464;">Request New Mentor</span>
+    <div class="col d-flex"><a href="request" class="btn btn-primary ms-auto me-auto">Request Meeting</a></div>
+    <div class="col d-flex"><a href="give_general_feedback" class="btn btn-primary ms-auto me-auto">Give Feedback</a></div>
+    <div class="col d-flex"><a  href="view_general_feedback" class="btn btn-primary ms-auto me-auto">View Feedback</a></div>
+    <div class="col d-flex"><a  href="chat" class="btn btn-primary ms-auto me-auto">Chat</a></div>
+    
 </div>
+<br>
+<br>
+<hr>
 
 <br>
 <div class="bg-block-mentee-light">
-   <h4> Upcoming Meetings </h3>
-   <p> Insert upcoming meetings here </p>
-   <span class="btn btn-rounded btn-mentee" style="font-size: 0.9rem;"> View Past Meetings </span>
-   <span class="btn btn-rounded btn-mentee" style="font-size: 0.9rem;"> View Pending Meetings </span>
+    <h4> Upcoming Meetings: </h4>
+    <div class="card-group row row-cols-1 row-cols-md-4 g-4 mb-4">
+        {% for meeting in upcoming_meetings %}
+            <div class="col">
+                <div class="card h-100" >
+                    <div class="card-body">
+                        
+                        <h5 class="card-title d-flex" style="margin-bottom: 0px !important;">{{ meeting.name }}</h5>
+                        <small><strong>When:</strong> {{ meeting.startTime|date:"D m, Y @ H:i" }}</small>
+                        <br>
+                        <small><strong>Where:</strong> {{ meeting.location }}</small>
+
+                        <a href="meeting/{{ meeting.id }}" class="stretched-link"></a>
+                    </div>
+     
+                </div>
+            </div>
+    
+        {% empty %}
+        
+        <div class="alert alert-danger w-100" style="margin-top: 40px;"> You have no upcoming meetings! <a href="request/" class="alert-link">Request a meeting?</a> </div>
+        
+        {% endfor %}
+            
+    </div>
+    <a href="mentee_past" class="btn btn-rounded btn-mentee" style="font-size: 0.9rem;"> View Past Meetings </a>
+    <a href="mentee_pending" class="btn btn-rounded btn-mentee" style="font-size: 0.9rem;"> View Pending Meetings </a>
+    <a href="mentee_upcoming" class="btn btn-rounded btn-mentee" style="font-size: 0.9rem;"> Edit Upcoming Meetings </a>
+</div>
+
+<br>
+<hr>
+<br>
+
+<div>
+    <div class="d-flex">
+        <h4>Plans of Action <small style="font-size: .65em">(Click one)</small></h4>
+        <a href="plans/new" class="btn btn-primary ms-auto">Add</a>
+    </div>
+    <div class="card-group row row-cols-1 row-cols-md-3 g-4 mb-4">
+        {% for poa in plans %}
+            <div class="col">
+                <div class="card h-100">
+                    <div class="card-body d-flex align-items-center justify-content-between">
+                        <h5 class="card-title d-flex" style="margin-bottom: 0px !important;">{{ poa.name }}</h5>
+
+                        <p style="margin-bottom: 0px !important">{% if poa.progress == 100 %}<span class="ms-auto badge rounded-pill bg-success text-light">Complete</span>{% else %}{{ poa.progress }}%{% endif %}</p>
+
+
+                        
+                    </div>
+                    <div class="progress" style="border-top-left-radius: 0px !important; border-top-right-radius: 0px !important; height: 3px !important">
+                        <div class="progress-bar bg-success" role="progressbar" style="width: {{ poa.progress }}%; " aria-valuenow="{{ poa.progress }}" aria-valuemin="0" aria-valuemax="100"></div>
+                      </div>
+
+                      <a href="plans/?p={{poa.id}}" class="stretched-link"></a>
+        
+                </div>
+            </div>
+        {% empty %}
+
+        <div class="alert alert-danger w-100" style="margin-top: 40px;">There are no plans of action yet! <a href="plans/new/" class="alert-link">Create one?</a></div>
+        {% endfor %}
+    </div>
 </div>
 
 {% endblock %}

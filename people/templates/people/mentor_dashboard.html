@@ -10,76 +10,66 @@
 </div>
 <br>
 
-<div style="text-align:right; border:5px;">
-    <select name="Subject area" class="select-mentor" id="subject;">
-        <option value="select">Subject Area</option>
-        <option value="Public Speaking">Public Speaking</option>
-        <option value="Entrepreneurship">Entrepreneurship</option>
-        <option value="Leadership">Leadership</option>
-        <option value="Organisation">Organisation</option>
-    </select>
-    <input type="text" class="text-mentor" placeholder="Mentee Name" />
-    <span class="btn btn-primary btn-rounded bg-mentor-light-green px-4 " style="font-size: 0.9rem;">Filter Mentees</span>
+<div class="bg-block-mentor ">
+    <h3>My Mentees: <small style="font-size: .7em;">(Click one)</small></h3>
+
+
+
+<div class="row">
+    {% for con in mentees %}
+
+    <div class="card col-md-2 d-flex flex-column align-items-center justify-content-center pt-3" style="background-color: transparent !important; border-color :transparent !important">
+ 
+            <i class="fa-solid fa-circle-user fa-2x" style="padding-right:10px; width: 6rem; height: 6rem; color: #6e6464;"></i>
+       
+        <p>{{ con.mentee.get_full_name }}</p>
+
+        <a href="mentees/{{ con.mentee.id }}/" class="stretched-link"></a>
+    </div>
+
+    {% empty %}
+    <p>You haven't been matched with any Mentees yet!</p>
+    {% endfor %}
+</div>
+
 </div>
 <br>
-<div class="bg-block-mentor">
-    (insert mentee profiles here)
-    <br><br>
-    <a href="/user/profile/" class="nav-item">
-        <i class="fa-solid fa-circle-user fa-2x" style="padding-right:10px; width: 6rem; height: 6rem; color: #6e6464;"></i>
-    </a>
-    <a href="/user/profile/" class="nav-item">
-        <i class="fa-solid fa-circle-user fa-2x" style="padding-right:10px; width: 6rem; height: 6rem; color: #6e6464;"></i>
-    </a>    
-    <a href="/user/profile/" class="nav-item">
-        <i class="fa-solid fa-circle-user fa-2x" style="padding-right:10px; width: 6rem; height: 6rem; color: #6e6464;"></i>
-    </a>  
-    <br>
-    <br>
-</div>
-
 <div style="text-align:right; border:5px;">
-    <span class="btn btn-primary btn-rounded bg-mentor-light-green mt-4 px-4 " style="font-size: 0.9rem;">View Feedback</span>
+    <a href="view_general_feedback/" class="btn btn-primary  " style="font-size: 0.9rem;">View Feedback</a>
+</div>
+<br>
+<div class="bg-block-mentee-light" style="border-color: #a6de81 !important ">
+    <h4> Upcoming Meetings: </h4>
+    <div class="card-group row row-cols-1 row-cols-md-4 g-4 mb-4">
+        {% for meeting in upcoming_meetings %}
+            <div class="col">
+                <div class="card h-100" >
+                    <div class="card-body">
+                        
+                        <h5 class="card-title d-flex" style="margin-bottom: 0px !important;">{{ meeting.event.name }}</h5>
+                        <small><strong>When:</strong> {{ meeting.event.startTime|date:"D m, Y @ H:i" }}</small>
+                        <br>
+                        <small><strong>Where:</strong> {{ meeting.event.location }}</small>
+                        <br>
+                        <small><strong>With:</strong> {{ meeting.mentee.get_full_name }}</small>
+
+                        <a href="meeting/{{ meeting.event.id }}" class="stretched-link"></a>
+                    </div>
+     
+                </div>
+            </div>
+    
+        {% empty %}
+        
+        <div class="alert alert-danger w-100" style="margin-top: 40px;"> You have no upcoming meetings! </div>
+        
+        {% endfor %}
+            
+    </div>
+    <a href="mentor_past" class="btn btn-rounded btn-mentee" style="font-size: 0.9rem;"> View Past Meetings </a>
+    <a href="mentor_pending" class="btn btn-rounded btn-mentee" style="font-size: 0.9rem;"> View Pending Meetings </a>
+    <a href="mentor_upcoming" class="btn btn-rounded btn-mentee" style="font-size: 0.9rem;"> Edit Upcoming Meetings </a>
 </div>
 
-<h2 class="mb-5">
-    Create Group Session:
-</h2>
-<div class="float-containter">
-    <div class="float-child">
-        <label for="groupSubject" font="25px">Subject area:</label>
-        <select name="Subject area" class="select-mentor" style="width:80%;" id="groupSubject;">
-            <option value="groupSub"></option>
-            <option value="Public Speaking">Public Speaking</option>
-            <option value="Entrepreneurship">Entrepreneurship</option>
-            <option value="Leadership">Leadership</option>
-            <option value="Organisation">Organisation</option>
-        </select>
-        <label for="eventType" font="25px">Event Type:</label>
-        <select name="Event Type" class="select-mentor" style="width:80%;" id="eventType;">
-            <option value="eventType"></option>
-            <option value="Public Speaking">Workshop</option>
-            <option value="Entrepreneurship">Group session</option>
-        </select>
-        <label for="maxAttendee" font="25px">Maximum Attendees:</label>
-        <select name="Maximum attendees" class="select-mentor" style="width:80%;" id="maxAttendee;">
-            <option value="groupSub"></option>
-            <option value="Public Speaking">10</option>
-            <option value="Entrepreneurship">20</option>
-            <option value="Leadership">30</option>
-        </select>
-    </div>
-    <div class="float-child">
-        <label for="start" font="25px">Start Time:</label>
-        <input type="time" class="text-mentor" style="width:80%;" id="start" />
-        <label for="finish" font="25px">Finish Time:</label>
-        <input type="time" class="text-mentor" style="width:80%;" id="finish" />
-        <label for="description" font="25px">Event Description:</label>
-        <input type="text" class="text-mentor" style="width:80%;" id="description" />
-        <br>
-        <span class="btn btn-primary btn-rounded bg-mentor-light-green mt-4 px-4 " style="font-size: 0.9rem;">Create event</span>
-        <br><br><br><br>
-    </div>
-</div>
 
 {% endblock %}

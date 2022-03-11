@@ -16,6 +16,7 @@ def test_plans(client: Client, mentee):
     plans_list = response.context["plans_list"]
     assert plans_list == [
         {
+            "id": plan.id,
             "name": "test plan",
             "targets": list(plan_targets),
             "progress": str(plan.progress),
@@ -48,6 +49,7 @@ def test_new_plans_form(client: Client, mentee):
     plan_targets = PlanOfActionTarget.objects.filter(associated_poa=plan)
     plans_list = response.context["plans_list"]
     assert {
+        "id": plan.id,
         "name": "test plan 2",
         "targets": list(plan_targets),
         "progress": str(plan.progress),
@@ -59,7 +61,8 @@ def test_new_plans_form(client: Client, mentee):
 
 def test_complete_target(client: Client, mentee):
     """test we can tick off plans"""
-    response = client.post("/mentee/plans/", data={"completed": "run the tests"})
+    plan = PlanOfActionTarget.objects.get(name="run the tests")
+    response = client.post("/mentee/plans/", data={"completed": plan.id})
     assert response.status_code == 302  # redirected
     target = PlanOfActionTarget.objects.get(name="run the tests")
     assert target.achieved == True

@@ -1,0 +1,35 @@
+{% extends "mentee_base.html" %}
+
+{% block title %}Mentee Meeting Feedback{% endblock %}
+
+{% block body %}
+
+<small>
+    <a href="../">Back</a>
+</small>
+
+<h1> Feedback: </h1>
+<p> Here is the feedback from your mentor, {{mentor.get_full_name}} </p>
+{% if feedback %}
+<div class="card-group row row-cols-1 row-cols-md-4 g-4 mb-4">
+        <div class="col">
+            <div class="card h-100" >
+                <div class="card-body">
+                    
+                    <custom-form-result-viewer form-id="{{ ff.id }}">Loading form...</custom-form-result-viewer>
+
+                    <hr>
+
+                </div>
+            </div>
+        </div>
+
+    {% else %}
+    
+    <div class="alert alert-danger w-100" style="margin-top: 40px;"> Mentor has not given feedback yet! </div>
+
+    {% endif %}
+        
+</div>
+
+{% endblock %}

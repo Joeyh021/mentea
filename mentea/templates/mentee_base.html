@@ -62,7 +62,7 @@
                                 <a class="nav-link" href="{% url "mentor_dashboard" %}">Mentor Portal</a>
                             </li>
                             {% endif %}
-                            {% if user %}
+                            {% if user.is_authenticated and .user_type != "None" %}
                             <li class="nav-item">
                                 <a class="nav-link" href="{% url "events:workshop-index" %}">Workshops</a>
                             </li>
@@ -130,7 +130,7 @@
     {% if messages or not request.COOKIES.noticed_cookies %}
         <div class="alerts">
             {% for message in messages %}
-                <div class="alert alert-dismissible show fade{% if message.tags %} {{ message.tags }}{% endif %}"
+                <div class="alert alert-info alert-dismissible show fade{% if message.tags %} {{ message.tags }}{% endif %}"
                      role="alert">
                     {{ message }}
                     <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>

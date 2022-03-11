@@ -6,13 +6,13 @@
 
 {% block body %}
 <div class="row">
-    <div class="col-4 text-center d-flex flex-column  align-items-center ">
+    <div class="col-md-4 text-center d-flex flex-column  align-items-center ">
         <i class="fa-solid fa-circle-user color-mentea" style="width: 16rem; height: 16rem"></i>
         {% if my_profile %}
         <a href="{% url "profile_edit" %}" class="btn btn-primary btn-rounded btn-mentea mt-4 px-4">Edit Profile</a>
         {% endif %}
     </div>
-    <div class="col-8">
+    <div class="col-md-8">
         <h1 class="mt-2 mb-0" style="font-size: 6rem;">
             {{ user.get_full_name }}
         </h1>
@@ -35,7 +35,7 @@
     
 </div>
 <div class="row mt-4">
-    <div class="col-4">
+    <div class="col-md-4">
         {% if mentee_topics %}
             <div class="card">
                 <div class="card-header">

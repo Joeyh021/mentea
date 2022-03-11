@@ -1,0 +1,57 @@
+{% extends "mentee_base.html" %}
+
+{% block title %}Request a Meeting{% endblock %}
+
+{% block body %}
+<small>
+    <a href="../">Back</a>
+</small>
+<h1>Request Meeting</h1>
+<form method="POST">
+{% csrf_token %}
+    
+    <div class="mb-3">
+        <label for="name">Meeting Name:</label>
+        {{ form.name }}
+        {% if form.name.errors %}
+            {% for e in form.name.errors %}
+                <p class="help is-danger">{{ e }}</p>
+            {% endfor %}
+        {% endif %}
+    </div>
+
+
+    <div class="mb-3">
+        <label for="start_time">Start Time:</label>
+        <input type="datetime-local" class="form-control" id="start_time" name="start_time" required>
+        {% if form.start_time.errors %}
+            {% for e in form.start_time.errors %}
+                <p class="help is-danger">{{ e }}</p>
+            {% endfor %}
+        {% endif %}
+    </div>
+
+    <div class="mb-3">
+        <label for="location">Location:</label>
+        <input type="text" class="form-control" id="location" name="location" required>
+        {% if form.location.errors %}
+            {% for e in form.location.errors %}
+                <p class="help is-danger">{{ e }}</p>
+            {% endfor %}
+        {% endif %}
+    </div>
+
+    <div class="mb-3">
+        <label for="duration">Duration:</label>
+        <input type="text" class="form-control" id="duration" name="duration" required>
+        {% if form.duration.errors %}
+            {% for e in form.duration.errors %}
+                <p class="help is-danger">{{ e }}</p>
+            {% endfor %}
+        {% endif %}
+    </div>
+
+
+    <input class="btn btn-primary" type="submit" value="Request Meeting">
+</form>
+{% endblock %}

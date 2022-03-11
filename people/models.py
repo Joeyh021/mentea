@@ -2,6 +2,7 @@ import uuid
 
 from django.db import models
 from django.contrib.auth.models import BaseUserManager, AbstractBaseUser
+from django.db.models import Avg
 
 # Changing this to override the default model!
 
@@ -79,7 +80,7 @@ class User(AbstractBaseUser):
     REQUIRED_FIELDS = []
 
     def __str__(self):
-        return self.email
+        return self.first_name + " " + self.last_name
 
     def get_full_name(self):
         # The user is identified by their email address
@@ -87,9 +88,6 @@ class User(AbstractBaseUser):
 
     def get_short_name(self):
         # The user is identified by their email address
-        return self.email
-
-    def __str__(self):
         return self.email
 
     def has_perm(self, perm, obj=None):
@@ -103,10 +101,23 @@ class User(AbstractBaseUser):
         # Simplest possible
 
     def notifs(self):
-        return Notification.objects.filter(user=self, read=False)
+        return Notification.objects.filter(user=self, read=False).order_by(
+            "-created_at"
+        )
 
     def has_notifs(self):
         return self.notifs().count() > 0
+
+    def rating(self):
+        r = (
+            Rating.objects.filter(mentor=self)
+            .all()
+            .aggregate(Avg("rating"))["rating__avg"]
+        )
+        if r == None:
+            return None
+
+        return round(r, 1)
 
     @property
     def is_staff(self):
@@ -140,6 +151,13 @@ class MentorMentee(models.Model):
         User, on_delete=models.CASCADE, related_name="mentee", db_index=True
     )
     approved = models.BooleanField(default=False)
+    updated_at = models.DateTimeField(auto_now=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def get_plans_of_action(self):
+        return PlanOfAction.objects.filter(
+            associated_mentor=self.mentor, associated_mentee=self.mentee
+        ).all()
 
     class Meta:
         indexes = [models.Index(fields=["mentee", "mentor"])]
@@ -180,7 +198,7 @@ class Rating(models.Model):
         User, on_delete=models.CASCADE, related_name="mentor_rating", db_index=True
     )
     rating = models.IntegerField()
-    associated_topic = models.ForeignKey(Topic, on_delete=models.CASCADE, db_index=True)
+
     rated_by = models.ForeignKey(
         User,
         on_delete=models.CASCADE,

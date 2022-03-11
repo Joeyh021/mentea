@@ -25,10 +25,10 @@
       window.CSRF_TOKEN = "{{ csrf_token }}";
     </script>
   </head>
-  <body>
+  <body style="overflow-x: hidden;">
     <div id="pagetop">
       <div class="sticky-top">{% block navbar %}{% endblock %}</div>
-      <div class="container mt-5 mb-5">{% block messages %}{% endblock %}{% block body %} {% endblock %}</div>
+      <div class="container mt-5 mb-5" style="overflow-x: hidden">{% block messages %}{% endblock %}{% block body %} {% endblock %}</div>
       
     </div>
 
