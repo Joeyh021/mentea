@@ -5,5 +5,7 @@
 __pycache__
 .venv
 .vscode
+cypress/screenshots
+cypress/videos
 node_modules
 production.py
