@@ -855,7 +855,7 @@ class MeetingRequestPage(TemplateView):
             )
             q1.save()
 
-            etype = EventType.objects.get(name="121")
+            etype = EventType.OneToOne
 
             endTime = start_time + timedelta(minutes=duration)
             # Add event to database:
