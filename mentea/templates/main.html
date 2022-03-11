@@ -61,7 +61,7 @@
                                 <a class="nav-link" href="{% url "mentor_dashboard" %}">Mentor Portal</a>
                             </li>
                             {% endif %}
-                            {% if user %}
+                            {% if user.is_authenticated and user.user_type != "None" %}
                             <li class="nav-item">
                                 <a class="nav-link" href="{% url "events:workshop-index" %}">Workshops</a>
                             </li>

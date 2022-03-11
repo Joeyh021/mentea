@@ -1,10 +1,12 @@
 from django.contrib import messages
-from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
+from django.contrib.auth import login, authenticate
+from django.contrib.auth.mixins import UserPassesTestMixin
 from django.http import HttpRequest, HttpResponse, HttpResponseRedirect
 from django.shortcuts import get_object_or_404, redirect, render
 from django.views.generic import TemplateView
 from django.contrib.auth.mixins import LoginRequiredMixin
 from typing import Any
+
 from django.contrib.auth import login, authenticate
 from django.contrib import messages
 
@@ -12,6 +14,7 @@ from django.contrib import messages
 from events.notification import NotificationManager
 
 from .forms import GeneralFeedbackFormF, RegistrationForm, SendMessageForm
+
 
 
 from .forms import (
@@ -26,6 +29,9 @@ from .forms import (
     MentorRescheduleForm,
     CreateMeetingNotesForm,
     GeneralFeedbackFormF,
+
+    SendMessageForm,
+
 )
 
 
@@ -313,7 +319,7 @@ class UserCalendarPage(LoginRequiredMixin, TemplateView):
 
 
 class UserNotificationsPage(LoginRequiredMixin, TemplateView):
-    """Shows all of a users notifcations"""
+    """Shows all of a users notifications"""
 
     template_name: str = "people/notifications.html"
 
@@ -494,6 +500,7 @@ class ChatPage(LoginRequiredMixin, TemplateView):
             except:
                 return HttpResponse("no mentor")
 
+
         form = SendMessageForm()
 
         chat = None
@@ -502,6 +509,7 @@ class ChatPage(LoginRequiredMixin, TemplateView):
         except:
             chat = Chat(mentee=current_mentee, mentor=current_mentor)
             chat.save()
+
 
         chatMessages = ChatMessage.objects.all().filter(chat=chat)
 

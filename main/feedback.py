@@ -1,6 +1,3 @@
-from django.forms import model_to_dict
-from django.http import JsonResponse
-
 import json
 
 from django.core.serializers.json import DjangoJSONEncoder
@@ -9,13 +6,9 @@ from events.models import Answer, FeedbackForm, FeedbackSubmission, Questions
 
 from django import forms
 from django.forms import model_to_dict
-from django.http import JsonResponse
-from django.shortcuts import get_object_or_404
+from django.http import HttpRequest, HttpResponse, JsonResponse
+from django.shortcuts import get_object_or_404, render
 
-from django.views.generic import TemplateView
-from django.http import HttpRequest, HttpResponse
-
-from django.shortcuts import render
 from django.views.generic import TemplateView
 
 from typing import Any
