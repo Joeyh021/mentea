@@ -1,5 +1,7 @@
 {% extends base %}
 
+{% block title %}Chat{% endblock %}
+
 {% block body %}
 
 <small>
@@ -11,9 +13,12 @@
 
 <iframe src="messages" name="i_frame" frameborder="0" style="width: 100%; max-height: 75vh" onload="this.style.height=(this.contentWindow.document.body.scrollHeight)+'px';"></iframe>
 
-<form method="post">{%csrf_token%}
-  {{form.as_p}}
-  <input class="btn btn-primary" type="submit" value="Send" />
+<hr />
+
+<form method="post">
+    {%csrf_token%}
+    {{form.as_p}}
+    <input class="btn btn-primary" type="submit" value="Send" />
 </form>
 {% endif %}
 
@@ -21,7 +26,7 @@
   window.onload = () => {
     document.getElementById('id_content').focus()
     
-      var frame = window.frames.i_frame;
+    var frame = window.frames.i_frame;
     var doc   = frame.document;
     var node  = doc.getElementById('last')
  
