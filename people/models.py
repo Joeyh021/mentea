@@ -107,12 +107,16 @@ class User(AbstractBaseUser):
 
     def has_notifs(self):
         return self.notifs().count() > 0
-    
+
     def rating(self):
-        r = Rating.objects.filter(mentor=self).all().aggregate(Avg('rating'))['rating__avg']
+        r = (
+            Rating.objects.filter(mentor=self)
+            .all()
+            .aggregate(Avg("rating"))["rating__avg"]
+        )
         if r == None:
             return 0
-        
+
         return round(r, 1)
 
     @property

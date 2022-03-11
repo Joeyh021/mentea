@@ -1,4 +1,3 @@
-
 from attr import attrs
 
 from people.models import Topic, User, UserTopic

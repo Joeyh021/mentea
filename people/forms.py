@@ -102,7 +102,7 @@ class PlanOfActionForm(forms.Form):
     )
 
     # Change this to be all mentors with a relationship to the mentee.
-    #mentor = forms.ModelChoiceField(queryset=User.objects.all())
+    # mentor = forms.ModelChoiceField(queryset=User.objects.all())
     description_1 = forms.CharField(
         label="Description",
         max_length=100,
@@ -195,4 +195,6 @@ class MentorRescheduleForm(forms.Form):
 
 
 class CreateMeetingNotesForm(forms.Form):
-    content = forms.CharField(max_length=500, widget=forms.TextInput(attrs={"class": "form-control"}))
+    content = forms.CharField(
+        max_length=500, widget=forms.TextInput(attrs={"class": "form-control"})
+    )

@@ -9,22 +9,26 @@ class Migration(migrations.Migration):
 
     dependencies = [
         migrations.swappable_dependency(settings.AUTH_USER_MODEL),
-        ('events', '0026_generalfeedbackform_feedback'),
+        ("events", "0026_generalfeedbackform_feedback"),
     ]
 
     operations = [
         migrations.RemoveField(
-            model_name='meetingnotes',
-            name='mentee',
+            model_name="meetingnotes",
+            name="mentee",
         ),
         migrations.RemoveField(
-            model_name='meetingnotes',
-            name='mentor',
+            model_name="meetingnotes",
+            name="mentor",
         ),
         migrations.AddField(
-            model_name='meetingnotes',
-            name='author',
-            field=models.ForeignKey(default=None, on_delete=django.db.models.deletion.CASCADE, to=settings.AUTH_USER_MODEL),
+            model_name="meetingnotes",
+            name="author",
+            field=models.ForeignKey(
+                default=None,
+                on_delete=django.db.models.deletion.CASCADE,
+                to=settings.AUTH_USER_MODEL,
+            ),
             preserve_default=False,
         ),
     ]

@@ -16,7 +16,6 @@ from events.notification import NotificationManager
 from .forms import GeneralFeedbackFormF, RegistrationForm, SendMessageForm
 
 
-
 from .forms import (
     PlanOfActionForm,
     ProfileForm,
@@ -29,11 +28,8 @@ from .forms import (
     MentorRescheduleForm,
     CreateMeetingNotesForm,
     GeneralFeedbackFormF,
-
     SendMessageForm,
-
 )
-
 
 
 from .models import *
@@ -354,27 +350,30 @@ class MenteeDashboardPage(IsUserMenteeMixin, TemplateView):
     template_name: str = "people/mentee_dashboard.html"
 
     def get(self, request: HttpRequest, *args: Any, **kwarsgs: Any) -> HttpResponse:
-        upcoming_meetings_ids = MeetingRequest.objects.filter(
-            mentee=request.user,
-            mentee_approved=True,
-            mentor_approved=True,
-        ).all().values("event")
+        upcoming_meetings_ids = (
+            MeetingRequest.objects.filter(
+                mentee=request.user,
+                mentee_approved=True,
+                mentor_approved=True,
+            )
+            .all()
+            .values("event")
+        )
 
         upcoming_meetings = Event.objects.filter(
             id__in=upcoming_meetings_ids, endTime__gte=datetime.now()
         ).all()
-        
-        plans = PlanOfAction.objects.all().filter(
-            associated_mentee=request.user.id
-        )
-        
-        
 
+        plans = PlanOfAction.objects.all().filter(associated_mentee=request.user.id)
 
         return render(
             request,
             self.template_name,
-            {"upcoming_meetings": upcoming_meetings, "mentor": get_mentor(request.user), "plans": plans},
+            {
+                "upcoming_meetings": upcoming_meetings,
+                "mentor": get_mentor(request.user),
+                "plans": plans,
+            },
         )
 
 
@@ -472,10 +471,7 @@ class MenteeNewPlanPage(IsUserMenteeMixin, TemplateView):
             return render(
                 request,
                 self.template_name,
-                {
-                    "form": PlanOfActionForm(),
-                    "base": "mentee_base.html"
-                },
+                {"form": PlanOfActionForm(), "base": "mentee_base.html"},
             )
 
 
@@ -500,7 +496,6 @@ class ChatPage(LoginRequiredMixin, TemplateView):
             except:
                 return HttpResponse("no mentor")
 
-
         form = SendMessageForm()
 
         chat = None
@@ -509,7 +504,6 @@ class ChatPage(LoginRequiredMixin, TemplateView):
         except:
             chat = Chat(mentee=current_mentee, mentor=current_mentor)
             chat.save()
-
 
         chatMessages = ChatMessage.objects.all().filter(chat=chat)
 
@@ -627,18 +621,22 @@ class MentorDashboardPage(IsUserMentorMixin, TemplateView):
     template_name: str = "people/mentor_dashboard.html"
 
     def get(self, request: HttpRequest, *args: Any, **kwarsgs: Any) -> HttpResponse:
-        
-        connections = MentorMentee.objects.filter(mentor=request.user, approved=True).all()
-        
+
+        connections = MentorMentee.objects.filter(
+            mentor=request.user, approved=True
+        ).all()
+
         upcoming_meetings = MeetingRequest.objects.filter(
             mentee_approved=True,
             mentor_approved=True,
-            event__endTime__gt=datetime.now()
+            event__endTime__gt=datetime.now(),
         ).all()
 
-
-        
-        return render(request, self.template_name, {"mentees": connections, "upcoming_meetings": upcoming_meetings})
+        return render(
+            request,
+            self.template_name,
+            {"mentees": connections, "upcoming_meetings": upcoming_meetings},
+        )
 
 
 class MentorMenteesPage(IsUserMentorMixin, TemplateView):
@@ -661,12 +659,12 @@ class MentorMenteePage(IsUserMentorMixin, TemplateView):
         mentee = get_object_or_404(User, id=menteeId)
 
         hasRelation, relation = mentor_mentors_mentee(request.user, mentee)
-        
+
         upcoming_meetings = MeetingRequest.objects.filter(
             mentee_approved=True,
             mentor_approved=True,
             mentee=mentee,
-            event__endTime__gt=datetime.now()
+            event__endTime__gt=datetime.now(),
         ).all()
 
         if not hasRelation:
@@ -679,7 +677,7 @@ class MentorMenteePage(IsUserMentorMixin, TemplateView):
                     "mentor": relation.mentor,
                     "mentee": relation.mentee,
                     "relation": relation,
-                    "meetings": upcoming_meetings
+                    "meetings": upcoming_meetings,
                 },
             )
 
@@ -905,11 +903,15 @@ class MenteePastMeetingsPage(IsUserMenteeMixin, TemplateView):
     template_name = "people/mentee_past.html"
 
     def get(self, request: HttpRequest, *args: Any, **kwarsgs: Any) -> HttpResponse:
-        past_meetings_id = MeetingRequest.objects.filter(
-            mentee=request.user,
-            mentee_approved=True,
-            mentor_approved=True,
-        ).all().values('event')
+        past_meetings_id = (
+            MeetingRequest.objects.filter(
+                mentee=request.user,
+                mentee_approved=True,
+                mentor_approved=True,
+            )
+            .all()
+            .values("event")
+        )
 
         past_meetings = Event.objects.filter(
             id__in=past_meetings_id, endTime__lt=datetime.now()
@@ -941,7 +943,7 @@ class MenteePendingMeetingsPage(IsUserMenteeMixin, TemplateView):
 
     def post(self, request, *args: Any, **kwarsgs: Any) -> HttpResponse:
         # Get the current meeting object
-        current_meeting = MeetingRequest.objects.get(id=request.POST['id'])
+        current_meeting = MeetingRequest.objects.get(id=request.POST["id"])
         # update the mentee_approved field
         current_meeting.mentee_approved = True
         current_meeting.save()
@@ -1018,7 +1020,9 @@ class MenteeRescheduleMeetingPage(IsUserMenteeMixin, TemplateView):
             return render(request, self.template_name, {})
 
 
-class MenteeEditMeetingPage(IsUserMenteeMixin, TemplateView): # THIS IS THE SAME AS RESCHEDULING, SO IGNORING THIS
+class MenteeEditMeetingPage(
+    IsUserMenteeMixin, TemplateView
+):  # THIS IS THE SAME AS RESCHEDULING, SO IGNORING THIS
     """Allows mentee to edit a meeting"""
 
     template_name = "people/mentee_edit_meeting"
@@ -1074,11 +1078,15 @@ class MenteeUpcomingMeetingsPage(IsUserMenteeMixin, TemplateView):
     template_name = "people/mentee_upcoming.html"
 
     def get(self, request: HttpRequest, *args: Any, **kwarsgs: Any) -> HttpResponse:
-        upcoming_meetings_id = MeetingRequest.objects.filter(
-            mentee=request.user,
-            mentee_approved=True,
-            mentor_approved=True,
-        ).all().values("event")
+        upcoming_meetings_id = (
+            MeetingRequest.objects.filter(
+                mentee=request.user,
+                mentee_approved=True,
+                mentor_approved=True,
+            )
+            .all()
+            .values("event")
+        )
 
         upcoming_meetings = Event.objects.filter(
             id__in=upcoming_meetings_id, endTime__gte=datetime.now()
@@ -1104,10 +1112,8 @@ class MentorUpcomingMeetingsPage(IsUserMentorMixin, TemplateView):
         upcoming_meetings = MeetingRequest.objects.filter(
             mentee_approved=True,
             mentor_approved=True,
-            event__endTime__gte=datetime.now()
+            event__endTime__gte=datetime.now(),
         ).all()
-
-        
 
         return render(
             request,
@@ -1124,10 +1130,14 @@ class MentorPastMeetingsPage(IsUserMentorMixin, TemplateView):
     def get(self, request: HttpRequest, *args: Any, **kwarsgs: Any) -> HttpResponse:
         # could also filter for each mentee in particular
 
-        past_meetings_id = MeetingRequest.objects.filter(
-            mentee_approved=True,
-            mentor_approved=True,
-        ).all().values('event')
+        past_meetings_id = (
+            MeetingRequest.objects.filter(
+                mentee_approved=True,
+                mentor_approved=True,
+            )
+            .all()
+            .values("event")
+        )
 
         past_meetings = Event.objects.filter(
             id__in=past_meetings_id,
@@ -1149,7 +1159,7 @@ class MentorPendingMeetingsPage(IsUserMentorMixin, TemplateView):
     def get(self, request: HttpRequest, *args: Any, **kwarsgs: Any) -> HttpResponse:
         pending_meetings = MeetingRequest.objects.filter(
             Q(mentee_approved=False) | Q(mentor_approved=False),
-            event__mentor=request.user
+            event__mentor=request.user,
         )
 
         return render(
@@ -1160,10 +1170,10 @@ class MentorPendingMeetingsPage(IsUserMentorMixin, TemplateView):
 
     def post(self, request, *args: Any, **kwarsgs: Any) -> HttpResponse:
         # Get the current meeting object
-        current_meeting = MeetingRequest.objects.get(id=request.POST['id'])
+        current_meeting = MeetingRequest.objects.get(id=request.POST["id"])
         # update the mentor_approved field
         current_meeting.mentor_approved = True
-        
+
         current_meeting.save()
         messages.success(
             request,
@@ -1323,9 +1333,7 @@ class MenteeAddMeetingNotesPage(IsUserMenteeMixin, TemplateView):
             meeting = Event.objects.get(id=meetingId)
             content = form.cleaned_data["content"]
 
-            note = MeetingNotes(
-                event=meeting, author=author, content=content
-            )
+            note = MeetingNotes(event=meeting, author=author, content=content)
 
             note.save()
 
@@ -1363,7 +1371,7 @@ class MenteeEditMeetingNotesPage(IsUserMenteeMixin, TemplateView):
             note = MeetingNotes.objects.get(id=noteId)
             # edit the note
             note.content = form.cleaned_data["content"]
-            
+
             note.save()
 
             messages.success(request, "Meeting note succesfully updated")
@@ -1410,12 +1418,10 @@ class MentorAddMeetingNotesPage(IsUserMentorMixin, TemplateView):
             mentor = request.user
             meeting = Event.objects.get(id=meetingId)
             # not sure this is right
-            
+
             content = form.cleaned_data["content"]
 
-            note = MeetingNotes(
-                event=meeting, author=mentor, content=content
-            )
+            note = MeetingNotes(event=meeting, author=mentor, content=content)
 
             note.save()
 
@@ -1477,7 +1483,6 @@ class MenteeMeetingFeedbackPage(IsUserMenteeMixin, TemplateView):
         meeting = Event.objects.get(id=meetingId)
         ff = meeting.feedback_form
 
-
         return render(
             request,
             self.template_name,
@@ -1515,7 +1520,7 @@ class MenteeGiveGeneralFeedbackPage(IsUserMenteeMixin, TemplateView):
                 rated_by=mentee,
                 # not sure how to get associated topic
             )
-            
+
             rating.save()
 
             messages.success(request, "Feedback successfully sent")
@@ -1540,11 +1545,7 @@ class MenteeViewGeneralFeedbackPage(IsUserMenteeMixin, TemplateView):
             submitted_by=mentor, submitted_for=mentee
         ).all()
 
-        return render(
-            request,
-            self.template_name,
-            {"ff": ff, "mentor": mentor}
-        )
+        return render(request, self.template_name, {"ff": ff, "mentor": mentor})
 
 
 class MentorMeetingFeedbackPage(IsUserMentorMixin, TemplateView):
@@ -1607,11 +1608,8 @@ class MentorViewGeneralFeedbackPage(IsUserMentorMixin, TemplateView):
 
     def get(self, request, menteeId=None) -> HttpResponse:
 
-
         mentor = request.user
-        ff = GeneralFeedbackForm.objects.filter(
-            submitted_for=mentor
-        ).all()
+        ff = GeneralFeedbackForm.objects.filter(submitted_for=mentor).all()
 
         return render(
             request,
@@ -1622,15 +1620,10 @@ class MentorViewGeneralFeedbackPage(IsUserMentorMixin, TemplateView):
 
 class ViewMeetingPage(LoginRequiredMixin, TemplateView):
     template_name = "mentor_mentee/view_meeting.html"
-    
+
     def get(self, request, meetingId):
         meeting = get_object_or_404(Event, id=meetingId)
-        
+
         notes = meeting.meetingnotes_set
-        
-        return render(
-            request,
-            self.template_name,
-            {"meeting": meeting}
-        )
-        
+
+        return render(request, self.template_name, {"meeting": meeting})

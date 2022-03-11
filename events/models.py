@@ -58,7 +58,6 @@ class DefaultFeedbackForms(models.Model):
         return super().save(*args, **kwargs)
 
 
-
 class GeneralFeedbackForm(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     submitted_by = models.ForeignKey(
@@ -68,10 +67,6 @@ class GeneralFeedbackForm(models.Model):
         User, on_delete=models.CASCADE, related_name="submitted_for"
     )
     feedback = models.TextField(blank=True)
-
-
-
-
 
 
 class Event(models.Model):
@@ -126,7 +121,7 @@ class Event(models.Model):
 
     def current_user_is_mentor(self, user: User):
         return self.mentor == user
-    
+
     def get_mentee(self):
         return self.attendees.first()
 
@@ -167,8 +162,6 @@ class MeetingRequest(models.Model):
 class MeetingNotes(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     event = models.ForeignKey(Event, on_delete=models.CASCADE, db_index=True)
-    author = models.ForeignKey(
-        User, on_delete=models.CASCADE, db_index=True
-    )
-  
+    author = models.ForeignKey(User, on_delete=models.CASCADE, db_index=True)
+
     content = models.CharField(max_length=500)

@@ -22,9 +22,21 @@ urlpatterns = [
     path(
         "mentee_upcoming/", MenteeUpcomingMeetingsPage.as_view(), name="mentee_upcoming"
     ),
-    path("meeting/<uuid:meetingId>/notes/", MenteeViewMeetingNotesPage.as_view(), name="view_notes"),
-    path("meeting/<uuid:meetingId>/notes/add/", MenteeAddMeetingNotesPage.as_view(), name="add_notes"),
-    path("meeting/<uuid:meetingId>/notes/<uuid:noteId>/", MenteeEditMeetingNotesPage.as_view(), name="edit_notes"),
+    path(
+        "meeting/<uuid:meetingId>/notes/",
+        MenteeViewMeetingNotesPage.as_view(),
+        name="view_notes",
+    ),
+    path(
+        "meeting/<uuid:meetingId>/notes/add/",
+        MenteeAddMeetingNotesPage.as_view(),
+        name="add_notes",
+    ),
+    path(
+        "meeting/<uuid:meetingId>/notes/<uuid:noteId>/",
+        MenteeEditMeetingNotesPage.as_view(),
+        name="edit_notes",
+    ),
     path(
         "meeting/<uuid:meetingId>/feedback/",
         MenteeMeetingFeedbackPage.as_view(),
@@ -40,10 +52,5 @@ urlpatterns = [
         MenteeViewGeneralFeedbackPage.as_view(),
         name="view_general_feedback",
     ),
-    path(
-        "meeting/<uuid:meetingId>/",
-        ViewMeetingPage.as_view(),
-        name="view_meeting"
-        
-    ),
+    path("meeting/<uuid:meetingId>/", ViewMeetingPage.as_view(), name="view_meeting"),
 ]

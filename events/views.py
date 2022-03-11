@@ -35,8 +35,6 @@ class EventsIndexPage(LoginRequiredMixin, TemplateView):
 
     def get(self, request: HttpRequest, *args: Any, **kwarsgs: Any) -> HttpResponse:
 
-  
-
         my_events = (
             request.user.eusers.order_by("startTime")
             .filter(endTime__gte=datetime.now(), type=EventType.Workshop)
