@@ -1562,18 +1562,21 @@ class MentorMeetingFeedbackPage(IsUserMentorMixin, TemplateView):
 
     def get(self, request: HttpRequest, meetingId=None) -> HttpResponse:
         mentor = request.user
-        m = MeetingRequest.objects.get(id=meetingId)
+        m = MeetingRequest.objects.get(event=Event.objects.get(id=meetingId))
         mentee = m.mentee
         meeting = m.event
         ff = meeting.feedback_form
-        submission = FeedbackSubmission.objects.get(form=ff, user=mentee)
-        feedback = Answer.objects.get(associated_submission=submission)
+        try:
+            submission = FeedbackSubmission.objects.get(form=ff, user=mentee)
+            feedback = Answer.objects.get(associated_submission=submission)
+        except:
+            submission = None
+            feedback = None
 
         return render(
             request,
             self.template_name,
-            {"feedback": feedback},
-            {"mentee": mentee},
+            {"feedback": feedback, "mentee": mentee, "meeting_id": meetingId},
         )
 
 
