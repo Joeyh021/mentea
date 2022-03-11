@@ -6,7 +6,7 @@
 
 
 <h1>Please choose a Mentor</h1>
-<p>Based on your preferences, we have selected upto 3 Mentors below that we think will best suit you!</p>
+<p>Based on your profile, here are the top 3 mentors we think might suit you!</p>
 
 <hr>
 
@@ -20,7 +20,11 @@
                 <p style="margin-top: 15px; margin-bottom: 10px">{{ mentor.get_full_name }}</p>
 
                 <hr style="width: 100%;"/>
-                <p>{{ mentor.rating }} <i class="fa-solid fa-star"></i></p>
+                {% if mentor.rating != None %}
+                    <p>{{ mentor.rating }} <i class="fa-solid fa-star"></i></p>
+                {% else %}
+                    <p class="text-secondary" style="font-style: italic;">no ratings</p>
+                {% endif %}
                 <a href="/user/{{ mentor.id }}" target="_blank">View Profile</a>
             </div>
     

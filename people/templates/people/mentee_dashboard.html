@@ -16,7 +16,7 @@
         <p style="margin: 0;">Your Mentor:</p>
         <br>
         <i class="fa-solid fa-circle-user" style="font-size: 10em;"></i>
-        <h1>{{ mentor.get_full_name }} ({{mentor.rating}})</h1>
+        <h1>{{ mentor.get_full_name }} </h1>
         <br>
         <form action="end-mentorship/" method="POST">
             {%csrf_token%}

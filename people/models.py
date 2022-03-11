@@ -115,7 +115,7 @@ class User(AbstractBaseUser):
             .aggregate(Avg("rating"))["rating__avg"]
         )
         if r == None:
-            return 0
+            return None
 
         return round(r, 1)
 
