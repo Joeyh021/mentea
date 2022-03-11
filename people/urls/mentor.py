@@ -44,7 +44,11 @@ urlpatterns = [
         MentorRescheduleMeetingPage.as_view(),
         name="mentor_reschedule",
     ),
-    path("meeting/<uuid:meetingId>/", ViewMeetingPage.as_view(), name="mentor_view_meeting"),
+    path(
+        "meeting/<uuid:meetingId>/",
+        ViewMeetingPage.as_view(),
+        name="mentor_view_meeting",
+    ),
     path(
         "meeting/<uuid:meetingId>/notes/",
         MentorViewMeetingNotesPage.as_view(),

@@ -164,7 +164,9 @@ class MenteeRescheduleForm(forms.Form):
 
 
 class SendMessageForm(forms.Form):
-    content = forms.CharField(widget=forms.TextInput(attrs={"class": "form-control"}), label="Message Content")
+    content = forms.CharField(
+        widget=forms.TextInput(attrs={"class": "form-control"}), label="Message Content"
+    )
 
 
 class RatingMentorForm(forms.Form):
