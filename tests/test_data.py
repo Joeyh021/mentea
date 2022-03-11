@@ -1,21 +1,30 @@
 from uuid import uuid4
 from people.models import *
+from events.models import Event, EventType, EventRequest, EventAttendee
+from datetime import datetime, timedelta
+
 
 # data used for all tests
 def create_default_data():
     # create a mentee
     mentee = User.objects.create_user(
-        email="mentee@mentea.me", password="menteepassword"
+        email="mentee@mentea.me",
+        password="menteepassword",
     )
     mentee.bio = "I am a mentee"
+    mentee.first_name = "Test"
+    mentee.last_name = "Mentee"
     mentee.user_type = "Mentee"
     mentee.save()
 
     # create a mentor
     mentor = User.objects.create_user(
-        email="mentor@mentea.me", password="mentorpassword"
+        email="mentor@mentea.me",
+        password="mentorpassword",
     )
     mentor.user_type = "Mentor"
+    mentor.first_name = "Test"
+    mentor.last_name = "Mentor"
     mentor.bio = "I am a mentor"
     mentor.save()
 
@@ -50,6 +59,40 @@ def create_default_data():
     # create some business areas
     marketing = BusinessArea.objects.create(business_area="marketing")
     engineering = BusinessArea.objects.create(business_area="engineering")
+
+    # add some chat messages to test chat
+    chat = Chat.objects.create(mentor=mentor, mentee=mentee)
+    ChatMessage.objects.create(
+        chat=chat, sender=mentor, content="What is your favourite colour?"
+    )
+    ChatMessage.objects.create(chat=chat, sender=mentee, content="Blue")
+    # Add some meetings to test those too
+
+    # data for workshops tests
+    # Add a new event run by our mentor
+    event1 = Event.objects.create(
+        name="Test Event",
+        startTime=datetime.now() + timedelta(hours=1),
+        endTime=datetime.now() + timedelta(hours=2),
+        duration=60,
+        location="my kitchen",
+        mentor=mentor,
+        type=EventType.Workshop,
+        topic=spreadsheets,
+    )
+    event1.attendees.add(mentee)
+    # add a new workshop in the past
+    event2 = Event.objects.create(
+        name="Test Event 2",
+        startTime=datetime.now() - timedelta(hours=2),
+        endTime=datetime.now() - timedelta(hours=1),
+        duration=60,
+        location="Online",
+        mentor=mentor,
+        type=EventType.Workshop,
+        topic=python,
+    )
+    event2.attendees.add(mentee)
 
 
 # data used only for matching tests
