@@ -53,4 +53,7 @@ urlpatterns = [
         name="view_general_feedback",
     ),
     path("meeting/<uuid:meetingId>/", ViewMeetingPage.as_view(), name="view_meeting"),
+    path("choose-mentor/", ChooseMentorPage.as_view(), name="choose_mentor"),
+    
+    path("end-mentorship/", EndMentorship.as_view(), name="end_mentorship")
 ]

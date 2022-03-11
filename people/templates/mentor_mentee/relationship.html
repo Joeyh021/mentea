@@ -14,7 +14,10 @@
         <small>Since {{ relation.created_at|date:'M d, Y' }}</small>
     </div>
     <div class="col d-flex justify-content-end align-items-center">
-        <a href="#end" class="btn btn-danger">End Relationship</a>
+        <form action="end-mentorship/" method="POST">
+            {%csrf_token%}
+            <input type="submit" class="btn btn-danger" value="End Relationship">
+        </form>
     </div>
 </div>
 

@@ -18,7 +18,10 @@
         <i class="fa-solid fa-circle-user" style="font-size: 10em;"></i>
         <h1>{{ mentor.get_full_name }} ({{mentor.rating}})</h1>
         <br>
-        <button class="btn btn-danger">End Mentorship</button>
+        <form action="end-mentorship/" method="POST">
+            {%csrf_token%}
+            <input type="submit" class="btn btn-danger" value="End Mentorship">
+        </form>
     </div>
 
 </div>
@@ -57,7 +60,7 @@
     
         {% empty %}
         
-        <div class="alert alert-danger w-100" style="margin-top: 40px;"> You have no upcoming meetings! <a href="../request/" class="alert-link">Request a meeting?</a> </div>
+        <div class="alert alert-danger w-100" style="margin-top: 40px;"> You have no upcoming meetings! <a href="request/" class="alert-link">Request a meeting?</a> </div>
         
         {% endfor %}
             
