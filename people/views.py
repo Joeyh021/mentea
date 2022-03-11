@@ -1642,7 +1642,7 @@ class ChooseMentorPage(IsUserMenteeMixin, TemplateView):
 
     def get(self, request):
 
-        recommended_mentors = get_matches(request.user)
+        recommended_mentors = get_matches(request.user)[:3]
 
         recommended_mentors = map(operator.itemgetter(0), recommended_mentors)
 
