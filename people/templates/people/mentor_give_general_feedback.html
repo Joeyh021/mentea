@@ -13,7 +13,7 @@
         
         <div class="mb-3">
             <label for="name">Feedback:</label>
-            <input type="textarea" class="form-control" id="feedback" name="feedback" required>
+            {{ form.feedback }}
             {% if form.feedback.errors %}
                 {% for e in form.feedback.errors %}
                     <p class="help is-danger">{{ e }}</p>

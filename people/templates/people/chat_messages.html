@@ -13,7 +13,7 @@ crossorigin="anonymous"
 
 {% for chatMessage in chatMessages %}
 
-{% if chatMessage.sender == user %}
+{% if chatMessage.sender != user %}
 <p style="text-align:left">{{ chatMessage.content }}</p>
 <p style="text-align:left"><small>
     {{ chatMessage.sender.first_name }}
@@ -31,7 +31,7 @@ crossorigin="anonymous"
 
 {% endfor %}
 
-
+<div id="last"></div>
 {% endif %}
 
 <script>

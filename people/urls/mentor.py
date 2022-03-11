@@ -35,25 +35,26 @@ urlpatterns = [
     path("mentor_past/", MentorPastMeetingsPage.as_view(), name="mentor_past"),
     path("mentor_pending/", MentorPendingMeetingsPage.as_view(), name="mentor_pending"),
     path(
-        "mentor_reschedule/<uuid:eventId>",
+        "mentor_reschedule/<uuid:eventId>/",
         MentorRescheduleMeetingPage.as_view(),
         name="mentor_reschedule",
     ),
     path(
-        "mentor_edit_meeting/<uuid:eventId>",
-        MentorEditMeetingPage.as_view(),
-        name="mentor_edit_meeting",
+        "meeting/<uuid:meetingId>/",
+        ViewMeetingPage.as_view(),
+        name="view_meeting"
+        
     ),
-    path("view_notes/", MentorViewMeetingNotesPage.as_view(), name="view_notes"),
-    path("add_notes/", MentorAddMeetingNotesPage.as_view(), name="add_notes"),
-    path("edit_notes/", MentorEditMeetingNotesPage.as_view(), name="edit_notes"),
+    path("meeting/<uuid:meetingId>/notes/", MentorViewMeetingNotesPage.as_view(), name="view_notes"),
+    path("meeting/<uuid:meetingId>/notes/add/", MentorAddMeetingNotesPage.as_view(), name="add_notes"),
+    path("meeting/<uuid:meetingId>/notes/<uuid:noteId>/", MentorEditMeetingNotesPage.as_view(), name="edit_notes"),
     path(
-        "meeting_feedback/",
+        "meeting/<uuid:meetingId>/feedback/",
         MentorMeetingFeedbackPage.as_view(),
         name="meeting_feedback",
     ),
     path(
-        "give_general_feedback/",
+        "mentees/<uuid:menteeId>/give_general_feedback/",
         MentorGiveGeneralFeedbackPage.as_view(),
         name="give_general_feedback",
     ),

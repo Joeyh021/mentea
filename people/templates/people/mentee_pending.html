@@ -19,21 +19,22 @@
                     <h5 class="card-title d-flex" style="margin-bottom: 0px !important;">{{ meeting.event.name }}</h5>
                     <small><strong>Location: </strong>{{ meeting.event.location }}</small>
             
-                    <hr>
+           
 
                     {% if not meeting.mentor_approved %}
+                    <hr>
                         <span class="text-info">Waiting for mentor to approve</span>
                     {% endif %}
 
                     
                 </div>
-                <div class="card-footer d-flex align-items-center">
+                <div class="card-footer d-flex align-items-center justify-content-between">
                     <span style="font-size: 0.8em;">{{ meeting.event.startTime|date:"d/m/y @ H:i" }} - {{ meeting.event.endTime|date:"H:i" }}</span>
-                    <a href="../mentee_reschedule/{{ meeting.event.id }}" class="ms-auto">Reschedule </a>
+
                     {% if not meeting.mentee_approved %}  
-                        <form action="POST">
+                        <form method="POST">
                             {% csrf_token %}
-                            <input type="submit" class="btn btn-primary" value="Approve Meeting" name="approve">
+                            <input type="submit" class="btn btn-primary" value="Approve" name="approve">
                             <input type="hidden" value={{ meeting.id }} name="id">
                         </form>
                     {% endif %}

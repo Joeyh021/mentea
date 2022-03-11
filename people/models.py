@@ -2,6 +2,7 @@ import uuid
 
 from django.db import models
 from django.contrib.auth.models import BaseUserManager, AbstractBaseUser
+from django.db.models import Avg
 
 # Changing this to override the default model!
 
@@ -106,6 +107,13 @@ class User(AbstractBaseUser):
 
     def has_notifs(self):
         return self.notifs().count() > 0
+    
+    def rating(self):
+        r = Rating.objects.filter(mentor=self).all().aggregate(Avg('rating'))['rating__avg']
+        if r == None:
+            return 0
+        
+        return round(r, 1)
 
     @property
     def is_staff(self):
@@ -186,7 +194,7 @@ class Rating(models.Model):
         User, on_delete=models.CASCADE, related_name="mentor_rating", db_index=True
     )
     rating = models.IntegerField()
-    associated_topic = models.ForeignKey(Topic, on_delete=models.CASCADE, db_index=True)
+
     rated_by = models.ForeignKey(
         User,
         on_delete=models.CASCADE,

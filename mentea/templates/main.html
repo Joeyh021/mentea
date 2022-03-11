@@ -127,7 +127,7 @@
     {% if messages or not request.COOKIES.noticed_cookies %}
         <div class="alerts">
             {% for message in messages %}
-                <div class="alert alert-dismissible show fade{% if message.tags %} alert-{{ message.tags }}{% endif %}"
+                <div class="alert alert-info alert-dismissible show fade{% if message.tags %} alert-{{ message.tags }}{% endif %}"
                      role="alert">
                     {{ message }}
                     <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>

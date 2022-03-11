@@ -3,6 +3,10 @@
 {% block title %}Mentor Index Page{% endblock %}
 
 {% block body %}
+
+<small>
+    <a href="../../">Back</a>
+</small>
 <div class="row">
     <div class="col-10 ">
         <h5>Your relationship with:</h5>
@@ -22,26 +26,26 @@
         {% for event in meetings %}
             <div class="col">
                 <div class="card h-100">
-                    <div src="..." class="w-100 {{ event.get_pattern }}" style="height: 150px" alt="..." ></div>
+
                     <div class="card-body">
-                        <h5 class="card-title d-flex">{{ event.name }} {% if event.in_progress %}<span class="ms-auto badge rounded-pill bg-success text-light">Running</span>{% endif %}</h5>
-                        <small><strong>Mentor:</strong> {{ event.mentor.get_full_name }}</small>
-                        <small class="ms-2"><strong>Topic:</strong> {{ event.topic }}</small>
-                        <p class="card-text">{{ event.description }}</p>
+                        <h5 class="card-title d-flex" style="margin-bottom: 0px !important;">{{ event.event.name }}</h5>
+                        <small><strong>When:</strong> {{ event.event.startTime|date:"D m, Y @ H:i" }}</small>
+                        <br>
+                        <small><strong>Where:</strong> {{ event.event.location }}</small>
+
+
 
                         
                     </div>
-                    <div class="card-footer d-flex">
-                        <small class="text-muted">{{ event.startTime|date:"d m, Y @ h:iA" }}</small>
-                        <div class="ms-auto">
+          
                      
-                            <a href="{{ event.id }}" class="stretched-link mt-auto">View</a></div>
-                    </div>
+                            <a href="/mentor/meeting/{{ event.event.id }}" class="stretched-link mt-auto"></a>
+               
                 </div>
             </div>
         {% empty %}
 
-        <div class="alert alert-danger w-100" style="margin-top: 40px;">You don't have any upcoming meetings. <a href="#" class="alert-link">Schedule one?</a></div>
+        <div class="alert alert-danger w-100" style="margin-top: 40px;">You don't have any upcoming meetings with this mentee!</div>
         {% endfor %}
     </div>
 </div>
@@ -79,10 +83,9 @@
     </div>
 </div>
 
-<div>
-    <h4>Feedback from Mentees</h4>
-    <small>Avg Rating: 0</small>
-</div>
+<a href="give_general_feedback/" class="btn btn-primary">Give Mentee Feedback</a>
+<a href="chat/" class="btn btn-primary">Chat</a>
+
 
 
 

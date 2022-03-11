@@ -16,7 +16,7 @@
         <p style="margin: 0;">Your Mentor:</p>
         <br>
         <i class="fa-solid fa-circle-user" style="font-size: 10em;"></i>
-        <h1>{{ mentor.get_full_name }}</h1>
+        <h1>{{ mentor.get_full_name }} ({{mentor.rating}})</h1>
         <br>
         <button class="btn btn-danger">End Mentorship</button>
     </div>
@@ -28,6 +28,7 @@
     <div class="col d-flex"><a href="request" class="btn btn-primary ms-auto me-auto">Request Meeting</a></div>
     <div class="col d-flex"><a href="give_general_feedback" class="btn btn-primary ms-auto me-auto">Give Feedback</a></div>
     <div class="col d-flex"><a  href="view_general_feedback" class="btn btn-primary ms-auto me-auto">View Feedback</a></div>
+    <div class="col d-flex"><a  href="chat" class="btn btn-primary ms-auto me-auto">Chat</a></div>
     
 </div>
 <br>

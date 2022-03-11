@@ -126,6 +126,9 @@ class Event(models.Model):
 
     def current_user_is_mentor(self, user: User):
         return self.mentor == user
+    
+    def get_mentee(self):
+        return self.attendees.first()
 
 
 class EventAttendee(models.Model):

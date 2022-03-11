@@ -20,13 +20,13 @@
                     <h5 class="card-title d-flex" style="margin-bottom: 0px !important;">{{ meeting.event.name }}</h5>
                     <small><strong>With:</strong> {{ meeting.mentee.get_full_name }} ({{ meeting.event.location }})</small>
 
-                    <hr>
+       
 
                 </div>
                 <div class="card-footer d-flex align-items-center">
                     <span style="font-size: 0.8em;">{{ meeting.event.startTime|date:"d/m/y @ H:i" }} - {{ meeting.event.endTime|date:"H:i" }}</span>
-                    <a href="../mentor_reschedule/{{ meeting.id }}" class="ms-auto">Reschedule Meeting</a>
-                    <a href="../mentor_edit/{{ meeting.id }}" class="ms-auto">Edit Meeting </a>
+                    <a href="../mentor_reschedule/{{ meeting.event.id }}" class="ms-auto">Edit/Reschedule</a>
+
                 </div>
             </div>
         </div>

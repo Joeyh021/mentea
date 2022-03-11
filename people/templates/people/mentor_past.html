@@ -13,24 +13,23 @@
 
 <div class="card-group row row-cols-1 row-cols-md-4 g-4 mb-4">
     {% for meeting in past_meetings %}
-        <div class="col">
-            <div class="card h-100" >
-                <div class="card-body">
-                    
-                    <h5 class="card-title d-flex" style="margin-bottom: 0px !important;">{{ meeting.name }}</h5>
-                    <small><strong>With:</strong> {{ meeting.mentee.get_full_name }} ({{ meeting.event.location }})</small>
+    <div class="col">
+        <div class="card h-100" >
+            <div class="card-body">
+                
+                <h5 class="card-title d-flex" style="margin-bottom: 0px !important;">{{ meeting.name }}</h5>
 
-                    <hr>
 
-                </div>
-                <div class="card-footer d-flex align-items-center">
-                    <span style="font-size: 0.8em;">{{ meeting.event.startTime|date:"d/m/y @ H:i" }} - {{ meeting.event.endTime|date:"H:i" }}</span>
-                    <a href="../view_notes/{{ meeting.event.id }}" class="ms-auto"> View Meeting Notes </a>
-                    <a href="../add_notes/{{ meeting.event.id }}" class="ms-auto"> Add Meeting Notes </a>
-                    <a href="../meeting_feedback/{{ meeting.event.id }}" class="ms-auto"> View Feedback </a>
-                </div>
+              
+
+            </div>
+            <div class="card-footer d-flex align-items-center">
+                <span style="font-size: 0.8em;">{{ meeting.startTime|date:"d/m/y @ H:i" }} - {{ meeting.endTime|date:"H:i" }}</span>
+                <a href="../meeting/{{ meeting.id }}/notes" class="ms-auto"> Notes </a>
+
             </div>
         </div>
+    </div>
 
     {% empty %}
     

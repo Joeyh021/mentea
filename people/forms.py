@@ -102,7 +102,7 @@ class PlanOfActionForm(forms.Form):
     )
 
     # Change this to be all mentors with a relationship to the mentee.
-    mentor = forms.ModelChoiceField(queryset=User.objects.all())
+    #mentor = forms.ModelChoiceField(queryset=User.objects.all())
     description_1 = forms.CharField(
         label="Description",
         max_length=100,
@@ -175,7 +175,7 @@ class RatingMentorForm(forms.Form):
     )
 
 
-class GeneralFeedbackForm(forms.Form):
+class GeneralFeedbackFormF(forms.Form):
     feedback = forms.CharField(
         widget=forms.Textarea(attrs={"rows": 20, "cols": 40, "class": "form-control"}),
         required=True,

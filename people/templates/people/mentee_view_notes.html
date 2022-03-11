@@ -20,8 +20,8 @@
                     <h5 class="card-title d-flex" style="margin-bottom: 0px !important;">{{ note.content }}</h5>
                     
                 </div>
-                <div class="card-footer d-flex align-items-center">
-                    
+                <div class="card-footer d-flex align-items-center jsutify-content-center">
+                    <small style="margin: 0;">By {{ note.author.get_full_name }}</small>
                     <a href="{{ note.id }}" class="ms-auto">Edit Meeting Note </a>
                 </div>
             </div>

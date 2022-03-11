@@ -2,11 +2,14 @@
 
 {% block body %}
 
+<small>
+  <a href="../">Back</a>
+</small>
 {% if user != mentor and user != mentee %}
 <p> You have no permission to acces this page </p>
 {% else %}
 
-<iframe src="messages" frameborder="0" style="width: 100%; max-height: 75vh" onload="this.style.height=(this.contentWindow.document.body.scrollHeight)+'px';"></iframe>
+<iframe src="messages" name="i_frame" frameborder="0" style="width: 100%; max-height: 75vh" onload="this.style.height=(this.contentWindow.document.body.scrollHeight)+'px';"></iframe>
 
 <form method="post">{%csrf_token%}
   {{form.as_p}}
@@ -17,6 +20,15 @@
 <script>
   window.onload = () => {
     document.getElementById('id_content').focus()
+    
+      var frame = window.frames.i_frame;
+    var doc   = frame.document;
+    var node  = doc.getElementById('last')
+ 
+    var y = parseInt(node.offsetTop, 10);
+ 
+    frame.scrollTo(0, y);
+   
   }
 </script>
 
