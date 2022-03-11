@@ -12,7 +12,7 @@
     
     <div class="mb-3">
         <label for="name">Meeting Name:</label>
-        <input type="text" class="form-control" id="name" name="name" required>
+        {{ form.name }}
         {% if form.name.errors %}
             {% for e in form.name.errors %}
                 <p class="help is-danger">{{ e }}</p>

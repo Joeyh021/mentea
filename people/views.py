@@ -816,8 +816,17 @@ class MeetingRequestPage(TemplateView):
     template_name = "people/request.html"
     form_class: Any = CreateMeetingForm
 
+
+
     def get(self, request: HttpRequest, *args: Any, **kwarsgs: Any) -> HttpResponse:
-        form = self.form_class()
+        default_name = ""
+        try:
+            default_name = request.GET['t']
+        except:
+            pass
+        form = self.form_class(initial={
+            "name": default_name 
+        })
 
         return render(request, self.template_name, {"form": form})
 
@@ -1662,6 +1671,9 @@ class ChooseMentorPage(IsUserMenteeMixin, TemplateView):
         mm = MentorMentee(mentor=mentor, mentee=request.user, approved=True)
         mm.save()
         
+        NotificationManager.send("Mentorship Started", mm.mentee.get_full_name() + " has been matched with you!", mm.mentor, "/mentor/mentees/{{ mm.mentee.id }}")
+        NotificationManager.send("Mentorship Started", "You've matched with: " + mm.mentor.get_full_name() + ", why don't you schedule your first meeting", mm.mentee, "/mentee/request?t=First Meeting")
+        
         return redirect("/mentee/")
     
 def common_terminate_mentorship(mentorMentee: MentorMentee):
@@ -1677,6 +1689,7 @@ class EndMentorship(IsUserMenteeMixin, TemplateView):
         try:
             mm = MentorMentee.objects.get(mentee=request.user)
             common_terminate_mentorship(mm)
+            NotificationManager.send("Mentorship Ended", "Your mentee: " + mm.mentee.get_full_name() + ", ended your mentoring relationship!", mm.mentor, "")
             mm.delete()
         except:
             pass
@@ -1694,6 +1707,7 @@ class EndMentorshipMentor(IsUserMentorMixin, TemplateView):
         try:
             mm = MentorMentee.objects.get(mentee=mentee, mentor=request.user)
             common_terminate_mentorship(mm)
+            NotificationManager.send("Mentorship Ended", "Your mentor: " + mm.mentor.get_full_name() + ", ended your mentoring relationship!", mm.mentee, "")
             mm.delete()
         except:
             pass

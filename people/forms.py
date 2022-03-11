@@ -136,7 +136,7 @@ class PlanOfActionForm(forms.Form):
 
 
 class CreateMeetingForm(forms.Form):
-    name = forms.CharField(widget=forms.Textarea)
+    name = forms.CharField(widget=forms.TextInput(attrs={"class": "form-control"}))
 
     start_time = forms.DateTimeField()
     location = forms.CharField(widget=forms.Textarea)
