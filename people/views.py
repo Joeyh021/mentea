@@ -42,7 +42,6 @@ from .util import get_mentor, mentor_mentors_mentee
 
 from events.models import (
     Event,
-    EventRequest,
     EventType,
     MeetingRequest,
     FeedbackForm,
@@ -53,7 +52,7 @@ from events.models import (
     MeetingNotes,
 )
 
-from datetime import datetime, timedelta, timezone
+from datetime import datetime, timedelta
 
 from django.db.models import Q
 
@@ -645,15 +644,6 @@ class MentorDashboardPage(IsUserMentorMixin, TemplateView):
         )
 
 
-class MentorMenteesPage(IsUserMentorMixin, TemplateView):
-    """A mentor's view of all his current mentess, along with new mentee requests"""
-
-    template_name: str = "people/mentor_mentees.html"
-
-    def get(self, request: HttpRequest, *args: Any, **kwarsgs: Any) -> HttpResponse:
-        return render(request, self.template_name, {})
-
-
 class MentorMenteePage(IsUserMentorMixin, TemplateView):
     """A mentor's overview of a specfic mentee and their relationship"""
 
@@ -685,15 +675,6 @@ class MentorMenteePage(IsUserMentorMixin, TemplateView):
                     "meetings": upcoming_meetings,
                 },
             )
-
-
-class MentorMenteeFeedbackPage(IsUserMentorMixin, TemplateView):
-    """A page to display feedback between the mentor and specific mentee"""
-
-    template_name: str = "people/mentor_feedback.html"
-
-    def get(self, request: HttpRequest, *args: Any, **kwarsgs: Any) -> HttpResponse:
-        return render(request, self.template_name, {})
 
 
 class MentorMenteePlansPage(IsUserMentorMixin, TemplateView):
@@ -808,15 +789,6 @@ class MentorMenteeNewPlanPage(IsUserMentorMixin, TemplateView):
                     "base": "mentor_base.html",
                 },
             )
-
-
-class MentorMenteeMeetingsPage(IsUserMentorMixin, TemplateView):
-    """Allows a mentor to view and manage meetings and meeting history for a specific mentee"""
-
-    template_name: str = "people/mentor_meetings.html"
-
-    def get(self, request: HttpRequest, *args: Any, **kwarsgs: Any) -> HttpResponse:
-        return render(request, self.template_name, {})
 
 
 class MeetingRequestPage(TemplateView):
@@ -1639,8 +1611,6 @@ class ViewMeetingPage(LoginRequiredMixin, TemplateView):
 
     def get(self, request, meetingId):
         meeting = get_object_or_404(Event, id=meetingId)
-
-        notes = meeting.meetingnotes_set
 
         return render(request, self.template_name, {"meeting": meeting})
 
