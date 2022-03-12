@@ -4,6 +4,7 @@ from events.models import *
 import pytest
 from django.test.client import Client
 from datetime import datetime, timedelta
+from pytest_django import asserts
 
 pytestmark = pytest.mark.django_db()
 
@@ -15,6 +16,7 @@ def test_index_page_mentee(client: Client, mentee: User):
     """Test a mentee can view the index page and it has the correct content"""
     response = client.get("/workshops/")
     all_workshops = response.context["page_obj"].object_list
+    asserts.assertTemplateUsed("workshops/index.html")
     assert all_workshops[0].name == "Test Event"
     assert response.context["my_events"][0].name == "Test Event"
 
@@ -23,7 +25,10 @@ def test_mentee_signup(client: Client, mentee: User):
     """Test a mentee can toggle signups for an existing event"""
     workshop = Event.objects.get(name="Test Event")
     response = client.get(f"/workshops/{workshop.id}/")
+
+    asserts.assertTemplateUsed("workshops/event.html")
     assert response.context["registeredToEvent"] == True
+
     client.get(f"/workshops/{workshop.id}/toggleAttendance")
     response = client.get(f"/workshops/{workshop.id}/")
     assert response.context["registeredToEvent"] == False
@@ -32,6 +37,7 @@ def test_mentee_signup(client: Client, mentee: User):
 def test_view_previous_workshops(client: Client, mentee: User):
     """Test a user can view workshops they previously attended"""
     response = client.get("/workshops/previous/")
+    asserts.assertTemplateUsed(response, "workshops/previous.html")
     print(Event.objects.get(name="Test Event 2").attendees)
     prev_workshops = response.context["page_obj"].object_list
     assert prev_workshops[0].name == "Test Event 2"
