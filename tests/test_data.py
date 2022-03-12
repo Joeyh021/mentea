@@ -1,6 +1,13 @@
 from uuid import uuid4
 from people.models import *
-from events.models import Event, EventType, EventRequest, EventAttendee
+from events.models import (
+    Event,
+    EventType,
+    EventRequest,
+    EventAttendee,
+    GeneralFeedbackForm,
+    MeetingRequest,
+)
 from datetime import datetime, timedelta
 
 
@@ -66,8 +73,31 @@ def create_default_data():
         chat=chat, sender=mentor, content="What is your favourite colour?"
     )
     ChatMessage.objects.create(chat=chat, sender=mentee, content="Blue")
-    # Add some meetings to test those too
+    # Add a meeting to test  that
+    meeting = Event.objects.create(
+        name="Meeting",
+        startTime=datetime.now() + timedelta(hours=1),
+        endTime=datetime.now() + timedelta(hours=2),
+        duration=60,
+        location="Teams",
+        mentor=mentor,
+        type=EventType.OneToOne,
+    )
+    MeetingRequest.objects.create(
+        event=meeting, mentee=mentee, mentor_approved=True, mentee_approved=True
+    )
 
+    # some feedback either way
+    GeneralFeedbackForm.objects.create(
+        submitted_by=mentee,
+        submitted_for=mentor,
+        feedback="This mentor sucks he knows nothing and is boring as fuck",
+    )
+    GeneralFeedbackForm.objects.create(
+        submitted_by=mentor,
+        submitted_for=mentee,
+        feedback="This mentee is dumb as shit and complains all the time",
+    )
     # data for workshops tests
     # Add a new event run by our mentor
     event1 = Event.objects.create(
