@@ -392,15 +392,6 @@ class MenteeDashboardPage(MenteeHasMentorMixin, IsUserMenteeMixin, TemplateView)
         )
 
 
-class MenteeFeedbackPage(IsUserMenteeMixin, TemplateView):
-    """A page for a mentee to discuss feedback with their mentor"""
-
-    template_name: str = "people/mentee_feedback.html"
-
-    def get(self, request: HttpRequest, *args: Any, **kwarsgs: Any) -> HttpResponse:
-        return render(request, self.template_name, {})
-
-
 class MenteePlansPage(IsUserMenteeMixin, TemplateView):
     """A mentee's plans of action page. Allows them to view their plans of action and tick off any completed targets."""
 
@@ -628,15 +619,6 @@ class ChatMessages(LoginRequiredMixin, TemplateView):
         ] = "frame-ancestors 'self' https://localhost:8000"
 
         return resp
-
-
-class MenteeMeetingsPage(IsUserMenteeMixin, TemplateView):
-    """Upcoming meetings and records of past meetings between a mentee and their mentor"""
-
-    template_name: str = "people/mentee_meetings.html"
-
-    def get(self, request: HttpRequest, *args: Any, **kwarsgs: Any) -> HttpResponse:
-        return render(request, self.template_name, {})
 
 
 class MentorDashboardPage(IsUserMentorMixin, TemplateView):
