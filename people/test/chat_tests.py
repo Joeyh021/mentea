@@ -1,6 +1,4 @@
-from email import message
 from django.test.client import Client
-from pytest_django import asserts
 import pytest
 from people.models import *
 
