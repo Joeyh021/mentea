@@ -145,20 +145,20 @@ export const fakeQuestions: IQuestion[] = [
     type_data: {
       options: [
         {
-          key: "Drug Smuggling",
-          value: "ds"
+          key: "Marketing",
+          value: "ma"
         },
         {
-          key: "Child Slavery",
-          value: "cs"
+          key: "Project Management",
+          value: "pm"
         },
         {
-          key: "Court Corruption",
-          value: "cc"
+          key: "Finance",
+          value: "fm"
         },
         {
-          key: "Deformation of Bojo",
-          value: "dob"
+          key: "IT Services",
+          value: "its"
         },
 
       ]
