@@ -19,7 +19,7 @@ def test_user_profile_page_mentee(client: Client, mentee: User):
 
 
 def test_user_profile_page_mentor(client: Client, mentor: User):
-    """Test a mentee can view their profile and that it has the correct info"""
+    """Test a mentor can view their profile and that it has the correct info"""
     response = client.get("/user/profile/")
     asserts.assertTemplateUsed(response, "people/profile.html")
     mentor_topics = UserTopic.objects.filter(user=mentor, usertype=UserType.Mentor)

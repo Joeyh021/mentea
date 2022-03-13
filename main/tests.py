@@ -31,4 +31,3 @@ def test_tos_page(client: Client):
     """test terms of service page returns correct template"""
     response = client.get("/terms-of-service/")
     asserts.assertTemplateUsed(response, "main/tos.html")
-
