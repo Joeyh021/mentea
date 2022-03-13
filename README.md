@@ -5,7 +5,7 @@ Group 32's CS261 Software Engineering Project
 
 ### Requirements
 
-- Python 3.10
+- Python >=3.8
   - Python can be installed using your favourite package manager, or using the installers downloaded from [python.org](https://www.python.org/downloads/)
 - Poetry
   - Poetry is a dependancy and environment managment tool for python. It simplifies working with virtual environments and allows to specify all the project settings and dependencies.
@@ -44,8 +44,8 @@ Group 32's CS261 Software Engineering Project
   - Run `pytest` to make sure any changes you made haven't broken anything
 - `pylint` is a linter used to catch common issues in python code.
   - This will throw some false positives but is useful to catch common errors and point out things that are typically easily missed
-- CI is currently gated on `mypy`, `black`, and `pytest` all passing. If any of these throw errors, you won't be able to merge code into the repo
-  - Just because it isn't also gated on `pylint` doesn't mean you shouldn't check code with it, as it also makes life easier for the person reviewing your code
+- CI is currently gated on `black`, and `pytest` passing. If any of these throw errors, you won't be able to merge code into the repo
+  - Just because it isn't also gated on `pylint` or `mypy` doesn't mean you shouldn't check code with it, as it also makes life easier for the person reviewing your code, and picks up common bugs.
 
 ### Editing the Client side form system
 - If you don't need to make any changes then please don't!
@@ -77,9 +77,9 @@ Screenshots and videos will be saved in the `cypress/screenshots` and `cypress/v
   - Github won't let you push directly to main anyway
 - Keep commits as atomic as possible, don't commit a day's worth of work in one go
 - Make good use of the tooling to keep your code clean and bug free
+- Add type hints to help make your code more readable, and to help `mypy` pick up bugs
 - WRITE TESTS. I MEAN IT.
   - Write tests before or at the same time you are writing the code you intend to test
-  - `pytest --cov` will give a code coverage report which tells you how much of your code is covered by the tests. Use this to help write comprehensive tests
 - Document code as you write it using module, class, and function docstrings
   - `pylint` will pick up any that you miss
 - Comment code thoroughly
