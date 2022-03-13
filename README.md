@@ -65,6 +65,7 @@ Before running the tests you'll need to export environment variables to specify 
 $ export CYPRESS_MENTEA_USERNAME="some-username"; 
 $ export CYPRESS_MENTEA_PASSWORD="some-password"; 
 ```
+Ensure the user is set up as both a mentor and as a mentee, otherwise some tests will fail.
 
 Screenshots and videos will be saved in the `cypress/screenshots` and `cypress/videos` directories respectively on test failure. If nothing is saved then probably everything passed.
 
