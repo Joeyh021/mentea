@@ -1,11 +1,11 @@
 {% extends "mentor_base.html" %}
 
-{% block title %}Mentor Index Page{% endblock %}
+{% block title %}Relationship with {{ mentee.get_full_name }}{% endblock %}
 
 {% block body %}
 
 <small>
-    <a href="../../">Back</a>
+    <a href="{% url 'mentor_dashboard' %}">Back</a>
 </small>
 <div class="row">
     <div class="col-10 ">

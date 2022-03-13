@@ -18,10 +18,10 @@
 
     <div class="ms-auto g-2 event-buttons-mobile">
         {% if user.user_type == "Mentor" or user.user_type == "MentorMentee" %}
-            <a href="create" class="btn btn-primary">Add</a>
+            <a href="{% url 'events:workshop-create' %}" class="btn btn-primary">Add</a>
         {% endif %}
         {% if user.user_type == "Mentee" or user.user_type == "MentorMentee"  %}
-            <a href="request" class="btn btn-primary position-relative">Request</a>
+            <a href="{% url 'events:workshop-request' %}" class="btn btn-primary position-relative">Request</a>
         {% endif %}
     </div>
 </div>
@@ -45,7 +45,7 @@
                         <small class="text-muted">{{ event.startTime|date:"d m, Y @ h:iA" }}</small>
                         <div class="ms-auto">
                      
-                            <a href="{{ event.id }}" class="stretched-link mt-auto">View</a></div>
+                            <a href="{% url 'events:workshop' eventId=event.id %}" class="stretched-link mt-auto">View</a></div>
                     </div>
                 </div>
             </div>
@@ -78,13 +78,13 @@
                         <small class="text-muted">{{ event.startTime|date:"d m, Y @ h:iA" }}</small>
                         <div class="ms-auto">
     
-                            <a href="{{ event.id }}" class="stretched-link mt-auto">View</a></div>
+                            <a href="{% url 'events:workshop' eventId=event.id %}" class="stretched-link mt-auto">View</a></div>
                     </div>
                 </div>
             </div>
             {% empty %}
 
-        <div class="alert alert-danger w-100" style="margin-top: 40px;">There are not currently any workshops available! <a class="alert-link" href="request">Request one</a></div>
+        <div class="alert alert-danger w-100" style="margin-top: 40px;">There are not currently any workshops available! <a class="alert-link" href="{% url 'events:workshop-request' %}">Request one</a></div>
         {% endfor %}
     </div>
 

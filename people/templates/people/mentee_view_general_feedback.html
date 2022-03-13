@@ -1,11 +1,11 @@
 {% extends "mentee_base.html" %}
 
-{% block title %}Mentee View General Feedback{% endblock %}
+{% block title %}View General Feedback{% endblock %}
 
 {% block body %}
 
 <small>
-    <a href="../">Back</a>
+    <a href="{% url 'dashboard' %}">Back</a>
 </small>
 
 <h1> Feedback: </h1>
@@ -25,7 +25,7 @@
 
     {% empty %}
     
-    <div class="alert alert-danger w-100" style="margin-top: 40px;"> Mentor has not given you any general feedback yet! </div>
+    <div class="alert alert-danger w-100" style="margin-top: 40px;"> Your mentor has not given you any general feedback yet! </div>
     
     {% endfor %}
         

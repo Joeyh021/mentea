@@ -33,35 +33,39 @@ urlpatterns = [
         MentorRescheduleMeetingPage.as_view(),
         name="mentor_reschedule",
     ),
-    path("meeting/<uuid:meetingId>/", ViewMeetingPage.as_view(), name="view_meeting"),
+    path(
+        "meeting/<uuid:meetingId>/",
+        ViewMeetingPage.as_view(),
+        name="mentor_view_meeting",
+    ),
     path(
         "meeting/<uuid:meetingId>/notes/",
         MentorViewMeetingNotesPage.as_view(),
-        name="view_notes",
+        name="mentor_view_notes",
     ),
     path(
         "meeting/<uuid:meetingId>/notes/add/",
         MentorAddMeetingNotesPage.as_view(),
-        name="add_notes",
+        name="mentor_add_notes",
     ),
     path(
         "meeting/<uuid:meetingId>/notes/<uuid:noteId>/",
         MentorEditMeetingNotesPage.as_view(),
-        name="edit_notes",
+        name="mentor_edit_notes",
     ),
     path(
         "meeting/<uuid:meetingId>/feedback/",
         MentorMeetingFeedbackPage.as_view(),
-        name="meeting_feedback",
+        name="mentor_meeting_feedback",
     ),
     path(
         "mentees/<uuid:menteeId>/give_general_feedback/",
         MentorGiveGeneralFeedbackPage.as_view(),
-        name="give_general_feedback",
+        name="mentor_give_general_feedback",
     ),
     path(
         "view_general_feedback/",
         MentorViewGeneralFeedbackPage.as_view(),
-        name="view_general_feedback",
+        name="mentor_view_general_feedback",
     ),
 ]

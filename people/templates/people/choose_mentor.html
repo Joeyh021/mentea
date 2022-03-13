@@ -25,7 +25,7 @@
                 {% else %}
                     <p class="text-secondary" style="font-style: italic;">no ratings</p>
                 {% endif %}
-                <a href="/user/{{ mentor.id }}" target="_blank">View Profile</a>
+                <a href="{% url 'userview_any' userId=mentor.id %}" target="_blank">View Profile</a>
             </div>
     
 

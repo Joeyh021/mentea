@@ -28,7 +28,7 @@
                         <small class="text-muted">{{ event.startTime|date:"d m, Y @ h:iA" }}</small>
                         <div class="ms-auto">
                      
-                            <a href="../{{ event.id }}" class="stretched-link mt-auto" style="z-index: 40 !important;">View</a></div>
+                            <a href="{% url 'events:workshop' eventId=event.id %}" class="stretched-link mt-auto" style="z-index: 40 !important;">View</a></div>
                     </div>
                 </div>
             </div>

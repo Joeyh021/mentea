@@ -56,6 +56,19 @@ Group 32's CS261 Software Engineering Project
     - You can optionally run the `type-check:watch` to provide realtime typescript errors
 - If you haven't made any changes then the production script in `static/js/dist` is all you need. IT IS ALREADY INCLUDED IN `base.html`.
 - If you need any help then just ask :)
+
+## Cypress Testing
+Functional tests are provided using Cypress. You'll need to run `npm ci` from the root directory before beginning, then run `npx cypress run` to run the tests from the command line. You can also use `npx cypress open` which provides a GUI to run the tests from.
+
+Before running the tests you'll need to export environment variables to specify the username and password to use for authentication on your local site. Run the following commands, inserting your login details as required:
+```
+$ export CYPRESS_MENTEA_USERNAME="some-username"; 
+$ export CYPRESS_MENTEA_PASSWORD="some-password"; 
+```
+Ensure the user is set up as both a mentor and as a mentee, otherwise some tests will fail.
+
+Screenshots and videos will be saved in the `cypress/screenshots` and `cypress/videos` directories respectively on test failure. If nothing is saved then probably everything passed.
+
 ## Best Practices
 
 - Work on a new branch for each feature, bug fix, or series of commits you intend to make.

@@ -168,6 +168,11 @@ label{
     background-color: #439481 !important;
 }
 
+.btn-mentee {
+    background-color: #8ad8d5 !important;
+    border-color: #8ad8d5 !important;
+}
+
 .color-mentea {
     color: var(--mentea-generic-bg) !important;
 }

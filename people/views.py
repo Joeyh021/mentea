@@ -1298,7 +1298,7 @@ class MenteeViewMeetingNotesPage(IsUserMenteeMixin, TemplateView):
         return render(
             request,
             self.template_name,
-            {"meeting_notes": meeting_notes},
+            {"meeting_notes": meeting_notes, "meeting_id": meetingId},
         )
 
 
@@ -1350,7 +1350,9 @@ class MenteeEditMeetingNotesPage(IsUserMenteeMixin, TemplateView):
                 "content": note.content,
             }
         )
-        return render(request, self.template_name, {"form": form})
+        return render(
+            request, self.template_name, {"form": form, "meeting_id": meetingId}
+        )
 
     def post(self, request, meetingId=None, noteId=None) -> HttpResponse:
         form = self.form_class(request.POST)
@@ -1384,7 +1386,7 @@ class MentorViewMeetingNotesPage(IsUserMentorMixin, TemplateView):
         return render(
             request,
             self.template_name,
-            {"meeting_notes": meeting_notes},
+            {"meeting_notes": meeting_notes, "meeting_id": meetingId},
         )
 
 
@@ -1395,9 +1397,11 @@ class MentorAddMeetingNotesPage(IsUserMentorMixin, TemplateView):
 
     form_class: Any = CreateMeetingNotesForm
 
-    def get(self, request: HttpRequest, *args: Any, **kwarsgs: Any) -> HttpResponse:
+    def get(self, request: HttpRequest, meetingId=None) -> HttpResponse:
         form = self.form_class()
-        return render(request, self.template_name, {"form": form})
+        return render(
+            request, self.template_name, {"form": form, "meeting_id": meetingId}
+        )
 
     def post(self, request, meetingId=None) -> HttpResponse:
         form = self.form_class(request.POST)
@@ -1438,7 +1442,9 @@ class MentorEditMeetingNotesPage(IsUserMentorMixin, TemplateView):
                 "content": note.content,
             }
         )
-        return render(request, self.template_name, {"form": form})
+        return render(
+            request, self.template_name, {"form": form, "meeting_id": meetingId}
+        )
 
     def post(self, request, meetingId=None, noteId=None) -> HttpResponse:
         form = self.form_class(request.POST)
@@ -1474,7 +1480,7 @@ class MenteeMeetingFeedbackPage(IsUserMenteeMixin, TemplateView):
         return render(
             request,
             self.template_name,
-            {"ff": ff, "mentor": mentor},
+            {"ff": ff, "mentor": mentor, "meeting_id": meetingId},
         )
 
 
@@ -1543,18 +1549,21 @@ class MentorMeetingFeedbackPage(IsUserMentorMixin, TemplateView):
 
     def get(self, request: HttpRequest, meetingId=None) -> HttpResponse:
         mentor = request.user
-        m = MeetingRequest.objects.get(id=meetingId)
+        m = MeetingRequest.objects.get(event=Event.objects.get(id=meetingId))
         mentee = m.mentee
         meeting = m.event
         ff = meeting.feedback_form
-        submission = FeedbackSubmission.objects.get(form=ff, user=mentee)
-        feedback = Answer.objects.get(associated_submission=submission)
+        try:
+            submission = FeedbackSubmission.objects.get(form=ff, user=mentee)
+            feedback = Answer.objects.get(associated_submission=submission)
+        except:
+            submission = None
+            feedback = None
 
         return render(
             request,
             self.template_name,
-            {"feedback": feedback},
-            {"mentee": mentee},
+            {"feedback": feedback, "mentee": mentee, "meeting_id": meetingId},
         )
 
 
@@ -1565,9 +1574,11 @@ class MentorGiveGeneralFeedbackPage(IsUserMentorMixin, TemplateView):
 
     form_class = GeneralFeedbackFormF
 
-    def get(self, request: HttpRequest, *args: Any, **kwarsgs: Any) -> HttpResponse:
+    def get(self, request: HttpRequest, menteeId=None) -> HttpResponse:
         form = self.form_class()
-        return render(request, self.template_name, {"form": form})
+        return render(
+            request, self.template_name, {"form": form, "mentee_id": menteeId}
+        )
 
     def post(self, request, menteeId=None) -> HttpResponse:
         form = self.form_class(request.POST)
@@ -1655,7 +1666,7 @@ class ChooseMentorPage(IsUserMenteeMixin, TemplateView):
             "Mentorship Started",
             "You've matched with: "
             + mm.mentor.get_full_name()
-            + ", why don't you schedule your first meeting",
+            + ", why don't you schedule your first meeting?",
             mm.mentee,
             "/mentee/request?t=First Meeting",
         )

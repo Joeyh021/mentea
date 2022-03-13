@@ -1,6 +1,6 @@
 {% extends "mentor_base.html" %}
 
-{% block title %}Mentor Index Page{% endblock %}
+{% block title %}Mentor Portal{% endblock %}
 
 {% block body %}
 <div class="center">
@@ -24,7 +24,7 @@
        
         <p>{{ con.mentee.get_full_name }}</p>
 
-        <a href="mentees/{{ con.mentee.id }}/" class="stretched-link"></a>
+        <a href="{% url 'mentee' menteeId=con.mentee.id %}" class="stretched-link"></a>
     </div>
 
     {% empty %}
@@ -35,7 +35,7 @@
 </div>
 <br>
 <div style="text-align:right; border:5px;">
-    <a href="view_general_feedback/" class="btn btn-primary  " style="font-size: 0.9rem;">View Feedback</a>
+    <a href="{% url 'mentor_view_general_feedback' %}" class="btn btn-primary  " style="font-size: 0.9rem;">View Feedback</a>
 </div>
 <br>
 <div class="bg-block-mentee-light" style="border-color: #a6de81 !important ">
@@ -53,7 +53,7 @@
                         <br>
                         <small><strong>With:</strong> {{ meeting.mentee.get_full_name }}</small>
 
-                        <a href="meeting/{{ meeting.event.id }}" class="stretched-link"></a>
+                        <a href="{% url 'mentor_view_meeting' meetingId=meeting.event.id %}" class="stretched-link"></a>
                     </div>
      
                 </div>

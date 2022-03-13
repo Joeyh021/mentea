@@ -373,6 +373,7 @@ class EventPage(TemplateView):
                 "registeredToEvent": userHasJoined,
                 "isMentor": event.current_user_is_mentor(request.user),
                 "edited": edited,
+                "eId": eventId,
             },
         )
 
