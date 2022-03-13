@@ -21,4 +21,6 @@ import './commands'
 
 beforeEach(() => {
     cy.viewport(1920, 1080);
+
+    cy.login(Cypress.env('MENTEA_USERNAME'), Cypress.env('MENTEA_PASSWORD'));
 })
