@@ -32,8 +32,3 @@ def test_tos_page(client: Client):
     response = client.get("/terms-of-service/")
     asserts.assertTemplateUsed(response, "main/tos.html")
 
-
-def test_feedback_form(client: Client):
-    """Test feedback form works correctly"""
-    # NOAH: TODO
-    pass
