@@ -28,4 +28,4 @@ def test_feedback(client: Client, mentee: User):
     """Test that we can see feedback"""
     response = client.get("/mentee/view_general_feedback/")
     asserts.assertTemplateUsed(response, "people/mentee_view_general_feedback.html")
-    assert "dumb as shit" in response.context["ff"][0].feedback
+    assert "dumb and complains" in response.context["ff"][0].feedback

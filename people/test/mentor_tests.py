@@ -43,4 +43,4 @@ def test_feedback(client: Client, mentor: User):
     """Test that we can see feedback"""
     response = client.get("/mentor/view_general_feedback/")
     asserts.assertTemplateUsed(response, "people/mentor_view_general_feedback.html")
-    assert "boring as fuck" in response.context["ff"][0].feedback
+    assert "knows nothing and is boring" in response.context["ff"][0].feedback

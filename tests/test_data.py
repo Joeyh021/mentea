@@ -91,12 +91,12 @@ def create_default_data():
     GeneralFeedbackForm.objects.create(
         submitted_by=mentee,
         submitted_for=mentor,
-        feedback="This mentor sucks he knows nothing and is boring as fuck",
+        feedback="This mentor sucks he knows nothing and is boring ",
     )
     GeneralFeedbackForm.objects.create(
         submitted_by=mentor,
         submitted_for=mentee,
-        feedback="This mentee is dumb as shit and complains all the time",
+        feedback="This mentee is dumb and complains all the time",
     )
     # data for workshops tests
     # Add a new event run by our mentor
