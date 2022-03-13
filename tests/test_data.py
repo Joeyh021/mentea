@@ -303,7 +303,7 @@ def create_matching_data() -> None:
     UserTopic.objects.create(user=tim, topic=python)
     UserTopic.objects.create(user=tim, topic=trainspotting)
 
-    # sandra is a new intern working on the epstein account, and wants to upskill herself in modern banking practice
+    # sandra is a new intern and wants to upskill herself in modern banking practice
     sandra = User.objects.create(
         first_name="Sandra",
         last_name="The Intern",
