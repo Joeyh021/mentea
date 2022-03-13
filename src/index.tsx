@@ -8,7 +8,9 @@ import ResultViewer from "./result-viewer";
 axios.defaults.xsrfHeaderName = "X-CSRFTOKEN";
 axios.defaults.xsrfCookieName = "csrftoken";
 
-
+/**
+ * Interfaces to allow reusable functionality and provide types
+ */
 export interface IFeedbackFormProps {
   id: string
 }
@@ -47,7 +49,7 @@ export interface IQuestionOption {
   value: string
 }
 
-
+// Dev testing data
 export const fakeQuestions: IQuestion[] = [
   {
     id: '7d331b08-9a2c-4f53-8356-77c85d349ca5',
@@ -198,28 +200,34 @@ export enum EFormState {
 
 const FeedbackFormViewer: FC<IFeedbackFormProps> = ({ id }) => {
 
+
   const [error, setError] = useState<string | null>(null)
-
-
 
   const [loading, setLoading] = useState<boolean>(false)
 
+  // Stores an array of questions
   const [questions, setQuestions] = useState<IAnswerableQuestion[]>([])
 
+  // Stores the actual form data, allows modification
   const [formData, setFormData] = useState<IFeedbackForm>({id: 'Loading...', name: 'Loading Form Name...', desc: "", allowsEditingSubmissions: false, allowsMultipleSubmissions: true, acceptingSubmissionsUntil: null})
 
+  // React hook that handles all the form related stuff
   const { register, handleSubmit, formState: { errors }, reset, setValue } = useForm()
 
+  // Represents the forms current active state, helps to control what renders and flow
   const [state, setState] = useState<EFormState>(EFormState.LOADING)
 
+  // The most recent submission to hold reference to for viewing/editing
   const [recentSubmission, setRecentSubmission] = useState<IStoredSubmission>()
 
+  // Any previous submissions that we can go through and view (could have edit functionality)
   const [prevSubmissions, setPreviousSubmissions] = useState<IStoredSubmission[]>([])
 
   const [isEditing, setEditing] = useState<boolean>(false)
 
   const [readOnly, setReadOnly] = useState<boolean>(false)
 
+  // Loads form on render
   useEffect(() => {
     loadFormFromId(id)
   }, [id])
@@ -245,6 +253,7 @@ const FeedbackFormViewer: FC<IFeedbackFormProps> = ({ id }) => {
     }
   }, [formData.allowsMultipleSubmissions, prevSubmissions])
 
+  // Force form to re-render based on any changes to how it should be interacted with (make it readonly if it should be)
   useEffect(() => {
 
     setReadOnly(!formData.allowsMultipleSubmissions && !formData.allowsEditingSubmissions && prevSubmissions.length > 0)
@@ -266,6 +275,7 @@ const FeedbackFormViewer: FC<IFeedbackFormProps> = ({ id }) => {
     
   }
 
+  // Converts the array of questions into answers and attaches the formId for recording
   const submitForm = (data: any) => {
 
     setLoading(true)
@@ -364,14 +374,15 @@ const FeedbackFormViewer: FC<IFeedbackFormProps> = ({ id }) => {
   )
 }
 
-
+// Component that represents a individual question, rendering an output based on type and details
 export const Question: FC<IAnswerableQuestion> = ({ ...props }) => {
 
 
+  // Controls if the question has functionality
   const [hasFormHook, setHasFormHook] = useState<boolean>(props.register !== undefined)
 
   
-
+  // Might be slightly better as a switch statement
   if (props.type === "checkbox") {
     return (
       <CheckboxQuestion {...props} />
@@ -417,6 +428,8 @@ export const Question: FC<IAnswerableQuestion> = ({ ...props }) => {
 
   return null
 }
+
+// Below is just representations of all the possible question types, which can be extended as needed
 
 export const CheckboxQuestion: FC<IAnswerableQuestion> = ({ ...props }) => {
 
@@ -643,7 +656,7 @@ const Hi: FC = () => {
 
 
 
-
+// This parses the identifiers in the HTML and converts them into React components
 const forms: HTMLCollectionOf<Element> = document.getElementsByTagName('custom-form')
 
 const formBuilders: HTMLCollectionOf<Element> = document.getElementsByTagName('custom-form-builder')

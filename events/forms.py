@@ -6,6 +6,7 @@ from django import forms
 
 
 class WorkshopForm(forms.Form):
+    """Form to create a new workshop"""
 
     name = forms.CharField(widget=forms.TextInput(attrs={"class": "form-control"}))
     startTime = forms.DateTimeField(
@@ -41,6 +42,7 @@ class WorkshopForm(forms.Form):
 
 
 class WorkshopRequestForm(forms.Form):
+    """Form to request a new workshop"""
 
     topic = forms.ModelChoiceField(
         queryset=Topic.objects.all(),

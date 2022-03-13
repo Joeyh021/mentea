@@ -75,8 +75,7 @@ class EventsIndexPage(LoginRequiredMixin, TemplateView):
 
 class EventsPreviousPage(LoginRequiredMixin, TemplateView):
     """
-    The main workshops page, containing a list of all currently scheduled workshops and links to their individual pages.
-    Should also contain UI to link to /create (if authenticated as mentor), and to /request (if authenticated as mentee)
+    Users should be able to see previous events they have taken part in or ran from here
     """
 
     template_name = "workshops/previous.html"

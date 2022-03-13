@@ -1,4 +1,3 @@
-# type: ignore
 import pytest
 from tests.test_data import create_default_data
 from people.models import User

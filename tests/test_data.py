@@ -1,20 +1,38 @@
 from uuid import uuid4
 from people.models import *
+from events.models import (
+    Event,
+    EventType,
+    EventRequest,
+    EventAttendee,
+    GeneralFeedbackForm,
+    MeetingRequest,
+)
+from datetime import datetime, timedelta
+
 
 # data used for all tests
 def create_default_data():
     # create a mentee
     mentee = User.objects.create_user(
-        email="mentee@mentea.me", password="menteepassword"
+        email="mentee@mentea.me",
+        password="menteepassword",
     )
+    mentee.bio = "I am a mentee"
+    mentee.first_name = "Test"
+    mentee.last_name = "Mentee"
     mentee.user_type = "Mentee"
     mentee.save()
 
     # create a mentor
     mentor = User.objects.create_user(
-        email="mentor@mentea.me", password="mentorpassword"
+        email="mentor@mentea.me",
+        password="mentorpassword",
     )
-    mentor.user_type = "Mentee"
+    mentor.user_type = "Mentor"
+    mentor.first_name = "Test"
+    mentor.last_name = "Mentor"
+    mentor.bio = "I am a mentor"
     mentor.save()
 
     MentorMentee.objects.create(mentor=mentor, mentee=mentee, approved=True)
@@ -35,6 +53,77 @@ def create_default_data():
         associated_poa=plan,
     )
 
+    # some topics
+    management = Topic.objects.create(topic="project management")
+    spreadsheets = Topic.objects.create(topic="excel spreadsheets")
+    python = Topic.objects.create(topic="python programming")
+
+    # give the users some topics
+    UserTopic.objects.create(user=mentee, topic=python, usertype=UserType.Mentee)
+    UserTopic.objects.create(user=mentee, topic=spreadsheets, usertype=UserType.Mentee)
+    UserTopic.objects.create(user=mentor, topic=management, usertype=UserType.Mentor)
+
+    # create some business areas
+    marketing = BusinessArea.objects.create(business_area="marketing")
+    engineering = BusinessArea.objects.create(business_area="engineering")
+
+    # add some chat messages to test chat
+    chat = Chat.objects.create(mentor=mentor, mentee=mentee)
+    ChatMessage.objects.create(
+        chat=chat, sender=mentor, content="What is your favourite colour?"
+    )
+    ChatMessage.objects.create(chat=chat, sender=mentee, content="Blue")
+    # Add a meeting to test  that
+    meeting = Event.objects.create(
+        name="Meeting",
+        startTime=datetime.now() + timedelta(hours=1),
+        endTime=datetime.now() + timedelta(hours=2),
+        duration=60,
+        location="Teams",
+        mentor=mentor,
+        type=EventType.OneToOne,
+    )
+    MeetingRequest.objects.create(
+        event=meeting, mentee=mentee, mentor_approved=True, mentee_approved=True
+    )
+
+    # some feedback either way
+    GeneralFeedbackForm.objects.create(
+        submitted_by=mentee,
+        submitted_for=mentor,
+        feedback="This mentor sucks he knows nothing and is boring as fuck",
+    )
+    GeneralFeedbackForm.objects.create(
+        submitted_by=mentor,
+        submitted_for=mentee,
+        feedback="This mentee is dumb as shit and complains all the time",
+    )
+    # data for workshops tests
+    # Add a new event run by our mentor
+    event1 = Event.objects.create(
+        name="Test Event",
+        startTime=datetime.now() + timedelta(hours=1),
+        endTime=datetime.now() + timedelta(hours=2),
+        duration=60,
+        location="my kitchen",
+        mentor=mentor,
+        type=EventType.Workshop,
+        topic=spreadsheets,
+    )
+    event1.attendees.add(mentee)
+    # add a new workshop in the past
+    event2 = Event.objects.create(
+        name="Test Event 2",
+        startTime=datetime.now() - timedelta(hours=2),
+        endTime=datetime.now() - timedelta(hours=1),
+        duration=60,
+        location="Online",
+        mentor=mentor,
+        type=EventType.Workshop,
+        topic=python,
+    )
+    event2.attendees.add(mentee)
+
 
 # data used only for matching tests
 def create_matching_data() -> None:
@@ -45,28 +134,20 @@ def create_matching_data() -> None:
     mentor_mentee_type = UserType.MentorMentee
 
     # create some business areas
-    money_laundering = BusinessArea.objects.create(
-        business_area="money laundering"
-    )  # https://en.wikipedia.org/wiki/Deutsche_Bank#Russian_money-laundering,_2017
-    tax_evasion = BusinessArea.objects.create(
-        business_area="tax evasion"
-    )  # https://en.wikipedia.org/wiki/Deutsche_Bank#Tax_evasion,_2016
-    global_economy_manipulation = BusinessArea.objects.create(
-        business_area="global economy manipulation"
-    )  # https://en.wikipedia.org/wiki/Deutsche_Bank#Role_in_Financial_crisis_of_2007%E2%80%932008
-    financing_nonces = BusinessArea.objects.create(
-        business_area="financing paedophiles"
-    )  # https://en.wikipedia.org/wiki/Deutsche_Bank#Fine_for_business_with_Jeffrey_Epstein,_2020
+    marketing = BusinessArea.objects.create(business_area="marketing")
+    engineering = BusinessArea.objects.create(business_area="engineering")
+    management = BusinessArea.objects.create(business_area="management")
+    hr = BusinessArea.objects.create(business_area="human resources")
 
     # create a bunch of topics that our bankers may be interested in
     making_money = Topic.objects.create(topic="making money")
     stonks = Topic.objects.create(topic="stonks")
     crypto = Topic.objects.create(topic="cryptocurrency")
-    management = Topic.objects.create(topic="project management")
+    project_management = Topic.objects.create(topic="project management")
     spreadsheets = Topic.objects.create(topic="excel spreadsheets")
     python = Topic.objects.create(topic="python programming")
     mortgages = Topic.objects.create(topic="mortgages")
-    cocaine = Topic.objects.create(topic="cocaine")
+    nfts = Topic.objects.create(topic="NFTs")
     capitalism = Topic.objects.create(topic="capitalism")
     investment = Topic.objects.create(topic="investment")
     yoga = Topic.objects.create(topic="yoga")
@@ -79,7 +160,7 @@ def create_matching_data() -> None:
         first_name="John",
         last_name="Mentor",
         email="john@gmail.com",
-        business_area=money_laundering,
+        business_area=marketing,
         bio="",
         user_type=mentor_type,
     )
@@ -90,7 +171,7 @@ def create_matching_data() -> None:
         first_name="Steve",
         last_name="The Banker",
         email="steve@db.com",
-        business_area=tax_evasion,
+        business_area=engineering,
         bio="",
         user_type=mentor_type,
     )
@@ -102,20 +183,20 @@ def create_matching_data() -> None:
         first_name="Craig",
         last_name="Mentor",
         email="craig@db.com",
-        business_area=global_economy_manipulation,
+        business_area=management,
         bio="",
         user_type=mentor_type,
     )
     UserTopic.objects.create(user=craig, topic=stonks)
     UserTopic.objects.create(user=craig, topic=spreadsheets)
-    UserTopic.objects.create(user=craig, topic=management)
+    UserTopic.objects.create(user=craig, topic=project_management)
 
     # james was secretly a db employee all along
     james = User.objects.create(
         first_name="James",
         last_name="Archbold",
         email="james.archbold@warwick.ac.uk",
-        business_area=money_laundering,
+        business_area=marketing,
         bio="",
         user_type=mentor_type,
     )
@@ -129,7 +210,7 @@ def create_matching_data() -> None:
         first_name="",
         last_name="",
         email="email1@email.com",
-        business_area=financing_nonces,
+        business_area=hr,
         bio="",
         user_type=mentee_type,
     )
@@ -142,7 +223,7 @@ def create_matching_data() -> None:
         first_name="",
         last_name="",
         email="email2@email.com",
-        business_area=financing_nonces,
+        business_area=hr,
         bio="",
         user_type=mentee_type,
     )
@@ -155,7 +236,7 @@ def create_matching_data() -> None:
         first_name="",
         last_name="",
         email="email3@email.com",
-        business_area=financing_nonces,
+        business_area=hr,
         bio="",
         user_type=mentee_type,
     )
@@ -171,29 +252,25 @@ def create_matching_data() -> None:
         first_name="Joey",
         last_name="Harrison",
         email="joey@db.com",
-        business_area=tax_evasion,
+        business_area=engineering,
         bio="",
         user_type=mentor_mentee_type,
     )
     UserTopic.objects.create(
         user=joey, topic=python, usertype=mentor_type
-    )  # already an expert in python
-    UserTopic.objects.create(
-        user=joey, topic=crypto, usertype=mentor_type
-    )  # already an expert in python
-    UserTopic.objects.create(
-        user=joey, topic=tiktok, usertype=mentor_type
-    )  # already an expert in python
+    )  # already an expert in python, crypto and tiktok
+    UserTopic.objects.create(user=joey, topic=crypto, usertype=mentor_type)
+    UserTopic.objects.create(user=joey, topic=tiktok, usertype=mentor_type)
     UserTopic.objects.create(
         user=joey, topic=trainspotting, usertype=mentee_type
-    )  # want to learn about birdwatching, which i am doing from steve
+    )  # want to learn about trainspotting which i am doing from steve
 
     # I have a mentee, but am under the mentorship of steve
     joeys_mentee = User.objects.create(
         first_name="",
         last_name="",
         email="email4@email.com",
-        business_area=financing_nonces,
+        business_area=hr,
         bio="",
         user_type=mentee_type,
     )
@@ -217,7 +294,7 @@ def create_matching_data() -> None:
         first_name="Tim",
         last_name="Mentee",
         email="tim@db.com",
-        business_area=money_laundering,
+        business_area=marketing,
         bio="",
         user_type=mentee_type,
     )
@@ -231,11 +308,11 @@ def create_matching_data() -> None:
         first_name="Sandra",
         last_name="The Intern",
         email="sandra@db.com",
-        business_area=financing_nonces,
+        business_area=hr,
         bio="",
         user_type=mentee_type,
     )
-    UserTopic.objects.create(user=sandra, topic=cocaine)
+    UserTopic.objects.create(user=sandra, topic=nfts)
     UserTopic.objects.create(user=sandra, topic=crypto)
     UserTopic.objects.create(user=sandra, topic=tiktok)
     UserTopic.objects.create(user=sandra, topic=yoga)
@@ -244,7 +321,7 @@ def create_matching_data() -> None:
         first_name="Alex",
         last_name="Ander",
         email="alex@gmail.net",
-        business_area=tax_evasion,
+        business_area=engineering,
         bio="",
         user_type=mentee_type,
     )

@@ -1,3 +1,4 @@
+"""URLS for app main. Also includes URLs for the feedback form API"""
 from django.urls import path
 
 
@@ -9,11 +10,15 @@ app_name = "main"
 
 
 urlpatterns = [
-    path("", IndexPage.as_view(), name="index"),
-    path("faq/", FAQPage.as_view(), name="faq"),
-    path("privacy/", PrivacyPage.as_view(), name="privacy"),
-    path("feedback/", FeedbackPage.as_view(), name="feedback"),
-    path("terms-of-service/", TermosOfServicePage.as_view(), name="tos"),
+    path("", IndexPage.as_view(), name="index"),  # home page
+    path("faq/", FAQPage.as_view(), name="faq"),  # FAQ page
+    path("privacy/", PrivacyPage.as_view(), name="privacy"),  # privacy information
+    path(
+        "feedback/", FeedbackPage.as_view(), name="feedback"
+    ),  # application feedback form
+    path(
+        "terms-of-service/", TermosOfServicePage.as_view(), name="tos"
+    ),  # terms of service information
     path(
         "feedback-api/<uuid:formId>/",
         FeedbackFormReturn.as_view(),
