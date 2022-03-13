@@ -9,3 +9,4 @@ cypress/screenshots
 cypress/videos
 node_modules
 production.py
+.DS_Store
