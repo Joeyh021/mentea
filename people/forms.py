@@ -1,3 +1,5 @@
+"""Forms for the people app"""
+
 from django import forms
 from django.contrib.auth.forms import UserCreationForm
 
@@ -5,6 +7,8 @@ from .models import MentorMentee, User, BusinessArea, Topic, UserType, Rating
 
 
 class RegistrationForm(UserCreationForm):
+    """The form for registering as a new user"""
+
     email = forms.EmailField(required=True)
     first_name = forms.CharField(label="First name", max_length=100)
     last_name = forms.CharField(label="Last name", max_length=100)
@@ -31,6 +35,8 @@ class RegistrationForm(UserCreationForm):
 
 
 class ProfileForm(forms.Form):
+    """Form for editing a user's profile"""
+
     bio = forms.CharField(
         widget=forms.Textarea(attrs={"rows": 4, "cols": 40, "class": "form-control"})
     )
@@ -55,16 +61,22 @@ class ProfileForm(forms.Form):
 
 
 class BusinessAreaForm(forms.Form):
+    """Form for adding a new business area"""
+
     business_area_new = forms.CharField(
         widget=forms.TextInput(attrs={"class": "form-control"})
     )
 
 
 class TopicForm(forms.Form):
+    """Form for adding a new topic"""
+
     topic_new = forms.CharField(widget=forms.TextInput(attrs={"class": "form-control"}))
 
 
 class PlanOfActionForm(forms.Form):
+    """Form for submitting new plan of action"""
+
     name = forms.CharField(
         label="Plan Name",
         max_length=100,
@@ -164,6 +176,8 @@ class MenteeRescheduleForm(forms.Form):
 
 
 class SendMessageForm(forms.Form):
+    """Form for sending a new chat message"""
+
     content = forms.CharField(
         widget=forms.TextInput(attrs={"class": "form-control"}), label="Message Content"
     )

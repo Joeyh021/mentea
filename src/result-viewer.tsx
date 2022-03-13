@@ -8,7 +8,13 @@ axios.defaults.xsrfCookieName = "csrftoken";
 
 
 
-
+/**
+ * 
+ * Essentially a clone of the form submitter, but with submission functionality removed and 
+ * extra functionality to go through all the forms and see their data
+ * 
+ * Submissions are fetched on  all at once. May be better to fetch on demand with large amount of submission, but this is acceptable for a prototype
+ */
 const ResultViewer: FC<IFeedbackFormProps> = ({ id }) => {
     const [loading, setLoading] = useState<boolean>(false)
 
@@ -24,6 +30,7 @@ const ResultViewer: FC<IFeedbackFormProps> = ({ id }) => {
     const [current, setCurrent] = useState<number>(0)
     const [submissions, setSubmissions] = useState<IStoredSubmission[]>([])
 
+    // +1 or -1 to current to change which submission in the array react is rendering
     const nextSubmission = () => {
         if (current >= submissions.length-1) return
         setCurrent(current+1)
@@ -80,6 +87,7 @@ const ResultViewer: FC<IFeedbackFormProps> = ({ id }) => {
         
       }
 
+      // Loads the next/prev submission
       const gatherSubmissions = (formId: string) => {
           axios.get(`/feedback-api/${formId}/submissions/`).then(res => {
               setSubmissions(res.data.submissions)
@@ -94,7 +102,7 @@ const ResultViewer: FC<IFeedbackFormProps> = ({ id }) => {
       }
 
       if (state !== EFormState.READY || submissions.length === 0) {
-        return "Loading results..."
+        return <>"Loading results..."</>
       }
 
     return (

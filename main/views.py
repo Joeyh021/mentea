@@ -43,7 +43,7 @@ class TermosOfServicePage(TemplateView):
 
 
 class FeedbackPage(TemplateView):
-    """A page with a feedback box allowing users to send feedback about the application.""" ""
+    """A page with a feedback box allowing users to send feedback about the application."""
 
     template_name: str = "main/feedback.html"
 

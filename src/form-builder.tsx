@@ -14,6 +14,7 @@ interface IQuestionType {
     visualName: string
 }
 
+// Defautl supported question types
 const questionTypes: IQuestionType[] = [
     {
         htmlName: "text",
@@ -73,6 +74,12 @@ enum EFormBuilderMode {
     CREATE, EDIT
 }
 
+/**
+ * 
+ * Contains core functionality to create forms
+ * Holding reference to each question and its type, etc aswell as the forms data and other bits.
+ *  
+ */
 const FormBuilder: FC<IFormBuilder> = ({ defaultMode, id=''  }) => {
 
     const [mode, setMode] = useState<EFormBuilderMode>(defaultMode || EFormBuilderMode.CREATE)
@@ -126,6 +133,8 @@ const FormBuilder: FC<IFormBuilder> = ({ defaultMode, id=''  }) => {
         setQuestions(newState)
     }
 
+    // The following 4 converters allow me to dev test and prod convert responses and dat to be communicated to/from the backend
+
     const convertJSONToForm = (json: string) => {
         try {
             let fromJSON: IJSONFormBuilder = JSON.parse(json);
@@ -166,6 +175,7 @@ const FormBuilder: FC<IFormBuilder> = ({ defaultMode, id=''  }) => {
         return toObj
     }
 
+    // Collects questions and their type data into a JSON blob to send to the server
     const saveForm = () => {
         let data = convertFormToObj()
 
